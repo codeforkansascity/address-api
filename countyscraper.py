@@ -3,10 +3,9 @@ import json
 import requests
 
 extractionJSON = "/wendellphillipszonesjoin.geojson"
-page = requests.get('http://maps.jacksongov.org/PropertyReport/PropertyReport.cfm?pid=29-220-20-01-00-0-00-000')
+page = requests.get('http://maps.jacksongov.org/PropertyReport/propertyreport.cfm?pid=28-620-08-02-00-0-00-000')
 
 soup = BeautifulSoup(page.text, 'lxml')
-
 
 #######TAX INFORMATION#######
 table = soup.find("table", attrs={"id":"mTabGroup_Values_mValues_mGrid_RealDataGrid"})
@@ -43,27 +42,4 @@ if len(rows) > 0:
 
 
 ##########Incentive information#######
-'''
-
-tree = html.fromstring(page.text);
-
-data = tree.xpath('//table//tr/td/span/table//tr/td/table//tr/td/text()')
-
-for text in data:
-	print(text)
-
-
-data = tree.xpath('//div/div/table//tr/td/span/span/span/text()')
-
-cleaneddata = [None] * 10
-i = 0
-
-for text in data:
-	temp = text.strip();
-	if temp != "":
-		cleaneddata[i] = text.strip()
-		print(cleaneddata[i])
-	++i
-
-'''
 
