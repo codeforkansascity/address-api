@@ -33,7 +33,7 @@ def ExtractHTMLTree(URL):
 
 def saveToFiles(parcels):
 
-	jsonout = json.JSONEncoder().encode(parcels)
+	JSONString = json.JSONEncoder().encode(parcels)
 
 	print "Writing to file: ParcelData.json"
 	file = open('ParcelData.json', 'w')
@@ -44,7 +44,7 @@ def saveToFiles(parcels):
 def ScrapeTaxInfo(html):
 	table = html.find("table", attrs={"id":"mTabGroup_Values_mValues_mGrid_RealDataGrid"})
 
-	if len(table) == 0:
+	if str(type(table)) == "<type 'NoneType'>":
 		return None
 
 	rows = table.find_all("tr")
@@ -141,7 +141,6 @@ def main():
 		parceldict[key] = parcelinfo
 
 	saveToFiles(parceldict)
-
 
 if __name__ == "__main__":
 	main()
