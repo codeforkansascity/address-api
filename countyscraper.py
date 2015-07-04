@@ -3,7 +3,7 @@ import json
 import requests
 
 extractionJSON = "/wendellphillipszonesjoin.geojson"
-page = requests.get('http://maps.jacksongov.org/PropertyReport/PropertyReport.cfm?pid=29-220-20-01-00-0-00-000')
+page = requests.get('http://maps.jacksongov.org/PropertyReport/propertyreport.cfm?pid=28-620-08-02-00-0-00-000')
 
 soup = BeautifulSoup(page.text, 'lxml')
 
@@ -31,19 +31,21 @@ for year in years[1:len(years)]:
 ########EXEMPTION INFORMATION######
 table = soup.find("table", attrs={"id":"mTabGroup_Exemptions_mActiveExemptions_mGrid_RealDataGrid"})
 
-rows = table.find_all("tr")
+if table:
 
-exemptions = []
+	rows = table.find_all("tr")
 
-if len(rows) > 0:
+	exemptions = []
 
-	for row in rows:
-		print row
-		exemptions.append(str(row.get_text().strip()))
+	if len(rows) > 0:
 
+		for row in rows:
+			print row
+			exemptions.append(str(row.get_text().strip()))
 
-parcelinfo["Exemptions"] = exemptions
-
+	parcelinfo["Exemptions"] = exemptions
+else:
+	parcelinfo["Exemptions"] = ["NA"]
 
 ##########INCENTIVE INFORMATION#######
 lx = soup.find_all("span", attrs={"style":"margin-left:20px;"})
