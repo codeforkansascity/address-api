@@ -13,6 +13,7 @@ def ExtractJSONAPNS(fileloc):
 
 	apncount = 0
 
+	''' for geojson:
 	for key in extractedJSON["features"]:
 		properties = key['properties']
 
@@ -23,8 +24,18 @@ def ExtractJSONAPNS(fileloc):
 			apndict[parcel] = '{0}-{1}-{2}-{3}-{4}-{5}-{6}-{7}'.format(apn[0:2], apn[2:5], apn[5:7], apn[7:9], apn[9:11], apn[11], apn[12:14], apn[14:len(apn)])
 			apncount += 1
 
+	'''
+
+	for key in extractedJSON:
+		parcel = key['apn']
+		apn = parcel.strip('JA')
+
+		if len(apn) is 17:
+			apndict[parcel] = '{0}-{1}-{2}-{3}-{4}-{5}-{6}-{7}'.format(apn[0:2], apn[2:5], apn[5:7], apn[7:9], apn[9:11], apn[11], apn[12:14], apn[14:len(apn)])
+			apncount += 1
+
 	extractedJSON.clear()
-	print "Total APNS Found: " + str(apncount)
+	print("Total APNS Found: " + str(apncount))
 	return apndict
 
 def ExtractHTMLTree(URL):
@@ -35,7 +46,7 @@ def saveToFiles(parcels):
 
 	JSONString = json.JSONEncoder().encode(parcels)
 
-	print "Writing to file: ParcelData.json"
+	print("Writing to file: ParcelData.json")
 	file = open('ParcelData.json', 'w')
 	file.write(JSONString)
 	file.close()
@@ -121,7 +132,7 @@ def ScrapeIncentives(html):
 def main():
 	baseURL = "http://maps.jacksongov.org/PropertyReport/PropertyReport.cfm?pid="
 
-	apns = ExtractJSONAPNS("wendellphillipszonesjoin.geojson")
+	apns = ExtractJSONAPNS("apns.json")
 
 	parceldict = dict()
 
