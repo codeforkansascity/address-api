@@ -34,7 +34,7 @@ def ExtractJSONAPNS(fileloc):
 			apndict[parcel] = '{0}-{1}-{2}-{3}-{4}-{5}-{6}-{7}'.format(apn[0:2], apn[2:5], apn[5:7], apn[7:9], apn[9:11], apn[11], apn[12:14], apn[14:len(apn)])
 			apncount += 1
 
-	extractedJSON.clear()
+	del extractedJSON[:]
 	print("Total APNS Found: " + str(apncount))
 	return apndict
 
