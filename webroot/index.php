@@ -1,7 +1,7 @@
 <?php
 
 
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 
 
 $app = new \Slim\Slim();
@@ -22,7 +22,7 @@ $app->get('/jd_wp/(:id)', function ($id) use ($app) {
 
       $id = strtoupper($id);
 
-      require 'config.php';
+      require '../config/config.php';
 
       try {
           $mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
