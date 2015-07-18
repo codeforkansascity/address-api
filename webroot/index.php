@@ -31,6 +31,8 @@ $app->get('/jd_wp/(:id)', function ($id) use ($app) {
           throw new Exception('Unable to connect to database');
       }
 
+      $mysqli->set_charset("utf8"); // Resolves json_encode(): Invalid UTF-8 sequence in argument
+
       $mysqli->real_query(
         "SELECT * FROM jd_wp WHERE county_apn_link = '$id'  LIMIT 1 -- ".
         __FILE__.' '.__LINE__
