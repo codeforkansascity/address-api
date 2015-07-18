@@ -1,5 +1,12 @@
 {
+    "repositories": [
+        {
+        "url": "https://github.com/codeguy/Slim-Extras.git",
+        "type": "git"
+        }
+    ],
     "require": {
-        "slim/slim": "^2.6"
+        "slim/slim": "^2.6",
+        "slim/extras": ">=2.0.3"
     }
 }

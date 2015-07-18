@@ -1,7 +1,15 @@
 <?php
 
 require 'vendor/autoload.php';
+
+
 $app = new \Slim\Slim();
+
+// JSONPMiddleware: If a GET parameter of callback is found
+//                  wrap the responce in a JSONP callback function
+$app->add(new \Slim\Extras\Middleware\JSONPMiddleware());
+
+
 $app->get('/hello/:name', function ($name) {
     echo "Hello, $name";
 });
