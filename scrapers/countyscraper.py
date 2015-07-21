@@ -1,6 +1,10 @@
 from bs4 import BeautifulSoup
 import json
 import requests
+import sys
+
+def FormatAPN(apn):
+	return '{0}-{1}-{2}-{3}-{4}-{5}-{6}-{7}'.format(apn[0:2], apn[2:5], apn[5:7], apn[7:9], apn[9:11], apn[11], apn[12:14], apn[14:len(apn)])
 
 def ExtractJSONAPNS(fileloc):
 	file = open(fileloc, 'r')
@@ -31,7 +35,7 @@ def ExtractJSONAPNS(fileloc):
 		apn = parcel.strip('JA')
 
 		if len(apn) is 17:
-			apndict[parcel] = '{0}-{1}-{2}-{3}-{4}-{5}-{6}-{7}'.format(apn[0:2], apn[2:5], apn[5:7], apn[7:9], apn[9:11], apn[11], apn[12:14], apn[14:len(apn)])
+			apndict[parcel] = FormatAPN(apn)
 			apncount += 1
 
 	del extractedJSON[:]
@@ -128,11 +132,37 @@ def ScrapeIncentives(html):
 
 	return incentivesDict
 
+def Help():
+	return "Jackson County Parcel Data Scraper\n \
+			args: \n \
+			--help : Prints this help statement \n \
+			--file <file name> : scrapes all data from the json file listing APNS and outputs to a JSON \n \
+			--apn <apn1>, <apn2>, ..., <apnN> : scrapes data for list of apns provided and outputs to a JSON \n"
 
 def main():
 	baseURL = "http://maps.jacksongov.org/PropertyReport/PropertyReport.cfm?pid="
 
-	apns = ExtractJSONAPNS("apns.json")
+	args = sys.argv
+	apns = dict()
+
+	if len(args) > 1:
+		if args[1] == "--help":
+			sys.exit(Help())
+		elif args[1] == "--file":
+			apns = ExtractJSONAPNS(args[2])
+		elif args[1] == "--apn":
+			for apn in args[2:len(args)]:
+				usableapn = apn.strip('JA')
+				if len(usableapn) is 17:
+					apns[apn] = FormatAPN(usableapn)
+		else:
+			sys.exit("Invalid argument provided for list of commands use --help")
+				
+	else:
+		sys.exit("No arguments provided for list of commands use --help")
+
+	if len(apns) is 0:
+		sys.exit("No valid APNs were provided")
 
 	parceldict = dict()
 
