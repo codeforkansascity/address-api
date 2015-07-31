@@ -1,0 +1,142 @@
+                            [1] => stdClass Object
+                                (
+                                    [matchedAddress] => 210 W 19TH TER, KANSAS CITY, MO, 64108
+                                    [coordinates] => stdClass Object
+                                        (
+                                            [x] => -94.586296
+                                            [y] => 39.090057
+                                        )
+
+                                    [tigerLine] => stdClass Object
+                                        (
+                                            [tigerLineId] => 91445832
+                                            [side] => R
+                                        )
+
+                                    [addressComponents] => stdClass Object
+                                        (
+                                            [fromAddress] => 200
+                                            [toAddress] => 298
+                                            [preQualifier] => 
+                                            [preDirection] => W
+                                            [preType] => 
+                                            [streetName] => 19TH
+                                            [suffixType] => TER
+                                            [suffixDirection] => 
+                                            [suffixQualifier] => 
+                                            [city] => KANSAS CITY
+                                            [state] => MO
+                                            [zip] => 64108
+                                        )
+
+                                    [geographies] => stdClass Object
+                                        (
+                                            [Counties] => Array
+                                                (
+                                                    [0] => stdClass Object
+                                                        (
+                                                            [OID] => 27590274356842
+                                                            [STATE] => 29
+                                                            [FUNCSTAT] => A
+                                                            [NAME] => Jackson County
+                                                            [AREAWATER] => 30489892
+                                                            [LSADC] => 06
+                                                            [CENTLON] => -094.3461407
+                                                            [BASENAME] => Jackson
+                                                            [INTPTLAT] => +39.0054410
+                                                            [COUNTYCC] => H1
+                                                            [MTFCC] => G4020
+                                                            [COUNTY] => 095
+                                                            [GEOID] => 29095
+                                                            [CENTLAT] => +39.0084466
+                                                            [INTPTLON] => -094.3433259
+                                                            [AREALAND] => 1565581828
+                                                            [COUNTYNS] => 00758502
+                                                            [OBJECTID] => 843
+                                                        )
+
+                                                )
+
+                                            [Census Tracts] => Array
+                                                (
+                                                    [0] => stdClass Object
+                                                        (
+                                                            [OID] => 207903711774534
+                                                            [STATE] => 29
+                                                            [FUNCSTAT] => S
+                                                            [NAME] => Census Tract 158
+                                                            [AREAWATER] => 0
+                                                            [LSADC] => CT
+                                                            [CENTLON] => -094.5802192
+                                                            [BASENAME] => 158
+                                                            [INTPTLAT] => +39.0899783
+                                                            [MTFCC] => G5020
+                                                            [COUNTY] => 095
+                                                            [GEOID] => 29095015800
+                                                            [CENTLAT] => +39.0899783
+                                                            [INTPTLON] => -094.5802192
+                                                            [AREALAND] => 2208124
+                                                            [TRACT] => 015800
+                                                            [OBJECTID] => 9783
+                                                        )
+
+                                                )
+
+                                            [2010 Census Blocks] => Array
+                                                (
+                                                    [0] => stdClass Object
+                                                        (
+                                                            [BLKGRP] => 1
+                                                            [OID] => 210404008136754
+                                                            [FUNCSTAT] => S
+                                                            [STATE] => 29
+                                                            [AREAWATER] => 0
+                                                            [NAME] => Block 1017
+                                                            [SUFFIX] => 
+                                                            [LSADC] => BK
+                                                            [CENTLON] => -094.5867471
+                                                            [LWBLKTYP] => L
+                                                            [BASENAME] => 1017
+                                                            [BLOCK] => 1017
+                                                            [INTPTLAT] => +39.0905246
+                                                            [MTFCC] => G5040
+                                                            [COUNTY] => 095
+                                                            [GEOID] => 290950158001017
+                                                            [CENTLAT] => +39.0905246
+                                                            [INTPTLON] => -094.5867471
+                                                            [AREALAND] => 12586
+                                                            [OBJECTID] => 1727298
+                                                            [TRACT] => 015800
+                                                        )
+
+                                                )
+
+                                            [States] => Array
+                                                (
+                                                    [0] => stdClass Object
+                                                        (
+                                                            [OID] => 2749046934061
+                                                            [STATE] => 29
+                                                            [FUNCSTAT] => A
+                                                            [NAME] => Missouri
+                                                            [AREAWATER] => 2499953509
+                                                            [LSADC] => 00
+                                                            [CENTLON] => -092.4580696
+                                                            [STUSAB] => MO
+                                                            [BASENAME] => Missouri
+                                                            [INTPTLAT] => +38.3507500
+                                                            [MTFCC] => G4000
+                                                            [STATENS] => 01779791
+                                                            [DIVISION] => 4
+                                                            [GEOID] => 29
+                                                            [CENTLAT] => +38.3569742
+                                                            [INTPTLON] => -092.4567826
+                                                            [REGION] => 2
+                                                            [AREALAND] => 178040262246
+                                                            [OBJECTID] => 8
+                                                        )
+
+                                                )
+
+                                        )
+
