@@ -7,10 +7,6 @@ require '../vendor/autoload.php';
 $app = new \Slim\Slim();
 
 
-$app->get('/hello/:name', function ($name) {
-    echo "Hello, $name";
-});
-
 $app->get('/jd_wp/(:id)', function ($id) use ($app) {
 
   $row = array('not init');
