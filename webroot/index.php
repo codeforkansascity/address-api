@@ -21,26 +21,28 @@ $app->get('/jd_wp/(:id)', function ($id) use ($app) {
       require '../config/config.php';
 
       try {
-          $mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
-      } catch (mysqli_sql_exception $e) {
+
+	  $dbh = new PDO("pgsql:dbname=$DB_NAME",$DB_USER,$DB_PASS,array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'));
+
+      } catch (PDOException $e) {
           error_log($e->getMessage().' '.__FILE__.' '.__LINE__);
           throw new Exception('Unable to connect to database');
       }
 
-      $mysqli->set_charset("utf8"); // Resolves json_encode(): Invalid UTF-8 sequence in argument
 
-      $mysqli->real_query(
-        "SELECT * FROM jd_wp WHERE county_apn_link = '$id'  LIMIT 1 -- ".
-        __FILE__.' '.__LINE__
-    );
-      if ($mysqli->error) {
-          error_log($mysqli->error.' '.__FILE__.' '.__LINE__);
-          throw new Exception('Unable to execute database query:');
+      try {
+
+          $query = $dbh->prepare( "SELECT * FROM jd_wp WHERE county_apn_link = :id LIMIT 1 -- ".  __FILE__.' '.__LINE__);
+	  $query->execute(array(':id' => $id));
+
+      } catch(PDOException  $e ){
+          error_log($e->getMessage().' '.__FILE__.' '.__LINE__);
+          throw new Exception('Unable to query database');
       }
 
-      $res = $mysqli->use_result();
 
-      $row = $res->fetch_assoc();
+      $row = $query->fetch( PDO::FETCH_ASSOC );
+
 
   }
   echo json_encode($row);
