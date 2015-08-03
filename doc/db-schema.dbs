@@ -242,7 +242,7 @@
 			</index>
 		</table>
 	</schema>
-	<connector name="MySql" database="MySql" driver_class="com.mysql.jdbc.Driver" driver_jar="mysql-connector-java-5.1.34-bin.jar" host="localhost" port="3306" instance="address_api" user="address_api" passwd="YWRkcmVzc19hcGk=" schema_mapping="" />
+	<connector name="MySql" database="MySql" host="localhost" port="3306" instance="address_api" user="address_api" passwd="YWRkcmVzc19hcGk=" schema_mapping="" />
 	<layout id="Layout_c95c183" name="Default" show_relation_columns="y" >
 		<entity schema="address_api" name="address_string_alias_to_address" color="aec7ef" x="285" y="45" />
 		<entity schema="address_api" name="address_string_alias" color="aec7ef" x="675" y="45" />
