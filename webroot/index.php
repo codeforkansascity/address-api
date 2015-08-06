@@ -22,7 +22,7 @@ $app->get('/jd_wp/(:id)', function ($id) use ($app) {
 
       try {
 
-	  $dbh = new PDO("pgsql:dbname=$DB_NAME",$DB_USER,$DB_PASS,array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES UTF8'));
+	  $dbh = new PDO("pgsql:dbname=$DB_NAME",$DB_USER,$DB_PASS);
 
       } catch (PDOException $e) {
           error_log($e->getMessage().' '.__FILE__.' '.__LINE__);
@@ -36,6 +36,7 @@ $app->get('/jd_wp/(:id)', function ($id) use ($app) {
 	  $query->execute(array(':id' => $id));
 
       } catch(PDOException  $e ){
+var_dump($e);
           error_log($e->getMessage().' '.__FILE__.' '.__LINE__);
           throw new Exception('Unable to query database');
       }
