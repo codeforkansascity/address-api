@@ -98,5 +98,27 @@
             "rest",
             "restful"
         ]
+    },
+    {
+        "name": "Convissor/address",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zmon/address_standardization_solution_php.git",
+            "reference": "0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zmon/address_standardization_solution_php/zipball/0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2",
+            "reference": "0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2",
+            "shasum": ""
+        },
+        "time": "2015-08-08 05:50:12",
+        "type": "library",
+        "installation-source": "source",
+        "support": {
+            "source": "https://github.com/zmon/address_standardization_solution_php/tree/master"
+        }
     }
 ]

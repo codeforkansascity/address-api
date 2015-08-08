@@ -4,8 +4,28 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9c317708122b6b854f71f73b95008acb",
+    "hash": "839581696f4ebe7934193c5c701dc532",
     "packages": [
+        {
+            "name": "Convissor/address",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zmon/address_standardization_solution_php.git",
+                "reference": "0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zmon/address_standardization_solution_php/zipball/0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2",
+                "reference": "0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2",
+                "shasum": ""
+            },
+            "type": "library",
+            "support": {
+                "source": "https://github.com/zmon/address_standardization_solution_php/tree/master"
+            },
+            "time": "2015-08-08 05:50:12"
+        },
         {
             "name": "nategood/httpful",
             "version": "0.2.19",
@@ -106,7 +126,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "convissor/address": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

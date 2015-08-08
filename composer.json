@@ -1,6 +1,15 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/zmon/address_standardization_solution_php.git"
+        }
+    ],
     "require": {
         "slim/slim": "^2.6",
-	"nategood/httpful": "*"
+	"nategood/httpful": "*",
+        "Convissor/address": "dev-master"
     }
+
+
 }

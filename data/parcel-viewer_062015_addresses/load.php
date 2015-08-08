@@ -2,11 +2,14 @@
 
 require '../../vendor/autoload.php';
 require '../../config/config.php';
+require '../../vendor/Convissor/address/AddressStandardizationSolution.php';
+
 
 class Census
 {
 
     var $dbh;
+    var $single_line_address = '';
 
     function __construct()
     {
@@ -27,13 +30,14 @@ class Census
     }
     
     function normalize_address( $address_line ) {
+        $this->input_address = strtoupper($address_line);
         try {
 
-            $sql = 'SELECT g.address                   AS address,
-                           UPPER( g.predirAbbrev )     AS predirAbbrev,
-                           UPPER( g.streetName )       AS streetName,
-                           UPPER( g.streetTypeAbbrev ) AS streetTypeAbbrev,
-                           UPPER( g.postdirAbbrev )    AS postdirAbbrev,
+            $sql = 'SELECT g.address                   AS street_number,
+                           UPPER( g.predirAbbrev )     AS pre_direction,
+                           UPPER( g.streetName )       AS street_name,
+                           UPPER( g.streetTypeAbbrev ) AS street_type,
+                           UPPER( g.postdirAbbrev )    AS post_direction,
                            UPPER( g.internal )         AS internal,
                            UPPER( g.location )         AS city,
                            UPPER( g.stateAbbrev )      AS state,
@@ -51,18 +55,99 @@ class Census
 
         $row = $query->fetch(PDO::FETCH_ASSOC);
 
-        print_r($row);
+	$street_number = $row['street_number'];
+	$pre_direction = $row['pre_direction'];
+	$street_name = $row['street_name'];
+	$street_type = $row['street_type'];
+	$post_direction = $row['post_direction'];
+	$internal = $row['internal'];
+	$city = $row['city'];
+	$state = $row['state'];
+	$zip = $row['zip'];
+	$parsed = $row['parsed'];
+
+	$this->single_line_address = preg_replace('/\s+/', ' ', "$street_number $pre_direction $street_name $street_type $post_direction $internal, $city, $state $zip" );
+	$this->single_line_address = preg_replace('/\s+,/', ',', $this->single_line_address );
 
         return $row;
 
     }
 
-}
+    function get_single_line_address() {
+        return $this->single_line_address;
+    }
 
+    function get_input_address() {
+        return $this->input_address;
+    }
+
+}
 
     $census = new Census();
 
-    $normalized_address = $census->normalize_address( '210 west oak st, greenwood, mo 64106' );
+$row = 0;
+$out = array();
+$names = array();
+if (($handle = fopen("test.csv", "r")) !== FALSE) {
+    while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+        $num = count($data);
+        $row++;
+
+	if ( $row == 1 ) {
+
+            for ($c=0; $c < $num; $c++) {
+                $names[ $c ] = $data[ $c ];
+            }
+	
+
+	} else {
+	    $rec = array();
+            for ($c=0; $c < $num; $c++) {
+                $rec [ $names [ $c ] ] = $data[ $c ];
+            }
+            $normalized_address = $census->normalize_address( $rec[ 'address' ] . ", Kansas City, MO" );
+            $single_line_address = $census->get_single_line_address();
+            $input_address = $census->get_input_address();
+
+$address_converter = new Convissor\address\AddressStandardizationSolution();
+
+            $x = $address_converter->AddressLineStandardization( $rec[ 'address' ] );
+            $out [ $row - 1 ] = array_merge( 
+                 array('input_address' => $input_address), 
+                 array('x' => $x), 
+                 array('single_line_address' => $single_line_address), 
+                 $normalized_address, $rec );
+
+/*
+    [9] => Array
+        (
+            [address] => 4239 E 62nd St
+            [predirabbrev] => E
+            [streetname] => 62ND
+            [streettypeabbrev] => ST
+            [postdirabbrev] => 
+            [internal] => 
+            [city] => KANSAS CITY
+            [state] => MO
+            [zip] => 
+            [parsed] => 1
+            [kivapin] => 466
+            [apn] => JA46220141400000000
+            [neighborhood] => Swope Parkway-Elmwood
+        )
+*/
+
+	
+
+	}
+    }
+    fclose($handle);
+}
+print_r ( $out );
+
+// Normalize one address with Census API
+
+
 
 die('end');
 
