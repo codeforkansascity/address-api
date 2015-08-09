@@ -13,8 +13,15 @@ class Address
     var $dbh;
     var $address_key_by_city_id_query = null;
     var $address_by_alias_query = null;
+
     var $address_query = null;
     var $address_add_query = null;
+
+    var $address_alias_query = null;
+    var $address_alias_add_query = null;
+
+    var $address_keys_query = null;
+    var $address_keys_add_query = null;
 
     /**
      * @param $dbh
@@ -125,9 +132,8 @@ class Address
      * @param $rec
      * @return bool
      */
-    function save_address(& $rec, $fields_to_update = array()) {
+    function save_address(& $rec, $fields_to_update = array())
     {
-
 
         if ($fields_to_update) {                    // Set fields to update
             $fields = $fields_to_update;
@@ -136,17 +142,16 @@ class Address
                 'street_name', 'street_type', 'post_direction', 'internal', 'city', 'state');
         }
 
-        if ($address_rec = $this->get_address($rec['single_line_address'])) {
-            print_r($address_rec);
+        if ($address_rec = $this->get_address($rec['single_line_address'])) {                       // See if we already have a record
+            $address_id = $address_rec['id'];
 
-            if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {
+            if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {                        // If we do see if it is different
+                                                                                                    // If different update it
+                $sql = 'UPDATE address SET ' . $set['set'] . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
 
-                $sql = 'UPDATE address SET ' . $set['set']  . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
-
-print "\n\n$sql\n\n";
                 try {
                     $query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
-                    $values = $set['values']['id'] = $address_rec['id'];
+                    $values = $set['values']['id'] = $address_id;
                     $ret = $query->execute($set['values']);
                 } catch (PDOException  $e) {
                     print ($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
@@ -156,49 +161,192 @@ print "\n\n$sql\n\n";
                 }
             }
 
+            return $address_id;
+
         }
-        return $address_rec['id'];
+
+
+                                                                                                        // We need to add this record
+        if (!$this->address_add_query) {                                                                // Have we already built the query?
+            $names = '';
+            $values = '';                                                                               // Build it
+            $sep = '';
+            foreach ($fields AS $v) {
+                $names .= $sep . $v;
+                $values .= $sep . ':' . $v;
+                $sep = ', ';
+            }
+
+            $sql = 'INSERT INTO address (' . $names . ') VALUES (' . $values . ')';
+            $this->address_add_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
+
+        try {                                                                                           // Now we can add thr record
+            $new_rec = array();
+            foreach ($fields AS $v) {
+                $new_rec[':' . $v] = $rec[$v];
+            }
+            $ret = $this->address_add_query->execute($new_rec);
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+
+
+        $id = $this->dbh->lastInsertId('address_id_seq_02');
+
+        return $id;
 
     }
 
-if (!$this->address_add_query)
-{
-$names = '';
-$values = '';
-$sep = '';
-foreach ($fields AS $v)
-{
-$names .= $sep . $v;
-$values .= $sep . ':' . $v;
-$sep = ', ';
-}
+    /**
+     * @param $single_line_address
+     * @return bool
+     */
+    function get_address_alias($single_line_address)
+    {
 
-$sql = 'INSERT INTO address (' . $names . ') VALUES (' . $values . ')';
-$this->address_add_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
-}
+        if (!$this->address_alias_query) {
+            $sql = 'SELECT * FROM address_alias WHERE single_line_address = :single_line_address';
+            $this->address_alias_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
 
-try {
-    $new_rec = array();
-    foreach ($fields AS $v) {
-        $new_rec[':' . $v] = $rec[$v];
+        try {
+            $this->address_alias_query->execute(array(':single_line_address' => $single_line_address));
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+
+        return $this->address_alias_query->fetch(PDO::FETCH_ASSOC);
     }
-    print_r($new_rec);
-    $ret = $this->address_add_query->execute($new_rec);
-} catch (PDOException  $e) {
-    print ($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
-    error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
-    //throw new Exception('Unable to query database');
-    return false;
-}
+
+    /**
+     * @param $rec
+     * @return bool
+     */
+    function save_address_alias( $rec, $fields_to_update = array())
+    {
+
+        if ($fields_to_update) {                    // Set fields to update
+            $fields = $fields_to_update;
+        } else {
+            $fields = array('single_line_address', 'address_id');
+        }
+
+        if ($address_rec = $this->get_address_alias($rec['single_line_address'])) {                       // See if we already have a record
+            $address_id = $address_rec['address_id'];
+
+            return $address_id;
+
+        }
 
 
-$id = $this->dbh->lastInsertId('address_id_seq_02');
+                                                                                                        // We need to add this record
+        if (!$this->address_alias_add_query) {                                                                // Have we already built the query?
+            $names = '';
+            $values = '';                                                                               // Build it
+            $sep = '';
+            foreach ($fields AS $v) {
+                $names .= $sep . $v;
+                $values .= $sep . ':' . $v;
+                $sep = ', ';
+            }
 
-return $id;
+            $sql = 'INSERT INTO address_alias (' . $names . ') VALUES (' . $values . ')';
+            $this->address_add_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
 
-}
+        try {                                                                                           // Now we can add thr record
+            $new_rec = array();
+            foreach ($fields AS $v) {
+                $new_rec[':' . $v] = $rec[$v];
+            }
+            $ret = $this->address_add_query->execute($new_rec);
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
 
 
+        return true;
+
+    }
+
+    /**
+     * @param $rec
+     * @return bool
+     */
+    function save_address_keys(& $rec, $fields_to_update = array())
+    {
+
+        if ($fields_to_update) {                    // Set fields to update
+            $fields = $fields_to_update;
+        } else {
+            $fields = array('address_id','city_address_id','county_address_id');
+        }
+
+        if ($address_rec = $this->get_address_keys($rec['single_line_address'])) {                       // See if we already have a record
+            $address_id = $address_rec['id'];
+
+            if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {                        // If we do see if it is different
+                                                                                                    // If different update it
+                $sql = 'UPDATE address_keys SET ' . $set['set'] . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
+
+                try {
+                    $query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+                    $values = $set['values']['id'] = $address_id;
+                    $ret = $query->execute($set['values']);
+                } catch (PDOException  $e) {
+                    print ($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+                    error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+                    //throw new Exception('Unable to query database');
+                    return false;
+                }
+            }
+
+            return $address_id;
+
+        }
+
+print 'a';
+                                                                                                        // We need to add this record
+        if (!$this->address_keys_add_query) {                                                                // Have we already built the query?
+            $names = '';
+            $values = '';                                                                               // Build it
+            $sep = '';
+            foreach ($fields AS $v) {
+                $names .= $sep . $v;
+                $values .= $sep . ':' . $v;
+                $sep = ', ';
+            }
+
+            $sql = 'INSERT INTO address (' . $names . ') VALUES (' . $values . ')';
+print "\n$sql\n";
+            $this->address_keys_add_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
+
+        try {                                                                                           // Now we can add thr record
+            $new_rec = array();
+            foreach ($fields AS $v) {
+                $new_rec[':' . $v] = $rec[$v];
+            }
+            $ret = $this->address_keys_add_query->execute($new_rec);
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+
+
+        $id = $this->dbh->lastInsertId('address_key_id_seq');
+
+        return $id;
+
+    }
 }
 
 /**
@@ -356,6 +504,13 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
 
                 } else {
                     $address_id = $address->save_address($address_in);
+                    $address_alias_id = $address->save_address_alias(
+			array( 'single_line_address' => $single_line_address, 'address_id' => $address_id )
+                    );
+                    $address_key_id = $address->save_address_keys(
+			array( 'address_id' => $address_id, 
+                               'city_address_id' => $city_address_id, 
+                               'county_address_id' => $county_address_id ));
                     print "address $address_id added\n";
 
                 }
@@ -367,37 +522,4 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
     }
     fclose($handle);
 }
-print_r($out);
 
-// Normalize one address with Census API
-
-
-die('end');
-
-$id = 'JA29620120500000000';
-
-try {
-
-    $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
-
-} catch (PDOException $e) {
-    error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
-    throw new Exception('Unable to connect to database');
-}
-
-
-try {
-
-    $query = $dbh->prepare("SELECT * FROM jd_wp WHERE county_apn_link = :id LIMIT 1 -- " . __FILE__ . ' ' . __LINE__);
-    $query->execute(array(':id' => $id));
-
-} catch (PDOException  $e) {
-    error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
-    throw new Exception('Unable to query database');
-}
-
-
-$row = $query->fetch(PDO::FETCH_ASSOC);
-
-var_dump($row);
-print_r($row);
