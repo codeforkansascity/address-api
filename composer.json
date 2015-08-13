@@ -9,6 +9,11 @@
         "slim/slim": "^2.6",
 	"nategood/httpful": "*",
         "Convissor/address": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Code4KC\\": "src/Code4KC/"
+        }
     }
 
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "839581696f4ebe7934193c5c701dc532",
+    "hash": "186c527426e7db978aa0edb97583c554",
     "packages": [
         {
             "name": "Convissor/address",
