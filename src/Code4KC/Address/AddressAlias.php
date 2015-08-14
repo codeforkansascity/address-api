@@ -7,31 +7,20 @@ use \PDO as PDO;
 /**
  * Class Address
  */
-class Address extends BaseTable
+class AddressAlias extends BaseTable
 {
 
-    var $table_name = 'address';
-    var $primary_key_sequence = 'address_id_seq_02';
-    var $single_line_address_query = '';
-    var $fields = array(
-        'single_line_address' => '',
-        'street_number' => '',
-        'pre_direction' => '',
-        'street_name' => '',
-        'street_type' => '',
-        'post_direction' => '',
-        'internal' => '',
-        'city' => '',
-        'state' => '',
-        'zip' => '',
-        'zip4' => '',
-        'longitude' => '0.0',
-        'latitude' => '0.0'
+    var $single_line_address_query = null;
+    var $table_name = 'address_alias';                                                    
+    var $primary_key_sequence = null;
+    var $fields = array(                                                            
+        'single_line_address' => '',                                                
+        'address_id' => 0,                                                           
     );
 
     /**
-     * @param $id
-     * @return false or found record
+     * @param $city_id
+     * @return bool
      */
     function find_by_single_line_address($single_line_address)
     {
@@ -50,7 +39,4 @@ class Address extends BaseTable
 
         return $this->single_line_address_query->fetch(PDO::FETCH_ASSOC);
     }
-
-
-    
 }
