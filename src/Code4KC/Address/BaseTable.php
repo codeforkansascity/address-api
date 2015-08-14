@@ -96,6 +96,7 @@ class BaseTable
 
         $fields = $diff['set'];
         $values = $diff['values'];
+        $values['id'] = $id;
 
         $sql = 'UPDATE ' . $this->table_name . ' SET ' . $fields . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
 
