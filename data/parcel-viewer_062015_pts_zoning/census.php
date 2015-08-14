@@ -28,6 +28,7 @@ class Address
     var $city_address_attributes_query = null;
 
     var $city_address_attributes_add_query = null;
+
     /**
      * @param $dbh
      */
@@ -83,6 +84,7 @@ class Address
 
         return $this->address_id_query->fetch(PDO::FETCH_ASSOC);
     }
+
     /**
      * @param $single_line_address
      * @return bool
@@ -171,7 +173,7 @@ class Address
             $address_id = $address_rec['id'];
 
             if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {                        // If we do see if it is different
-                                                                                                    // If different update it
+                // If different update it
                 $sql = 'UPDATE address SET ' . $set['set'] . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
 
                 try {
@@ -191,7 +193,7 @@ class Address
         }
 
 
-                                                                                                        // We need to add this record
+        // We need to add this record
         if (!$this->address_add_query) {                                                                // Have we already built the query?
             $names = '';
             $values = '';                                                                               // Build it
@@ -238,10 +240,10 @@ class Address
                 'street_name', 'street_type', 'post_direction', 'internal', 'city', 'state');
         }
 
-        if ($address_rec = $this->get_address_by_id($rec['id'] )) {                       // See if we already have a record
+        if ($address_rec = $this->get_address_by_id($rec['id'])) {                       // See if we already have a record
             $address_id = $address_rec['id'];
             if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {                        // If we do see if it is different
-                                                                                                    // If different update it
+                // If different update it
                 $sql = 'UPDATE address SET ' . $set['set'] . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
 
                 try {
@@ -292,7 +294,7 @@ class Address
      * @param $rec
      * @return bool
      */
-    function save_address_alias( $rec, $fields_to_update = array())
+    function save_address_alias($rec, $fields_to_update = array())
     {
 
         if ($fields_to_update) {                    // Set fields to update
@@ -309,7 +311,7 @@ class Address
         }
 
 
-                                                                                                        // We need to add this record
+        // We need to add this record
         if (!$this->address_alias_add_query) {                                                                // Have we already built the query?
             $names = '';
             $values = '';                                                                               // Build it
@@ -363,24 +365,25 @@ class Address
 
         return $this->address_key_query->fetch(PDO::FETCH_ASSOC);
     }
+
     /**
      * @param $rec
      * @return bool
      */
-    function save_address_keys( $rec, $fields_to_update = array())
+    function save_address_keys($rec, $fields_to_update = array())
     {
 
         if ($fields_to_update) {                    // Set fields to update
             $fields = $fields_to_update;
         } else {
-            $fields = array('address_id','city_address_id','county_address_id');
+            $fields = array('address_id', 'city_address_id', 'county_address_id');
         }
 
         if ($address_rec = $this->get_address_keys($rec['address_id'])) {                       // See if we already have a record
             $address_key_id = $address_rec['id'];
 
             if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {                        // If we do see if it is different
-                                                                                                    // If different update it
+                // If different update it
                 $sql = 'UPDATE address_keys SET ' . $set['set'] . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
 
                 try {
@@ -399,8 +402,8 @@ class Address
 
         }
 
-print 'a';
-                                                                                                        // We need to add this record
+        print 'a';
+        // We need to add this record
         if (!$this->address_keys_add_query) {                                                                // Have we already built the query?
             $names = '';
             $values = '';                                                                               // Build it
@@ -412,7 +415,7 @@ print 'a';
             }
 
             $sql = 'INSERT INTO address_keys (' . $names . ') VALUES (' . $values . ')';
-print "\n$sql\n";
+            print "\n$sql\n";
             $this->address_keys_add_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
         }
 
@@ -436,26 +439,24 @@ print "\n$sql\n";
     }
 
 
-
-
     /**
      * @param $rec
      * @return bool
      */
-    function save_city_address_attributes( $rec, $fields_to_update = array())
+    function save_city_address_attributes($rec, $fields_to_update = array())
     {
 
         if ($fields_to_update) {                    // Set fields to update
             $fields = $fields_to_update;
         } else {
-            $fields = array('land_use_code','land_use', 'classification', 'sub_class', 'neighborhood');
+            $fields = array('land_use_code', 'land_use', 'classification', 'sub_class', 'neighborhood');
         }
 
         if ($address_rec = $this->get_city_address_attributes($rec['id'])) {                       // See if we already have a record
             $address_key_id = $address_rec['id'];
 
             if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {                        // If we do see if it is different
-                                                                                                    // If different update it
+                // If different update it
                 $sql = 'UPDATE city_address_attributes SET ' . $set['set'] . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
 
                 try {
@@ -474,8 +475,8 @@ print "\n$sql\n";
 
         }
 
-print 'a';
-                                                                                                        // We need to add this record
+        print 'a';
+        // We need to add this record
         if (!$this->city_address_attributes_add_query) {                                                                // Have we already built the query?
             $names = '';
             $values = '';                                                                               // Build it
@@ -487,7 +488,7 @@ print 'a';
             }
 
             $sql = 'INSERT INTO city_address_attributes (' . $names . ') VALUES (' . $values . ')';
-print "\n$sql\n";
+            print "\n$sql\n";
             $this->city_address_attributes_add_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
         }
         try {                                                                                           // Now we can add thr record
@@ -495,16 +496,15 @@ print "\n$sql\n";
             foreach ($fields AS $v) {
                 $new_rec[':' . $v] = $rec[$v];
             }
-print_r($rec);
-print_r($new_rec);
-print "=====\n";
+            print_r($rec);
+            print_r($new_rec);
+            print "=====\n";
             $ret = $this->city_address_attributes_add_query->execute($new_rec);
         } catch (PDOException  $e) {
             error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
             //throw new Exception('Unable to query database');
             return false;
         }
-
 
 
         return $rec['id'];
@@ -642,80 +642,78 @@ $names = array();
 
 global $dbh;
 
-    try {
-        $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
+try {
+    $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
 
 
-    } catch (PDOException $e) {
-        error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
-        throw new Exception('Unable to connect to database');
-    }
-
-
-            $sql = 'SELECT * FROM address';
-            $query = $dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
-
-        try {
-            $query->execute();
-        } catch (PDOException  $e) {
-            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
-            //throw new Exception('Unable to query database');
-            return false;
-        }
-$cnt = 0;
-        while ( $rec =  $query->fetch(PDO::FETCH_ASSOC) ) {
-		print_r($rec);
-
-		$address_single_line = urlencode($rec['single_line_address']);
-
-        $street_number = $rec['street_number'];
-        $pre_direction = $rec['pre_direction'];
-        $street_name = $rec['street_name'];
-        $street_type = $rec['street_type'];
-        $post_direction = $rec['post_direction'];
-        $internal = $rec['internal'];
-        $city = $rec['city'];
-        $state = $rec['state'];
-        $zip = $rec['zip'];
-
-        $street = urlencode(trim(preg_replace('/\s+/', ' ', "$street_number $pre_direction $street_name $street_type $post_direction $internal")));
-        $city = urlencode(trim(preg_replace('/\s+/', ' ', "$city")));
-        $uri = "http://geocoding.geo.census.gov/geocoder/geographies/address?street=$street&city=$city&state=$state&zip=$zip&benchmark=4&vintage=4&format=json";
-
-$response = Request::get($uri)->send();
-
-if ( property_exists($response,'body')
-&& property_exists($response->body,'result')
-&& property_exists($response->body->result,'addressMatches')){
-
-	$c_matches = $response->body->result->addressMatches;
-
-	if ( !empty($c_matches) ) {
-
-		$f_rec = $c_matches['0'] ;
-
-		$zip = $f_rec->addressComponents->zip;
-		$county_name = $f_rec->geographies->Counties['0']->NAME;
-		$county_census_id = $f_rec->geographies->Counties['0']->COUNTY;
-		$state_name = $f_rec->geographies->States['0']->NAME;
-		$state_census_id = $f_rec->geographies->States['0']->STATE;
-                $census_tract_name = $f_rec->geographies->{'Census Tracts'}['0']->NAME;
-                $census_tract_id = $f_rec->geographies->{'Census Tracts'}['0']->TRACT;
-                $census_block_2010_name = $f_rec->geographies->{'2010 Census Blocks'}['0']->NAME;
-                $census_block_2010_id = $f_rec->geographies->{'2010 Census Blocks'}['0']->BLOCK;
-
-	}
-
+} catch (PDOException $e) {
+    error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+    throw new Exception('Unable to connect to database');
 }
 
-print "\$zip=$zip\n";
-print "\$county_name=$county_name\n";
-print "\$county_census_id=$county_census_id\n";
-print "\$state_name=$state_name\n";
-print "\$state_census_id=$state_census_id\n";
-print "\$census_tract_name=$census_tract_name\n";
-print "\$census_tract_id=$census_tract_id\n";
-print "\$census_block_2010_name=$census_block_2010_name\n";
-print "\$census_block_2010_id=$census_block_2010_id\n";
-die;
+
+$sql = 'SELECT * FROM address';
+$query = $dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+
+try {
+    $query->execute();
+} catch (PDOException  $e) {
+    error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+    //throw new Exception('Unable to query database');
+    return false;
+}
+$cnt = 0;
+while ($rec = $query->fetch(PDO::FETCH_ASSOC)) {
+
+    $street_number = $rec['street_number'];
+    $pre_direction = $rec['pre_direction'];
+    $street_name = $rec['street_name'];
+    $street_type = $rec['street_type'];
+    $post_direction = $rec['post_direction'];
+    $internal = $rec['internal'];
+    $city = $rec['city'];
+    $state = $rec['state'];
+    $zip = $rec['zip'];
+
+    $street = urlencode(trim(preg_replace('/\s+/', ' ', "$street_number $pre_direction $street_name $street_type $post_direction $internal")));
+    $city = urlencode(trim(preg_replace('/\s+/', ' ', "$city")));
+    $uri = "http://geocoding.geo.census.gov/geocoder/geographies/address?street=$street&city=$city&state=$state&zip=$zip&benchmark=4&vintage=4&format=json";
+
+    $response = Request::get($uri)->send();
+
+    if (property_exists($response, 'body')
+        && property_exists($response->body, 'result')
+        && property_exists($response->body->result, 'addressMatches')
+    ) {
+
+        $c_matches = $response->body->result->addressMatches;
+
+        if (!empty($c_matches)) {
+
+            $f_rec = $c_matches['0'];
+
+            $zip = $f_rec->addressComponents->zip;
+            $county_name = $f_rec->geographies->Counties['0']->NAME;
+            $county_id = $f_rec->geographies->Counties['0']->COUNTY;
+            $state_name = $f_rec->geographies->States['0']->NAME;
+            $state_id = $f_rec->geographies->States['0']->STATE;
+            $tract_name = $f_rec->geographies->{'Census Tracts'}['0']->NAME;
+            $tract_id = $f_rec->geographies->{'Census Tracts'}['0']->TRACT;
+            $block_2010_name = $f_rec->geographies->{'2010 Census Blocks'}['0']->NAME;
+            $block_2010_id = $f_rec->geographies->{'2010 Census Blocks'}['0']->BLOCK;
+
         }
+
+    }
+
+    print "\$zip=$zip\n";
+    print "\$county_name=$county_name\n";
+    print "\$county_id=$county_id\n";
+    print "\$state_name=$state_name\n";
+    print "\$state_id=$state_id\n";
+    print "\$tract_name=$tract_name\n";
+    print "\$tract_id=$tract_id\n";
+    print "\$block_2010_name=$block_2010_name\n";
+    print "\$block_2010_id=$block_2010_id\n";
+    die;
+}
