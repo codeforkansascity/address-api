@@ -495,9 +495,6 @@ class Address
             foreach ($fields AS $v) {
                 $new_rec[':' . $v] = $rec[$v];
             }
-            print_r($rec);
-            print_r($new_rec);
-            print "=====\n";
             $ret = $this->city_address_attributes_add_query->execute($new_rec);
         } catch (PDOException  $e) {
             error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
