@@ -42,4 +42,26 @@ class AddressKeys extends BaseTable
         return $this->address_id_query->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @param $id
+     * @return false or found record
+     */
+    function find_by_city_address_id($id)
+    {
+        if (!$this->address_id_query) {
+            $sql = 'SELECT *  FROM ' . $this->table_name . ' WHERE city_address_id = :id';
+            $this->address_id_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
+
+        try {
+            $this->address_id_query->execute(array(':id' => $id));
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+
+        return $this->address_id_query->fetch(PDO::FETCH_ASSOC);
+    }
+
 }
