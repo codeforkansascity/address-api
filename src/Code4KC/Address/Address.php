@@ -27,6 +27,7 @@ class Address
     var $city_address_attributes_query = null;
 
     var $city_address_attributes_add_query = null;
+
     /**
      * @param $dbh
      */
@@ -82,6 +83,7 @@ class Address
 
         return $this->address_id_query->fetch(PDO::FETCH_ASSOC);
     }
+
     /**
      * @param $single_line_address
      * @return bool
@@ -170,7 +172,7 @@ class Address
             $address_id = $address_rec['id'];
 
             if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {                        // If we do see if it is different
-                                                                                                    // If different update it
+                // If different update it
                 $sql = 'UPDATE address SET ' . $set['set'] . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
 
                 try {
@@ -190,7 +192,7 @@ class Address
         }
 
 
-                                                                                                        // We need to add this record
+        // We need to add this record
         if (!$this->address_add_query) {                                                                // Have we already built the query?
             $names = '';
             $values = '';                                                                               // Build it
@@ -237,10 +239,10 @@ class Address
                 'street_name', 'street_type', 'post_direction', 'internal', 'city', 'state');
         }
 
-        if ($address_rec = $this->get_address_by_id($rec['id'] )) {                       // See if we already have a record
+        if ($address_rec = $this->get_address_by_id($rec['id'])) {                       // See if we already have a record
             $address_id = $address_rec['id'];
             if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {                        // If we do see if it is different
-                                                                                                    // If different update it
+                // If different update it
                 $sql = 'UPDATE address SET ' . $set['set'] . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
 
                 try {
@@ -291,7 +293,7 @@ class Address
      * @param $rec
      * @return bool
      */
-    function save_address_alias( $rec, $fields_to_update = array())
+    function save_address_alias($rec, $fields_to_update = array())
     {
 
         if ($fields_to_update) {                    // Set fields to update
@@ -308,7 +310,7 @@ class Address
         }
 
 
-                                                                                                        // We need to add this record
+        // We need to add this record
         if (!$this->address_alias_add_query) {                                                                // Have we already built the query?
             $names = '';
             $values = '';                                                                               // Build it
@@ -362,24 +364,25 @@ class Address
 
         return $this->address_key_query->fetch(PDO::FETCH_ASSOC);
     }
+
     /**
      * @param $rec
      * @return bool
      */
-    function save_address_keys( $rec, $fields_to_update = array())
+    function save_address_keys($rec, $fields_to_update = array())
     {
 
         if ($fields_to_update) {                    // Set fields to update
             $fields = $fields_to_update;
         } else {
-            $fields = array('address_id','city_address_id','county_address_id');
+            $fields = array('address_id', 'city_address_id', 'county_address_id');
         }
 
         if ($address_rec = $this->get_address_keys($rec['address_id'])) {                       // See if we already have a record
             $address_key_id = $address_rec['id'];
 
             if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {                        // If we do see if it is different
-                                                                                                    // If different update it
+                // If different update it
                 $sql = 'UPDATE address_keys SET ' . $set['set'] . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
 
                 try {
@@ -398,8 +401,8 @@ class Address
 
         }
 
-print 'a';
-                                                                                                        // We need to add this record
+        print 'a';
+        // We need to add this record
         if (!$this->address_keys_add_query) {                                                                // Have we already built the query?
             $names = '';
             $values = '';                                                                               // Build it
@@ -411,7 +414,7 @@ print 'a';
             }
 
             $sql = 'INSERT INTO address_keys (' . $names . ') VALUES (' . $values . ')';
-print "\n$sql\n";
+            print "\n$sql\n";
             $this->address_keys_add_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
         }
 
@@ -435,26 +438,24 @@ print "\n$sql\n";
     }
 
 
-
-
     /**
      * @param $rec
      * @return bool
      */
-    function save_city_address_attributes( $rec, $fields_to_update = array())
+    function save_city_address_attributes($rec, $fields_to_update = array())
     {
 
         if ($fields_to_update) {                    // Set fields to update
             $fields = $fields_to_update;
         } else {
-            $fields = array('land_use_code','land_use', 'classification', 'sub_class', 'neighborhood');
+            $fields = array('land_use_code', 'land_use', 'classification', 'sub_class', 'neighborhood');
         }
 
         if ($address_rec = $this->get_city_address_attributes($rec['id'])) {                       // See if we already have a record
             $address_key_id = $address_rec['id'];
 
             if ($set = $this->record_is_diff($rec, $address_rec, $fields)) {                        // If we do see if it is different
-                                                                                                    // If different update it
+                // If different update it
                 $sql = 'UPDATE city_address_attributes SET ' . $set['set'] . ', changed = current_timestamp ' . ' WHERE id = :id -- ' . __FILE__ . ' ' . __LINE__;
 
                 try {
@@ -473,8 +474,8 @@ print "\n$sql\n";
 
         }
 
-print 'a';
-                                                                                                        // We need to add this record
+        print 'a';
+        // We need to add this record
         if (!$this->city_address_attributes_add_query) {                                                                // Have we already built the query?
             $names = '';
             $values = '';                                                                               // Build it
@@ -486,7 +487,7 @@ print 'a';
             }
 
             $sql = 'INSERT INTO city_address_attributes (' . $names . ') VALUES (' . $values . ')';
-print "\n$sql\n";
+            print "\n$sql\n";
             $this->city_address_attributes_add_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
         }
         try {                                                                                           // Now we can add thr record
@@ -494,16 +495,15 @@ print "\n$sql\n";
             foreach ($fields AS $v) {
                 $new_rec[':' . $v] = $rec[$v];
             }
-print_r($rec);
-print_r($new_rec);
-print "=====\n";
+            print_r($rec);
+            print_r($new_rec);
+            print "=====\n";
             $ret = $this->city_address_attributes_add_query->execute($new_rec);
         } catch (PDOException  $e) {
             error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
             //throw new Exception('Unable to query database');
             return false;
         }
-
 
 
         return $rec['id'];

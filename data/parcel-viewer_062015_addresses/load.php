@@ -54,15 +54,15 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
             $county_address_id = $rec['apn'];
 
 
-                    $address_id = $address->save_address($address_in);
-                    $address_alias_id = $address->save_address_alias(
-			array( 'single_line_address' => $single_line_address, 'address_id' => $address_id )
-                    );
-                    $address_key_id = $address->save_address_keys(
-			array( 'address_id' => $address_id, 
-                               'city_address_id' => $city_address_id, 
-                               'county_address_id' => $county_address_id ));
-                    print "address $address_id added\n";
+            $address_id = $address->save_address($address_in);
+            $address_alias_id = $address->save_address_alias(
+                array('single_line_address' => $single_line_address, 'address_id' => $address_id)
+            );
+            $address_key_id = $address->save_address_keys(
+                array('address_id' => $address_id,
+                    'city_address_id' => $city_address_id,
+                    'county_address_id' => $county_address_id));
+            print "address $address_id added\n";
 
         }
     }
