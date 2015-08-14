@@ -86,8 +86,6 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
                         $city_address_attributes->add( $new_rec );
                         $totals['city_address_attributes']['insert']++;
                     }
-
-
                     
                 } else {
                     print "ERROR address id $address_id not found, line $row\n";
