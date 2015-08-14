@@ -13,6 +13,13 @@ $names = array();
 
 global $dbh;
 
+$totals = array(
+    'address' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
+    'address_alias' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
+    'address_keys' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
+    'city_address_attributes' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
+);
+
 if (($handle = fopen("test.csv", "r")) !== FALSE) {
     try {
         $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
@@ -57,21 +64,28 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
             // We need to start out with an alias and address records
             $address_id = 0;
             if ( $exisiting_address_alias_rec = $address_alias->find_by_single_line_address( $single_line_address ) ) {
+                $totals['address_alias']['N/A']++;
                 $address_id = $exisiting_address_alias_rec['address_id'];
                 if ( $exisiting_address_rec = $address->find_by_id( $address_id ) ) {
                     if ( $address_differences = $address->diff($exisiting_address_rec, $rec) ) {
                         $address->update( $address_id, $address_differences );
+                        $totals['address']['update']++;
+                    } else {
+                        $totals['address']['N/A']++;
                     }
                 } else {
                     $address->add( $rec );
+                    $totals['address']['insert']++;
                 }
 
             } else {
                 if ( $exisiting_address_rec = $address->find_by_single_line_address( $single_line_address ) ) {       // Just in case we had a failuer to clean up
                     $address_id = $exisiting_address_rec['id'];
+                    $totals['address']['N/A']++;
 
                 } else {
                     $address_id = $address->add( $address_in );
+                    $totals['address']['insert']++;
                 }
 
                 $new_rec = array(
@@ -80,7 +94,7 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
                 );
 
                 $address_alias->add( $new_rec );
-
+                $totals['address_alias']['insert']++;
 
             }
 
@@ -93,9 +107,13 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
                 $address_key_id = $address_keys_rec[ 'id' ];
                 if ( $address_key_differences = $address_keys->diff($address_keys_rec, $new_rec) ) {
                     $address_keys->update( $address_key_id, $address_key_differences );
-                } 
+                    $totals['address_keys']['update']++;
+                } else {
+                    $totals['address_keys']['N/A']++;
+                }
             } else {
                 $address_keys->add( $new_rec );
+                $totals['address_keys']['insert']++;
             }
 
             $new_rec = array(
@@ -107,27 +125,26 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
                 $city_address_attributes_id = $city_address_attributes_rec[ 'id' ];
                 if ( $city_address_attribute_differences = $city_address_attributes->diff($city_address_attributes_rec, $new_rec) ) {
                     $city_address_attributes->update( $city_address_attributes_id, $city_address_attribute_differences );
-                } 
+                    $totals['city_address_attributes']['update']++;
+                } else {
+                    $totals['city_address_attributes']['N/A']++; 
+                }
             } else {
                 $city_address_attributes->add( $new_rec );
+                $totals['city_address_attributes']['insert']++;
             }
-
-
-            /*
-            $address_id = $address->save_address($address_in);
-            // 
-            $address_alias_id = $address->save_address_alias(
-                array('single_line_address' => $single_line_address, 'address_id' => $address_id)
-            );
-            $address_key_id = $address->save_address_keys(
-                array('address_id' => $address_id,
-                    'city_address_id' => $city_address_id,
-                    'county_address_id' => $county_address_id));
-            print "address $address_id added\n";
-             */
-
         }
     }
     fclose($handle);
+
+    print "\nTotals\n--------------------------------------------------------------------------\n";
+
+    printf("%-30.30s %10s %10s %10s %10s\n", 'table', 'insert', 'update', 'N/A', 'ERROR');
+    foreach ( $totals AS $table => $counts ) {
+        printf("%-30.30s %10d %10d %10d %10d\n", $table, $counts['insert'], $counts['update'], $counts['N/A'], $counts['error']);
+    }
+    print "--------------------------------------------------------------------------\n\n";
+
 }
 
+    print "Number of lines processed $row including header\n\n";
