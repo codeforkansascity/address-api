@@ -14,13 +14,14 @@ $names = array();
 global $dbh;
 
 $totals = array(
+    'input' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
     'address' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
     'address_alias' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
     'address_keys' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
     'city_address_attributes' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
 );
 
-if (($handle = fopen("test.csv", "r")) !== FALSE) {
+if (($handle = fopen("kcmo_addresses_kiva_nbrhd_06_18_2015.csv", "r")) !== FALSE) {
     try {
         $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
 
@@ -39,7 +40,7 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
     while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
         $num = count($data);
         $row++;
-
+print "$row\n";
         if ($row == 1) {
             for ($c = 0; $c < $num; $c++) {
                 $names[$c] = $data[$c];
@@ -48,6 +49,12 @@ if (($handle = fopen("test.csv", "r")) !== FALSE) {
             $rec = array();
             for ($c = 0; $c < $num; $c++) {
                 $rec [$names [$c]] = $data[$c];
+            }
+
+            if ( empty($rec['kivapin'] )) {
+                print "ERROR: NO kivapin for line $row county id = " . $rec['apn'] . "\n";
+                $totals['input']['error']++;
+                continue;
             }
 
             $single_line_address  = $address_converter->AddressLineStandardization($rec['address']);

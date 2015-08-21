@@ -5,6 +5,34 @@ require '../../config/config.php';
 
 use \Httpful\Request;
 
+    function time_elapsed_A($secs){
+        $bit = array(
+            'y' => $secs / 31556926 % 12,
+            'w' => $secs / 604800 % 52,
+            'd' => $secs / 86400 % 7,
+            'h' => $secs / 3600 % 24,
+            'm' => $secs / 60 % 60,
+            's' => $secs % 60
+        );
+
+        foreach($bit as $k => $v)
+            if($v > 0)$ret[] = $v . $k;
+
+        return join(' ', $ret);
+    }
+
+    // Print system resources
+    function rutime($ru, $rus, $index) {
+        return ($ru["ru_$index.tv_sec"]*1000 + intval($ru["ru_$index.tv_usec"]/1000))
+       -  ($rus["ru_$index.tv_sec"]*1000 + intval($rus["ru_$index.tv_usec"]/1000));
+    }
+
+    // Lets see how much system resources we use
+    $rustart = getrusage();
+
+    // Lest see wall clock time on this run
+
+    $start_time = time();
 
 $census = new \Code4KC\Address\Census();
 
@@ -15,6 +43,7 @@ $names = array();
 global $dbh;
 
 $totals = array(
+    'input' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
     'address' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
     'census_attributes' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
 );
@@ -32,7 +61,10 @@ try {
 $address = new \Code4KC\Address\Address($dbh, true);
 $census_attributes = new \Code4KC\Address\CensusAttributes($dbh, true);
 
-$sql = 'SELECT * FROM address';
+$sql = 'SELECT a.id, a.street_number, a.pre_direction, a.street_name, a.street_type, a.post_direction, a.internal, a.city, a.state, a.zip, k.city_address_id, k.county_address_id, c.city_address_id AS census_city_address_id FROM address a 
+LEFT JOIN address_keys k ON ( k.address_id = a.id) 
+LEFT JOIN census_attributes c ON ( k.city_address_id = c.city_address_id) ';
+
 $query = $dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
 
 try {
@@ -43,8 +75,16 @@ try {
     return false;
 }
 $row = 0;
+$count = 0;
 while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
     $row++;
+    $census_city_address_id = $address_rec['census_city_address_id'];
+
+    if ( !empty($census_city_address_id ) ) {
+        $totals['input']['N/A']++;
+        continue;
+    }
+
 
     $street_number = $address_rec['street_number'];
     $pre_direction = $address_rec['pre_direction'];
@@ -58,11 +98,12 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $street = urlencode(trim(preg_replace('/\s+/', ' ', "$street_number $pre_direction $street_name $street_type $post_direction $internal")));
     $city = urlencode(trim(preg_replace('/\s+/', ' ', "$city")));
+
     $uri = "http://geocoding.geo.census.gov/geocoder/geographies/address?street=$street&city=$city&state=$state&zip=$zip&benchmark=4&vintage=4&format=json";
 
     $response = Request::get($uri)->send();
 
-    print_r($response);
+    sleep(1);
 
     if (property_exists($response, 'body')
         && property_exists($response->body, 'result')
@@ -74,11 +115,14 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
         if (!empty($c_matches)) {
 
             $f_rec = $c_matches['0'];
-
+//print "---------------------------------------------\n";
+//print_r($address_rec);
+//print_r($f_rec);
+            $zip = $f_rec->addressComponents->zip;
             $address_id = $address_rec['id'];
             $new_rec = array(
                 'id' => $address_id,
-                'zip' => $f_rec->addressComponents->zip
+                'zip' => $zip,
             );
 
             if ($address_differences = $address->diff($address_rec, $new_rec)) {
@@ -88,20 +132,22 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
                 $totals['address']['N/A']++;
             }
 
-
             $new_rec = array();
             $new_rec['id'] = $address_id;
-            $new_rec['county_name'] = $f_rec->geographies->Counties['0']->NAME;
-            $new_rec['county_census_id'] = $f_rec->geographies->Counties['0']->COUNTY;
-            $new_rec['state_name'] = $f_rec->geographies->States['0']->NAME;
-            $new_rec['state_census_id'] = $f_rec->geographies->States['0']->STATE;
-            $new_rec['census_tract_name'] = $f_rec->geographies->{'Census Tracts'}['0']->NAME;
-            $new_rec['census_tract_id'] = $f_rec->geographies->{'Census Tracts'}['0']->TRACT;
-            $new_rec['census_block_2010_name'] = $f_rec->geographies->{'2010 Census Blocks'}['0']->NAME;
-            $new_rec['census_block_2010_id'] = $f_rec->geographies->{'2010 Census Blocks'}['0']->BLOCK;
+            $new_rec['block_2010_name'] = $f_rec->geographies->{'2010 Census Blocks'}['0']->NAME;
+            $new_rec['block_2010_id'] = $f_rec->geographies->{'2010 Census Blocks'}['0']->BLOCK;
+            $new_rec['tract_name'] = $f_rec->geographies->{'Census Tracts'}['0']->NAME;
+            $new_rec['tract_id'] = $f_rec->geographies->{'Census Tracts'}['0']->TRACT;
+            $new_rec['zip'] = $zip;
+            $new_rec['county_id'] = $f_rec->geographies->Counties['0']->COUNTY;
+            $new_rec['state_id'] = $f_rec->geographies->States['0']->STATE;
             $new_rec['longitude'] = $f_rec->coordinates->x;
             $new_rec['latitude'] = $f_rec->coordinates->y;
             $new_rec['tiger_line_id'] = $f_rec->tigerLine->tigerLineId;
+            $new_rec['city_address_id'] = $address_rec['city_address_id'];
+            $new_rec['county_address_id'] = $address_rec['county_address_id'];
+
+
 
             if ($census_attributes_rec = $census_attributes->find_by_id($address_id)) {
                 $census_attributes_id = $census_attributes_rec['id'];
@@ -112,6 +158,7 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
                     $totals['census_attributes']['N/A']++;
                 }
             } else {
+//print_r($new_rec);
                 $census_attributes->add($new_rec);
                 $totals['census_attributes']['insert']++;
             }
@@ -120,15 +167,6 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
 
     }
 
-    print "\$zip=$zip\n";
-    print "\$county_name=$county_name\n";
-    print "\$county_census_id=$county_census_id\n";
-    print "\$state_name=$state_name\n";
-    print "\$state_census_id=$state_census_id\n";
-    print "\$census_tract_name=$census_tract_name\n";
-    print "\$census_tract_id=$census_tract_id\n";
-    print "\$census_block_2010_name=$census_block_2010_name\n";
-    print "\$census_block_2010_id=$census_block_2010_id\n";
 
 
 }
@@ -144,4 +182,33 @@ print "-------------------------------------------------------------------------
 
 print "Number of lines processed $row\n\n";
 
+    // Calcuate how much time this took
+
+    $end_time = time();
+    $time_diff = $end_time - $start_time ;
+
+    if ( $time_diff > 0 ) {
+        $time_diff = time_elapsed_A( $time_diff );
+    } else {
+        $time_diff = ' 0 seconds';
+    }
+
+
+    $ru = getrusage();
+    $str =  "This process used " . rutime($ru, $rustart, "utime") .
+        " ms for its computations\n";
+
+    print "\n";
+    print $str;
+
+    $str = "It spent " . rutime($ru, $rustart, "stime") .
+        " ms in system calls\n";
+
+    print $str;
+
+
+    // Print end message with time it took
+    print "Run time:  $time_diff\n";
+
+    print "\n\n";
 
