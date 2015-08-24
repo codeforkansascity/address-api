@@ -110,33 +110,46 @@
 			</fk>
 		</table>
 		<table name="census_attributes" >
-			<column name="address_id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
-			<column name="block" type="integer" length="10" decimal="0" jt="4" />
-			<column name="block_group" type="integer" length="10" decimal="0" jt="4" />
-			<column name="tract" type="integer" length="10" decimal="0" jt="4" />
-			<column name="census_neighborhood" type="integer" length="10" decimal="0" jt="4" />
-			<column name="census_year" type="integer" length="10" decimal="0" jt="4" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="block_2010_name" type="varchar" length="24" jt="12" />
+			<column name="block_2010_id" type="varchar" length="10" jt="12" />
+			<column name="tract_name" type="varchar" length="24" jt="12" />
+			<column name="tract_id" type="varchar" length="10" jt="12" />
+			<column name="zip" type="varchar" length="5" jt="12" />
+			<column name="county_id" type="varchar" length="10" jt="12" />
+			<column name="state_id" type="varchar" length="10" jt="12" />
+			<column name="longitude" type="varchar" length="10" jt="12" />
+			<column name="latitude" type="varchar" length="10" jt="12" />
+			<column name="tiger_line_id" type="numeric" length="10" decimal="0" jt="2" />
+			<column name="city_address_id" type="integer" length="100" jt="4" />
+			<column name="county_address_id" type="varchar" length="25" jt="12" />
+			<column name="added" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+			</column>
+			<column name="changed" type="timestamp" jt="93" >
+				<defo>current_timestamp</defo>
+			</column>
 			<index name="idx_census_attributes" unique="NORMAL" >
-				<column name="address_id" />
+				<column name="id" />
 			</index>
 			<fk name="fk_census_attributes" to_schema="public" to_table="address" >
-				<fk_column name="address_id" pk="id" />
+				<fk_column name="id" pk="id" />
 			</fk>
 		</table>
 		<table name="city_address_attributes" >
 			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" >
 				<comment><![CDATA[KIVA pin for KCMO]]></comment>
 			</column>
-			<column name="land_use_code" type="varchar" length="24" jt="12" >
+			<column name="land_use_code" type="varchar" length="124" jt="12" >
 				<comment><![CDATA[From parcel-viewer]]></comment>
 			</column>
-			<column name="land_use" type="varchar" length="16" jt="12" >
+			<column name="land_use" type="varchar" length="42" jt="12" >
 				<comment><![CDATA[From parcel-viewer]]></comment>
 			</column>
-			<column name="classification" type="varchar" length="16" jt="12" >
+			<column name="classification" type="varchar" length="42" jt="12" >
 				<comment><![CDATA[From parcel-viewer]]></comment>
 			</column>
-			<column name="sub_class" type="varchar" length="16" jt="12" >
+			<column name="sub_class" type="varchar" length="42" jt="12" >
 				<comment><![CDATA[From parcel-viewer]]></comment>
 			</column>
 			<column name="neighborhood" type="varchar" length="42" jt="12" />
@@ -319,10 +332,10 @@
 	<layout id="Layout_73f7e25" name="public" show_relation_columns="y" >
 		<entity schema="public" name="jd_wp" color="bfd4f5" x="435" y="615" />
 		<entity schema="public" name="county_address_attributes" color="aec7ef" x="555" y="210" />
-		<entity schema="public" name="census_attributes" color="bfd4f5" x="330" y="195" />
 		<entity schema="public" name="address_alias" color="bfd4f5" x="210" y="390" />
-		<entity schema="public" name="address_keys" color="aec7ef" x="330" y="45" />
 		<entity schema="public" name="address" color="bfd4f5" x="45" y="45" />
 		<entity schema="public" name="city_address_attributes" color="bfd4f5" x="585" y="45" />
+		<entity schema="public" name="address_keys" color="aec7ef" x="330" y="45" />
+		<entity schema="public" name="census_attributes" color="bfd4f5" x="330" y="195" />
 	</layout>
 </project>
