@@ -57,12 +57,14 @@ class Address extends BaseTable
 
         if (!$this->get_attributes_query) {
             $sql = 'SELECT 
+k.city_address_id AS city_id,
 c.land_use_code AS city_land_use_code,
 c.land_use AS city_land_use,
 c.classification AS city_classification,
 c.sub_class AS city_sub_class,
 c.neighborhood AS city_nighborhood,
 
+k.county_address_id AS county_id,
 b.block_2010_name AS census_block_2010_name,
 b.block_2010_id AS census_block_2010_id,
 b.tract_name AS census_track_name,

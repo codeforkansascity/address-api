@@ -119,7 +119,6 @@ function get_address_attributes(&$dbh, $address_id)
 {
     $address = new \Code4KC\Address\Address($dbh, true);
     if ($address_rec = $address->find_by_id($address_id)) {
-
         if ($attributes = $address->get_attributes($address_id)) {
 
             $data = array_merge($address_rec, $attributes);
