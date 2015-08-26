@@ -19,6 +19,8 @@ class AddressKeys extends BaseTable
     );
 
     var $address_id_query = '';
+    var $city_address_id_query = '';
+    var $county_address_id_query = '';
 
     /**
      * @param $id
@@ -48,20 +50,42 @@ class AddressKeys extends BaseTable
      */
     function find_by_city_address_id($id)
     {
-        if (!$this->address_id_query) {
+        if (!$this->city_address_id_query) {
             $sql = 'SELECT *  FROM ' . $this->table_name . ' WHERE city_address_id = :id';
-            $this->address_id_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+            $this->city_address_id_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
         }
 
         try {
-            $this->address_id_query->execute(array(':id' => $id));
+            $this->city_address_id_query->execute(array(':id' => $id));
         } catch (PDOException  $e) {
             error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
             //throw new Exception('Unable to query database');
             return false;
         }
 
-        return $this->address_id_query->fetch(PDO::FETCH_ASSOC);
+        return $this->city_address_id_query->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param $id
+     * @return false or found record
+     */
+    function find_by_county_address_id($id)
+    {
+        if (!$this->county_address_id_query) {
+            $sql = 'SELECT *  FROM ' . $this->table_name . ' WHERE county_address_id = :id';
+            $this->county_address_id_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
+
+        try {
+            $this->county_address_id_query->execute(array(':id' => $id));
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+
+        return $this->county_address_id_query->fetch(PDO::FETCH_ASSOC);
     }
 
 }

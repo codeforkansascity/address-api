@@ -9,14 +9,126 @@ require '../vendor/Convissor/address/AddressStandardizationSolution.php';
 $app = new \Slim\Slim();
 
 
-$app->get('/error/', function ($id) use ($app) {
 
+$app->get('/address-attributes-county-id/V0/:id/', function ($id) use ($app) {
+    list($county_id, $x) = explode("?", $id);
+
+    $county_id = addslashes($county_id);
+
+    $in_city = strtoupper($app->request()->params('city'));
+    $in_state = strtoupper($app->request()->params('state'));
+
+    if ( !empty($county_id) ) {
+        if (city_state_valid($in_city, $in_state)) {
+    
+            if ($dbh = connect_to_address_database()) {
+
+                $address_keys = new \Code4KC\Address\AddressKeys($dbh, true);
+                if ($exisiting_address_alias_rec = $address_keys->find_by_county_address_id($county_id)) {
+
+                    $address_id = $exisiting_address_alias_rec['address_id'];
+                    $ret = get_address_attributes($dbh, $address_id);
+    
+                } else {
+                    $ret = array(
+                        'code' => 404,
+                        'status' => 'error',
+                        'message' => 'Address not found',
+                        'data' => array()
+                    );
+                }
+            } else {
+                $ret = array(
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'State or City was not valid.',
+                    'data' => array()
+                );
+            }
+        } else {
+            $ret = array(
+                'code' => 500,
+                'status' => 'failed',
+                'message' => 'Unable to connect to database.',
+                'data' => array()
+            );
+        }
+    } else {
+        $ret = array(
+            'code' => 404,
+            'status' => 'error',
+            'message' => 'City ID was not valid..',
+            'data' => array()
+        );
+    }
+
+    $app->response->setStatus($ret['code']);
+    echo json_encode($ret);
 });
 
+
+
+$app->get('/address-attributes-city-id/V0/:id/', function ($id) use ($app) {
+
+    list($city_id, $x) = explode("?", $id);
+
+    $in_city = strtoupper($app->request()->params('city'));
+    $in_state = strtoupper($app->request()->params('state'));
+
+    $city_id = intval($city_id);
+    if ( $city_id ) {
+        if (city_state_valid($in_city, $in_state)) {
+    
+            if ($dbh = connect_to_address_database()) {
+
+                $address_keys = new \Code4KC\Address\AddressKeys($dbh, true);
+                if ($exisiting_address_alias_rec = $address_keys->find_by_city_address_id($city_id)) {
+
+                    $address_id = $exisiting_address_alias_rec['address_id'];
+                    $ret = get_address_attributes($dbh, $address_id);
+    
+                } else {
+                    $ret = array(
+                        'code' => 404,
+                        'status' => 'error',
+                        'message' => 'Address not found',
+                        'data' => array()
+                    );
+                }
+            } else {
+                $ret = array(
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'State or City was not valid.',
+                    'data' => array()
+                );
+            }
+        } else {
+            $ret = array(
+                'code' => 500,
+                'status' => 'failed',
+                'message' => 'Unable to connect to database.',
+                'data' => array()
+            );
+        }
+    } else {
+        $ret = array(
+            'code' => 404,
+            'status' => 'error',
+            'message' => 'City ID was not valid..',
+            'data' => array()
+        );
+    }
+
+    $app->response->setStatus($ret['code']);
+    echo json_encode($ret);
+
+});
 
 $app->get('/address-attributes/V0/:address/', function ($id) use ($app) {
 
     list($in_address, $x) = explode("?", $id);
+    $in_address = addslashes($in_address);
 
     $in_city = strtoupper($app->request()->params('city'));
     $in_state = strtoupper($app->request()->params('state'));
