@@ -3,30 +3,32 @@
 namespace Code4KC\Address;
 
 use \PDO as PDO;
-        
-/**         
+
+/**
  * Class BaseTable
- */         
+ */
 class BaseTable
 {
-            
+
     var $dbh;
     var $table_name = '';
     var $fields = array();
-    
+
     var $id_query = null;
     var $add_query = null;
 
     var $single_line_address_query = null;
+
     /**
      * @param $dbh
      */
-    function __construct(&$dbh, $debug = false) {
+    function __construct(&$dbh, $debug = false)
+    {
 
         $this->dbh = $dbh;
-        
+
         if ($debug) {
-         $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
     }
 
@@ -53,15 +55,14 @@ class BaseTable
     }
 
 
-
-    function diff( $existing, $new )
+    function diff($existing, $new)
     {
 
         $same = '';
         $sep = '';
         foreach ($existing AS $field => $value) {
 
-            switch ( $field ) {
+            switch ($field) {
                 case "id":
                 case "added":
                 case "changed":
@@ -69,9 +70,9 @@ class BaseTable
 
                 default:
 
-                    if ( array_key_exists( $field, $new ) ) {               // If the exiting fields is in the new array
-                        if ( $existing[ $field ] != $new[ $field ] ) {
-        
+                    if (array_key_exists($field, $new)) {               // If the exiting fields is in the new array
+                        if ($existing[$field] != $new[$field]) {
+
                             $same .= $sep . "$field = :$field";
                             $sep = ', ';
                             $values[':' . $field] = $new[$field];
@@ -91,7 +92,7 @@ class BaseTable
 
     }
 
-    public function update($id, $diff) 
+    public function update($id, $diff)
     {
 
         $fields = $diff['set'];
@@ -117,7 +118,7 @@ class BaseTable
     /**
      * Add record's fields.  Use default values from $fields
      */
-    function add($record) 
+    function add($record)
     {
         if (!$this->add_query) {                                                                // Have we already built the query?
             $names = '';
@@ -136,7 +137,7 @@ class BaseTable
         try {                                                                                           // Now we can add thr record
             $new_rec = array();
             foreach ($this->fields AS $f => $v) {
-                if ( array_key_exists( $f, $record ) ) {
+                if (array_key_exists($f, $record)) {
                     $value = $record[$f];
                 } else {
                     $value = $v;
@@ -151,8 +152,8 @@ class BaseTable
         }
 
 
-        if ( $this->primary_key_sequence ) {
-            $id = $this->dbh->lastInsertId( $this->primary_key_sequence );
+        if ($this->primary_key_sequence) {
+            $id = $this->dbh->lastInsertId($this->primary_key_sequence);
         } else {
             $id = null;
         }

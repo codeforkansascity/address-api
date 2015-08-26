@@ -10,15 +10,15 @@ use \PDO as PDO;
 class CityAddressAttributes extends BaseTable
 {
 
-    var $table_name = 'city_address_attributes';                                                    
+    var $table_name = 'city_address_attributes';
     var $primary_key_sequence = null;
-    var $fields = array(                                                            
-        'id' => '',                                                
-        'land_use_code' => '',                                                
-        'land_use' => '',                                                
-        'classification' => '',                                                
-        'sub_class' => '',                                                
-        'neighborhood' => '',                                                
+    var $fields = array(
+        'id' => '',
+        'land_use_code' => '',
+        'land_use' => '',
+        'classification' => '',
+        'sub_class' => '',
+        'neighborhood' => '',
     );
 
 }

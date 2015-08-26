@@ -11,11 +11,11 @@ class AddressAlias extends BaseTable
 {
 
     var $single_line_address_query = null;
-    var $table_name = 'address_alias';                                                    
+    var $table_name = 'address_alias';
     var $primary_key_sequence = null;
-    var $fields = array(                                                            
-        'single_line_address' => '',                                                
-        'address_id' => 0,                                                           
+    var $fields = array(
+        'single_line_address' => '',
+        'address_id' => 0,
     );
 
     /**

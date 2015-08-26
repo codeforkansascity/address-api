@@ -10,9 +10,9 @@ use \PDO as PDO;
 class CensusAttributes extends BaseTable
 {
 
-    var $table_name = 'census_attributes';                                                    
+    var $table_name = 'census_attributes';
     var $primary_key_sequence = null;
-    var $fields = array(                                                            
+    var $fields = array(
         'id' => '',
         'block_2010_name' => '',
         'block_2010_id' => '',

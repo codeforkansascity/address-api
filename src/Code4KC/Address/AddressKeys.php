@@ -10,12 +10,12 @@ use \PDO as PDO;
 class AddressKeys extends BaseTable
 {
 
-    var $table_name = 'address_keys';                                                    
+    var $table_name = 'address_keys';
     var $primary_key_sequence = 'address_key_id_seq';
-    var $fields = array(                                                            
-        'address_id' => '',                                                
-        'city_address_id' => '',                                                           
-        'county_address_id' => '',                                                           
+    var $fields = array(
+        'address_id' => '',
+        'city_address_id' => '',
+        'county_address_id' => '',
     );
 
     var $address_id_query = '';
