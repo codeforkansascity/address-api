@@ -16,33 +16,48 @@ $app->get('/error/', function ($id) use ($app) {
 
 $app->get('/address-attributes/V0/:address/', function ($id) use ($app) {
 
-    list( $in_address, $x ) = explode("?",$id);
+    list($in_address, $x) = explode("?", $id);
 
-    $in_city = $app->request()->params('city');
-    $in_state = $app->request()->params('state');
+    $in_city = strtoupper($app->request()->params('city'));
+    $in_state = strtoupper($app->request()->params('state'));
 
-    $dbh = connect_to_address_database();
+    if (city_state_valid($in_city, $in_state)) {
 
+        if ($dbh = connect_to_address_database()) {
 
-$single_line_address =  normalize_address($in_address, $in_city, $in_state); 
+            $single_line_address = normalize_address($in_address, $in_city, $in_state);
 
-    $address_alias = new \Code4KC\Address\AddressAlias($dbh, true);
+            $address_alias = new \Code4KC\Address\AddressAlias($dbh, true);
 
-    if ( $exisiting_address_alias_rec = $address_alias->find_by_single_line_address( $single_line_address ) ) {
+            if ($exisiting_address_alias_rec = $address_alias->find_by_single_line_address($single_line_address)) {
 
-        $address_id = $exisiting_address_alias_rec['address_id'];
+                $address_id = $exisiting_address_alias_rec['address_id'];
 
-        $ret =  get_address_attributes( $dbh, $address_id ); 
+                $ret = get_address_attributes($dbh, $address_id);
 
-
-    } else {
-
+            } else {
                 $ret = array(
                     'code' => 404,
                     'status' => 'error',
                     'message' => 'Address not found',
                     'data' => array()
                 );
+            }
+        } else {
+            $ret = array(
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'State or City was not valid.',
+                'data' => array()
+            );
+        }
+    } else {
+        $ret = array(
+            'code' => 500,
+            'status' => 'failed',
+            'message' => 'Unable to connect to database.',
+            'data' => array()
+        );
     }
 
     $app->response->setStatus($ret['code']);
@@ -53,108 +68,143 @@ $single_line_address =  normalize_address($in_address, $in_city, $in_state);
 
 $app->get('/jd_wp/(:id)', function ($id) use ($app) {
 
-  $row = array('not init');
-  if (!preg_match('#^[a-zA-Z0-9]+$#', $id)) {
-    error_log('BAD ID '.__FILE__.' '.__LINE__);
-      $app->notFound();
-      $row = array('bad id');
-  } else {
+    $row = array('not init');
+    if (!preg_match('#^[a-zA-Z0-9]+$#', $id)) {
+        error_log('BAD ID ' . __FILE__ . ' ' . __LINE__);
+        $app->notFound();
+        $row = array('bad id');
+    } else {
 
-      $id = strtoupper($id);
+        $id = strtoupper($id);
 
-      require '../config/config.php';
+        require '../config/config.php';
 
-      try {
+        try {
 
-	  $dbh = new PDO("pgsql:dbname=$DB_NAME",$DB_USER,$DB_PASS);
+            $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
 
-      } catch (PDOException $e) {
-          error_log($e->getMessage().' '.__FILE__.' '.__LINE__);
-          throw new Exception('Unable to connect to database');
-      }
-
-
-      try {
-
-          $query = $dbh->prepare( "SELECT * FROM jd_wp WHERE county_apn_link = :id LIMIT 1 -- ".  __FILE__.' '.__LINE__);
-	  $query->execute(array(':id' => $id));
-
-      } catch(PDOException  $e ){
-var_dump($e);
-          error_log($e->getMessage().' '.__FILE__.' '.__LINE__);
-          throw new Exception('Unable to query database');
-      }
+        } catch (PDOException $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            throw new Exception('Unable to connect to database');
+        }
 
 
-      $row = $query->fetch( PDO::FETCH_ASSOC );
+        try {
+
+            $query = $dbh->prepare("SELECT * FROM jd_wp WHERE county_apn_link = :id LIMIT 1 -- " . __FILE__ . ' ' . __LINE__);
+            $query->execute(array(':id' => $id));
+
+        } catch (PDOException  $e) {
+            var_dump($e);
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            throw new Exception('Unable to query database');
+        }
 
 
-  }
-  echo json_encode($row);
+        $row = $query->fetch(PDO::FETCH_ASSOC);
+
+
+    }
+    echo json_encode($row);
 });
 
 $app->run();
 
+/**
+ * @param $dbh
+ * @param $address_id
+ * @return array
+ */
+function get_address_attributes(&$dbh, $address_id)
+{
+    $address = new \Code4KC\Address\Address($dbh, true);
+    if ($address_rec = $address->find_by_id($address_id)) {
 
+        if ($attributes = $address->get_attributes($address_id)) {
 
-function get_address_attributes( &$dbh, $address_id ) {
-        $address = new \Code4KC\Address\Address($dbh, true);
-        if ( $address_rec = $address->find_by_id( $address_id ) ) {
+            $data = array_merge($address_rec, $attributes);
+            $ret = array(
+                'code' => 200,
+                'status' => 'success',
+                'message' => '',
+                'data' => $data
+            );
 
-            if ( $attributes = $address->get_attributes( $address_id ) ) {
-
-                $data = array_merge($address_rec, $attributes);
-                $ret = array(
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => '',
-                    'data' => $data
-                );
-                
-            } else {
-                $data = $address_rec;
-                $ret = array(
-                    'code' => 200,
-                    'status' => 'success',
-                    'message' => 'Unable to provide address attributes',
-                    'data' => $data
-                );
-            } 
         } else {
-
-                $data = $address_rec;
-                $ret = array(
-                    'code' => 402,
-                    'status' => 'error',
-                    'message' => 'Internal error, address alias found, but address record is missing',
-                    'data' => $data
-                );
+            $data = $address_rec;
+            $ret = array(
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Unable to provide address attributes',
+                'data' => $data
+            );
         }
+    } else {
+
+        $data = $address_rec;
+        $ret = array(
+            'code' => 402,
+            'status' => 'error',
+            'message' => 'Internal error, address alias found, but address record is missing',
+            'data' => $data
+        );
+    }
     return $ret;
 }
 
+/**
+ * @param $in_address
+ * @param $in_city
+ * @param $in_state
+ * @return string
+ */
 
-function normalize_address($in_address, $in_city, $in_state) {
+function normalize_address($in_address, $in_city, $in_state)
+{
     $address_converter = new Convissor\address\AddressStandardizationSolution();
-    $single_line_address  = $address_converter->AddressLineStandardization($in_address);
+    $single_line_address = $address_converter->AddressLineStandardization($in_address);
 
     $single_line_address .= ', ' . strtoupper($in_city) . ', ' . strtoupper($in_state);           // We keep unit 'internal'
 
     return $single_line_address;
 }
 
-function connect_to_address_database() {
+/**
+ * Verify that City and State are valid.
+ * This is stub code till we figure out a better way.
+ * @param $city
+ * @param $state
+ * @return bool
+ */
+function city_state_valid($city, $state)
+{
+    if (
+        ($city == "" || $city == "KANSAS CITY")
+        && ($state == "" || $state == "MO")
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
-global $DB_NAME;
-global $DB_USER;
-global $DB_PASS;
-global $DB_HOST;
+/**
+ * @return PDO
+ * @throws Exception
+ */
+function connect_to_address_database()
+{
+
+    global $DB_NAME;
+    global $DB_USER;
+    global $DB_PASS;
+    global $DB_HOST;
 
     try {
         $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
     } catch (PDOException $e) {
         error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
-        throw new Exception('Unable to connect to database');
+        return false;
     }
 
     return $dbh;
