@@ -36,21 +36,24 @@ $app->get('/address-typeahead/V0/:address/', function ($in_address) use ($app) {
             }
         } else {
             $ret = array(
-                'code' => 404,
-                'status' => 'error',
-                'message' => 'State or City was not valid.',
+                'code' => 500,
+                'status' => 'failed',
+                'message' => 'Unable to connect to database.',
                 'data' => array()
             );
         }
 
-    $app->response->setStatus($ret['code']);
-    echo json_encode($ret);
+    if ( $address_recs == false ) {
+        echo json_encode($address_recs);
+    } else {
+        $app->response->setStatus($ret['code']);
+        echo json_encode($ret);
+    } 
 
 });
 
 $app->get('/address-attributes-id/V0/:id/', function ($id) use ($app) {
-    list($county_id, $x) = explode("?", $id);
-
+    
     $id = intval($id);
 
     $in_city = strtoupper($app->request()->params('city'));
@@ -64,18 +67,20 @@ $app->get('/address-attributes-id/V0/:id/', function ($id) use ($app) {
                     $ret = get_address_attributes($dbh, $id);
     
                 } else {
-                    $ret = array(
-                        'code' => 404,
-                        'status' => 'error',
-                        'message' => 'Address not found',
-                        'data' => array()
-                    );
-                }
+
+                $ret = array(
+                    'code' => 500,
+                    'status' => 'failed',
+                    'message' => 'Unable to connect to database.',
+                    'data' => array()
+                );
+            }
         } else {
+
             $ret = array(
-                'code' => 500,
-                'status' => 'failed',
-                'message' => 'Unable to connect to database.',
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'State or City was not valid.',
                 'data' => array()
             );
         }
@@ -119,18 +124,20 @@ $app->get('/address-attributes-county-id/V0/:id/', function ($id) use ($app) {
                     );
                 }
             } else {
+
                 $ret = array(
-                    'code' => 404,
-                    'status' => 'error',
-                    'message' => 'State or City was not valid.',
+                    'code' => 500,
+                    'status' => 'failed',
+                    'message' => 'Unable to connect to database.',
                     'data' => array()
                 );
             }
         } else {
+
             $ret = array(
-                'code' => 500,
-                'status' => 'failed',
-                'message' => 'Unable to connect to database.',
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'State or City was not valid.',
                 'data' => array()
             );
         }
@@ -151,12 +158,12 @@ $app->get('/address-attributes-county-id/V0/:id/', function ($id) use ($app) {
 
 $app->get('/address-attributes-city-id/V0/:id/', function ($id) use ($app) {
 
-    list($city_id, $x) = explode("?", $id);
 
     $in_city = strtoupper($app->request()->params('city'));
     $in_state = strtoupper($app->request()->params('state'));
 
-    $city_id = intval($city_id);
+    $city_id = intval($id);
+
     if ( $city_id ) {
         if (city_state_valid($in_city, $in_state)) {
     
@@ -177,18 +184,20 @@ $app->get('/address-attributes-city-id/V0/:id/', function ($id) use ($app) {
                     );
                 }
             } else {
+
                 $ret = array(
-                    'code' => 404,
-                    'status' => 'error',
-                    'message' => 'State or City was not valid.',
+                    'code' => 500,
+                    'status' => 'failed',
+                    'message' => 'Unable to connect to database.',
                     'data' => array()
                 );
             }
         } else {
+
             $ret = array(
-                'code' => 500,
-                'status' => 'failed',
-                'message' => 'Unable to connect to database.',
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'State or City was not valid.',
                 'data' => array()
             );
         }
@@ -208,8 +217,7 @@ $app->get('/address-attributes-city-id/V0/:id/', function ($id) use ($app) {
 
 $app->get('/address-attributes/V0/:address/', function ($id) use ($app) {
 
-    list($in_address, $x) = explode("?", $id);
-    $in_address = addslashes($in_address);
+    $in_address = addslashes($id);
 
     $in_city = strtoupper($app->request()->params('city'));
     $in_state = strtoupper($app->request()->params('state'));
@@ -237,20 +245,22 @@ $app->get('/address-attributes/V0/:address/', function ($id) use ($app) {
                 );
             }
         } else {
+
+                $ret = array(
+                    'code' => 500,
+                    'status' => 'failed',
+                    'message' => 'Unable to connect to database.',
+                    'data' => array()
+                );
+            }
+        } else {
+
             $ret = array(
                 'code' => 404,
                 'status' => 'error',
                 'message' => 'State or City was not valid.',
                 'data' => array()
             );
-        }
-    } else {
-        $ret = array(
-            'code' => 500,
-            'status' => 'failed',
-            'message' => 'Unable to connect to database.',
-            'data' => array()
-        );
     }
 
     $app->response->setStatus($ret['code']);
