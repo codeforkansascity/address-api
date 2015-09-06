@@ -3,7 +3,37 @@
 require '../../vendor/autoload.php';
 require '../../config/config.php';
 
-use \Httpful\Request;
+
+class CouncilDistricts extends BaseTable
+{
+
+    var $query = null;
+    var $table_name = 'address_spatial.mo_kc_city_council_districts_2012';
+    var $primary_key_sequence = null;
+    var $fields = array(
+        'district' => '',
+        'geom' => '',
+    );
+
+    function find_name_by_lng_lat( $lng, $lat ) {
+        if (!$this->query) {
+            $sql = 'SELECT district  FROM ' . $this->table_name . ' WHERE ST_Intersects( ST_MakePoint( :lng, :lat), geom);';
+            $this->query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
+
+        try {
+            $this->query->execute(array(':lat' => $lat, ':lng' => $lng));
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+
+        return $this->query->fetch(PDO::FETCH_ASSOC);
+    }
+
+}
+
 
     function time_elapsed_A($secs){
         $bit = array(
@@ -34,7 +64,6 @@ use \Httpful\Request;
 
     $start_time = time();
 
-$census = new \Code4KC\Address\Census();
 
 $row = 0;
 $out = array();
@@ -50,16 +79,21 @@ $totals = array(
 
 try {
     $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
-
-
 } catch (PDOException $e) {
     error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
     throw new Exception('Unable to connect to database');
 }
 
+try {
+    $dbh_code4kc = new PDO("pgsql:dbname=$DB_CODE4KC_NAME", $DB_CODE4KC_USER, $DB_CODE4KC_PASS);
+} catch (PDOException $e) {
+    error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+    throw new Exception('Unable to connect to database');
+}
 
 $address = new \Code4KC\Address\Address($dbh, true);
-$census_attributes = new \Code4KC\Address\CensusAttributes($dbh, true);
+$city_address_attributes = new \Code4KC\Address\CityAddressAttributes($dbh, true);
+$code4kc = new CouncilDistricts($dbh_code4kc, true);
 
 $sql = 'SELECT a.id, a.longitude, a.latitude, k.city_address_id FROM address a 
 LEFT JOIN address_keys k ON ( k.address_id = a.id) 
@@ -81,11 +115,35 @@ while ($rec = $query->fetch(PDO::FETCH_ASSOC)) {
 if ( $row > 10) break;
 
     $row++;
+
+    $lng = $address_rec['longitude'];
+    $lat = $address_rec['latitude'];
     $city_address_id = $address_rec['city_address_id'];
 
     if ( !empty($city_address_id ) ) {
         $totals['input']['N/A']++;
         continue;
+    }
+
+    $cc_rec = $code4kc->find_name_by_lng_lat($lng, $lat);
+
+    print_r($cc_rec);
+
+    continue;
+
+    $new_rec = array('council_district' => $new_rec['district']);
+
+    if ( $city_address_attributes_rec = $city_address_attributes->find_by_id( $city_address_id ) ) {
+        $city_address_attributes_id = $city_address_attributes_rec[ 'id' ];
+        if ( $city_address_attribute_differences = $city_address_attributes->diff($city_address_attributes_rec, $new_rec) ) {
+            $city_address_attributes->update( $city_address_attributes_id, $city_address_attribute_differences );
+            $totals['city_address_attributes']['update']++;
+        } else {
+            $totals['city_address_attributes']['N/A']++;
+        }
+    } else {
+        $city_address_attributes->add( $new_rec );
+        $totals['city_address_attributes']['insert']++;
     }
     
     print_r($rec);
