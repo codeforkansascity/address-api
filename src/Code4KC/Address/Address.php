@@ -13,6 +13,7 @@ class Address extends BaseTable
     var $table_name = 'address';
     var $primary_key_sequence = 'address_id_seq_02';
     var $single_line_address_query = '';
+    var $typeahead_query = '';
     var $get_attributes_query = '';
     var $fields = array(
         'single_line_address' => '',
@@ -29,6 +30,31 @@ class Address extends BaseTable
         'longitude' => '0.0',
         'latitude' => '0.0'
     );
+
+    /**
+     * @param $id
+     * @return false or found record
+     */
+    function typeahead($single_line_address)
+    {
+
+        $single_line_address = strtoupper( $single_line_address );
+        $single_line_address .= '%';
+
+        if (!$this->typeahead_query) {
+            $sql = 'SELECT id, single_line_address  FROM ' . $this->table_name . ' WHERE single_line_address LIKE :single_line_address LIMIT 50';
+            $this->typeahead_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
+
+        try {
+            $this->typeahead_query->execute(array(':single_line_address' => $single_line_address ));
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+        return $this->typeahead_query->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     /**
      * @param $id

@@ -43,9 +43,12 @@ $app->get('/address-typeahead/V0/:address/', function ($in_address) use ($app) {
             );
         }
 
-    $app->response->setStatus($ret['code']);
-    echo json_encode($ret);
-
+    if ( $address_recs == false ) {
+        echo json_encode($address_recs);
+    } else {
+        $app->response->setStatus($ret['code']);
+        echo json_encode($ret);
+    }
 });
 
 $app->get('/address-attributes-id/V0/:id/', function ($id) use ($app) {
