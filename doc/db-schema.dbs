@@ -91,13 +91,164 @@
 			</fk>
 			<storage><![CDATA[engine=InnoDB]]></storage>
 		</table>
+		<table name="jd_wp" >
+			<column name="id" type="int" length="10" decimal="0" jt="4" mandatory="y" unsigned="y" autoincrement="y" />
+			<column name="jrd_1" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="jrd_sheet" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="order" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="st_num" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="street" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="jrd_block" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="jrd_address" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="short_own" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="absentee_owner" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="kiva_pin" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="county_apn_link" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="sub_division" type="varchar" length="42" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="block" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="lot" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="owner" type="varchar" length="64" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="owner_2" type="varchar" length="64" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="owner_address" type="varchar" length="42" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="owner_city_zip" type="varchar" length="44" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="site_address" type="varchar" length="42" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="zip_code" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="council_district" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="trash_day" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="school_distrct" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="census_neigh_borhood" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="park_region" type="varchar" length="10" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="pw_maintenance_district" type="varchar" length="4" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="zoning" type="varchar" length="20" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="land_use" type="varchar" length="120" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="blvd_front_footage" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="effective_date" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="assessed_land" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="assessed_improve" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="exempt_land" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="exempt_improve" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="square_feet" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="acres" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="perimeter" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="year_built" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="living_area" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="tax_neighborhood_code" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="parcel_area_sf" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="propert_class_pca_code" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="landuse_type" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="market_value" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="taxabl_evalue" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="assessed_value" type="varchar" length="24" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="tax_status" type="varchar" length="42" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<column name="legal_description" type="varchar" length="255" decimal="0" jt="12" mandatory="y" >
+				<defo>&#039;&#039;</defo>
+			</column>
+			<index name="pk_jd_wp" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
 	</schema>
-	<connector name="MySql" database="MySql" driver_class="com.mysql.jdbc.Driver" driver_jar="mysql-connector-java-5.1.34-bin.jar" host="localhost" port="3306" instance="address_api" user="address_api" passwd="YXBp" schema_mapping="" />
+	<connector name="MySql" database="MySql" host="localhost" port="3306" instance="address_api" user="address_api" passwd="YWRkcmVzc19hcGk=" schema_mapping="" />
 	<layout id="Layout_c95c183" name="Default" show_relation_columns="y" >
 		<entity schema="address_api" name="address_string_alias_to_address" color="aec7ef" x="285" y="45" />
 		<entity schema="address_api" name="address_string_alias" color="aec7ef" x="675" y="45" />
 		<entity schema="address_api" name="city_attributes" color="aec7ef" x="285" y="465" />
 		<entity schema="address_api" name="address" color="aec7ef" x="45" y="90" />
 		<entity schema="address_api" name="census_attributes" color="aec7ef" x="315" y="165" />
+		<entity schema="address_api" name="jd_wp" color="c0d4f3" x="555" y="210" />
 	</layout>
 </project>
