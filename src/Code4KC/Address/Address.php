@@ -89,6 +89,7 @@ class Address extends BaseTable
                 c.classification AS city_classification,
                 c.sub_class AS city_sub_class,
                 c.neighborhood AS city_nighborhood,
+                c.council_district AS city_council_district,
 
                 k.county_address_id AS county_id,
                 b.block_2010_name AS census_block_2010_name,

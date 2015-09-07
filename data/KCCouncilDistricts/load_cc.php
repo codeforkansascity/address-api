@@ -4,7 +4,7 @@ require '../../vendor/autoload.php';
 require '../../config/config.php';
 
 
-class CouncilDistricts extends BaseTable
+class CouncilDistricts extends \Code4KC\Address\BaseTable
 {
 
     var $query = null;
@@ -73,8 +73,7 @@ global $dbh;
 
 $totals = array(
     'input' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
-    'address' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
-    'census_attributes' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
+    'city_address_attributes' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
 );
 
 try {
@@ -112,26 +111,25 @@ $row = 0;
 $count = 0;
 while ($rec = $query->fetch(PDO::FETCH_ASSOC)) {
 
-if ( $row > 10) break;
-
     $row++;
+    $lng = $rec['longitude'];
+    $lat = $rec['latitude'];
+    $city_address_id = $rec['city_address_id'];
 
-    $lng = $address_rec['longitude'];
-    $lat = $address_rec['latitude'];
-    $city_address_id = $address_rec['city_address_id'];
-
-    if ( !empty($city_address_id ) ) {
+    if ( empty($city_address_id ) ) {
         $totals['input']['N/A']++;
         continue;
     }
+
+
 
     $cc_rec = $code4kc->find_name_by_lng_lat($lng, $lat);
 
     print_r($cc_rec);
 
-    continue;
 
-    $new_rec = array('council_district' => $new_rec['district']);
+print "\n\n$row, $lng, $lat, $city_address_id\n ";
+    $new_rec = array('council_district' => $cc_rec['district']);
 
     if ( $city_address_attributes_rec = $city_address_attributes->find_by_id( $city_address_id ) ) {
         $city_address_attributes_id = $city_address_attributes_rec[ 'id' ];
@@ -142,12 +140,11 @@ if ( $row > 10) break;
             $totals['city_address_attributes']['N/A']++;
         }
     } else {
-        $city_address_attributes->add( $new_rec );
+//        $city_address_attributes->add( $new_rec );
+print "\nEEEE\n";
         $totals['city_address_attributes']['insert']++;
     }
     
-    print_r($rec);
-
 }
 
 print "\nTotals\n--------------------------------------------------------------------------\n";
