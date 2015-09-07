@@ -5,9 +5,9 @@ namespace Code4KC\Address;
 use \PDO as PDO;
 
 /**
- * Class Neighbornood
+ * Class Neighborhood
  */
-class Neighbornood extends BaseTable
+class Neighborhood extends BaseTable
 {
     var $table_name = 'neighborhoods';
     var $primary_key_sequence = null;

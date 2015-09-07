@@ -76,7 +76,7 @@ $app->get('/neighborhoods/V0/:id/', function ($id) use ($app) {
 
         if ($dbh = connect_to_address_database()) {
 
-            $address = new \Code4KC\Address\Neighbornood($dbh, true);
+            $address = new \Code4KC\Address\Neighborhood($dbh, true);
 
             if ($address_recs = $address->findall()) {
 
