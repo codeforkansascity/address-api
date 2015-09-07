@@ -9,6 +9,68 @@ require '../vendor/Convissor/address/AddressStandardizationSolution.php';
 $app = new \Slim\Slim();
 
 
+$app->get('/neighborhoods/V0/:id/', function ($id) use ($app) {
+
+
+        $ret = array(
+            'code' => 404,
+            'status' => 'error',
+            'message' => 'was not valid.',
+            'data' => array()
+        );
+
+
+    $in_city = strtoupper($app->request()->params('city'));
+    $in_state = strtoupper($app->request()->params('state'));
+
+    if (city_state_valid($in_city, $in_state)) {
+
+        if ($dbh = connect_to_address_database()) {
+
+            $address = new \Code4KC\Address\Neighbornood($dbh, true);
+
+            if ($address_recs = $address->findall()) {
+
+                $ret = array(
+                    'code' => 200,
+                    'status' => 'sucess',
+                    'message' => '',
+                    'data' => $address_recs
+                );
+
+            } else {
+                $ret = array(
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'Address not found',
+                    'data' => array()
+                );
+            }
+
+        } else {
+
+            $ret = array(
+                'code' => 500,
+                'status' => 'failed',
+                'message' => 'Unable to connect to database.',
+                'data' => array()
+            );
+        }
+
+    } else {
+        $ret = array(
+            'code' => 404,
+            'status' => 'error',
+            'message' => 'State or City was not valid.',
+            'data' => array()
+        );
+    }
+
+
+        $app->response->setStatus($ret['code']);
+        echo json_encode($ret);
+});
+
 $app->get('/address-typeahead/V0/:address/', function ($in_address) use ($app) {
 
     $in_address = addslashes($in_address);
