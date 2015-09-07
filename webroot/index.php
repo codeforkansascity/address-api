@@ -8,6 +8,55 @@ require '../vendor/Convissor/address/AddressStandardizationSolution.php';
 
 $app = new \Slim\Slim();
 
+$app->get('/address-by-neighborhood/V0/:nighborhood', function ($nighborhood) use ($app) {
+    list($nighborhood, $x) = explode("?", $nighborhood);
+
+
+    $in_city = strtoupper($app->request()->params('city'));
+    $in_state = strtoupper($app->request()->params('state'));
+
+    if ( !empty($nighborhood) ) {
+        if (city_state_valid($in_city, $in_state)) {
+    
+            if ($dbh = connect_to_address_database()) {
+
+                    $address = new \Code4KC\Address\Address($dbh, true);
+                    $ret = $address->get_neighborhood($nighborhood);
+    
+                    $ret = array(
+                        'code' => 200,
+                        'status' => 'sucess',
+                        'message' => '',
+                        'data' => $ret
+                    );
+                } else {
+                    $ret = array(
+                        'code' => 404,
+                        'status' => 'error',
+                        'message' => 'Neighborhood not found',
+                        'data' => array()
+                    );
+                }
+        } else {
+            $ret = array(
+                'code' => 500,
+                'status' => 'failed',
+                'message' => 'Unable to connect to database.',
+                'data' => array()
+            );
+        }
+    } else {
+        $ret = array(
+            'code' => 404,
+            'status' => 'error',
+            'message' => 'City ID was not valid..',
+            'data' => array()
+        );
+    }
+
+    $app->response->setStatus($ret['code']);
+    echo json_encode($ret);
+});
 
 $app->get('/neighborhoods/V0/:id/', function ($id) use ($app) {
 
