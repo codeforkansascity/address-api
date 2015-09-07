@@ -66,11 +66,10 @@ class Address extends BaseTable
                 b.latitude AS census_latitude,
                 b.tiger_line_id AS census_tiger_line_id
 
-
-                FROM address_keys k
+                FROM city_address_attributes c
+                LEFT JOIN address_keys k ON k.city_address_id = c.id
                 LEFT JOIN address a on a.id = k.address_id
                 LEFT JOIN census_attributes b ON b.city_address_id = k.city_address_id
-                LEFT JOIN city_address_attributes c ON c.id = k.city_address_id
                 LEFT JOIN county_address_attributes j ON j.id = k.county_address_id
                 WHERE UPPER(c.neighborhood) = :nighborhood';
             $this->neighbornood_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
