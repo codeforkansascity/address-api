@@ -15,28 +15,28 @@ $app->get('/address-by-neighborhood/V0/:nighborhood', function ($nighborhood) us
     $in_city = strtoupper($app->request()->params('city'));
     $in_state = strtoupper($app->request()->params('state'));
 
-    if ( !empty($nighborhood) ) {
+    if (!empty($nighborhood)) {
         if (city_state_valid($in_city, $in_state)) {
-    
+
             if ($dbh = connect_to_address_database()) {
 
-                    $address = new \Code4KC\Address\Address($dbh, true);
-                    $ret = $address->get_neighborhood($nighborhood);
-    
-                    $ret = array(
-                        'code' => 200,
-                        'status' => 'sucess',
-                        'message' => '',
-                        'data' => $ret
-                    );
-                } else {
-                    $ret = array(
-                        'code' => 404,
-                        'status' => 'error',
-                        'message' => 'Neighborhood not found',
-                        'data' => array()
-                    );
-                }
+                $address = new \Code4KC\Address\Address($dbh, true);
+                $ret = $address->get_neighborhood($nighborhood);
+
+                $ret = array(
+                    'code' => 200,
+                    'status' => 'sucess',
+                    'message' => '',
+                    'data' => $ret
+                );
+            } else {
+                $ret = array(
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'Neighborhood not found',
+                    'data' => array()
+                );
+            }
         } else {
             $ret = array(
                 'code' => 500,
@@ -61,12 +61,12 @@ $app->get('/address-by-neighborhood/V0/:nighborhood', function ($nighborhood) us
 $app->get('/neighborhoods/V0/:id/', function ($id) use ($app) {
 
 
-        $ret = array(
-            'code' => 404,
-            'status' => 'error',
-            'message' => 'was not valid.',
-            'data' => array()
-        );
+    $ret = array(
+        'code' => 404,
+        'status' => 'error',
+        'message' => 'was not valid.',
+        'data' => array()
+    );
 
 
     $in_city = strtoupper($app->request()->params('city'));
@@ -116,8 +116,8 @@ $app->get('/neighborhoods/V0/:id/', function ($id) use ($app) {
     }
 
 
-        $app->response->setStatus($ret['code']);
-        echo json_encode($ret);
+    $app->response->setStatus($ret['code']);
+    echo json_encode($ret);
 });
 
 $app->get('/address-typeahead/V0/:address/', function ($in_address) use ($app) {
@@ -125,36 +125,36 @@ $app->get('/address-typeahead/V0/:address/', function ($in_address) use ($app) {
     $in_address = addslashes($in_address);
 
 
-        if ($dbh = connect_to_address_database()) {
+    if ($dbh = connect_to_address_database()) {
 
-            $address = new \Code4KC\Address\Address($dbh, true);
-            if ($address_recs = $address->typeahead($in_address)) {
+        $address = new \Code4KC\Address\Address($dbh, true);
+        if ($address_recs = $address->typeahead($in_address)) {
 
-                $ret = array(
-                    'code' => 200,
-                    'status' => 'sucess',
-                    'message' => '',
-                    'data' => $address_recs
-                );
+            $ret = array(
+                'code' => 200,
+                'status' => 'sucess',
+                'message' => '',
+                'data' => $address_recs
+            );
 
-            } else {
-                $ret = array(
-                    'code' => 404,
-                    'status' => 'error',
-                    'message' => 'Address not found',
-                    'data' => array()
-                );
-            }
         } else {
             $ret = array(
                 'code' => 404,
                 'status' => 'error',
-                'message' => 'State or City was not valid.',
+                'message' => 'Address not found',
                 'data' => array()
             );
         }
+    } else {
+        $ret = array(
+            'code' => 404,
+            'status' => 'error',
+            'message' => 'State or City was not valid.',
+            'data' => array()
+        );
+    }
 
-    if ( $address_recs == false ) {
+    if ($address_recs == false) {
         echo json_encode($address_recs);
     } else {
         $app->response->setStatus($ret['code']);
@@ -170,21 +170,21 @@ $app->get('/address-attributes-id/V0/:id/', function ($id) use ($app) {
     $in_city = strtoupper($app->request()->params('city'));
     $in_state = strtoupper($app->request()->params('state'));
 
-    if ( !empty($id) ) {
+    if (!empty($id)) {
         if (city_state_valid($in_city, $in_state)) {
-    
+
             if ($dbh = connect_to_address_database()) {
 
-                    $ret = get_address_attributes($dbh, $id);
-    
-                } else {
-                    $ret = array(
-                        'code' => 404,
-                        'status' => 'error',
-                        'message' => 'Address not found',
-                        'data' => array()
-                    );
-                }
+                $ret = get_address_attributes($dbh, $id);
+
+            } else {
+                $ret = array(
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'Address not found',
+                    'data' => array()
+                );
+            }
         } else {
             $ret = array(
                 'code' => 500,
@@ -213,9 +213,9 @@ $app->get('/address-attributes-county-id/V0/:id/', function ($id) use ($app) {
     $in_city = strtoupper($app->request()->params('city'));
     $in_state = strtoupper($app->request()->params('state'));
 
-    if ( !empty($county_id) ) {
+    if (!empty($county_id)) {
         if (city_state_valid($in_city, $in_state)) {
-    
+
             if ($dbh = connect_to_address_database()) {
 
                 $address_keys = new \Code4KC\Address\AddressKeys($dbh, true);
@@ -223,7 +223,7 @@ $app->get('/address-attributes-county-id/V0/:id/', function ($id) use ($app) {
 
                     $address_id = $exisiting_address_alias_rec['address_id'];
                     $ret = get_address_attributes($dbh, $address_id);
-    
+
                 } else {
                     $ret = array(
                         'code' => 404,
@@ -262,7 +262,6 @@ $app->get('/address-attributes-county-id/V0/:id/', function ($id) use ($app) {
 });
 
 
-
 $app->get('/address-attributes-city-id/V0/:id/', function ($id) use ($app) {
 
     list($city_id, $x) = explode("?", $id);
@@ -271,9 +270,9 @@ $app->get('/address-attributes-city-id/V0/:id/', function ($id) use ($app) {
     $in_state = strtoupper($app->request()->params('state'));
 
     $city_id = intval($city_id);
-    if ( $city_id ) {
+    if ($city_id) {
         if (city_state_valid($in_city, $in_state)) {
-    
+
             if ($dbh = connect_to_address_database()) {
 
                 $address_keys = new \Code4KC\Address\AddressKeys($dbh, true);
@@ -281,7 +280,7 @@ $app->get('/address-attributes-city-id/V0/:id/', function ($id) use ($app) {
 
                     $address_id = $exisiting_address_alias_rec['address_id'];
                     $ret = get_address_attributes($dbh, $address_id);
-    
+
                 } else {
                     $ret = array(
                         'code' => 404,

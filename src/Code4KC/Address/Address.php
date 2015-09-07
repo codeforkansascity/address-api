@@ -32,6 +32,10 @@ class Address extends BaseTable
         'latitude' => '0.0'
     );
 
+    /**
+     * @param $nighborhood
+     * @return bool
+     */
     function get_neighborhood($nighborhood)
     {
 
@@ -94,7 +98,7 @@ class Address extends BaseTable
     function typeahead($single_line_address)
     {
 
-        $single_line_address = strtoupper( $single_line_address );
+        $single_line_address = strtoupper($single_line_address);
         $single_line_address .= '%';
 
         if (!$this->typeahead_query) {
@@ -103,7 +107,7 @@ class Address extends BaseTable
         }
 
         try {
-            $this->typeahead_query->execute(array(':single_line_address' => $single_line_address ));
+            $this->typeahead_query->execute(array(':single_line_address' => $single_line_address));
         } catch (PDOException  $e) {
             error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
             //throw new Exception('Unable to query database');
@@ -134,6 +138,10 @@ class Address extends BaseTable
         return $this->single_line_address_query->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @param $address_id
+     * @return bool
+     */
     function get_attributes($address_id)
     {
 
