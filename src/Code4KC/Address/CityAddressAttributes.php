@@ -19,6 +19,7 @@ class CityAddressAttributes extends BaseTable
         'classification' => '',
         'sub_class' => '',
         'neighborhood' => '',
+        'council_district' => '',
     );
 
 }
