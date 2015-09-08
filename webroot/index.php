@@ -58,6 +58,74 @@ $app->get('/address-by-neighborhood/V0/:nighborhood', function ($nighborhood) us
     echo json_encode($ret);
 });
 
+$app->get('/neighborhoods-geo/V0/:id/', function ($id) use ($app) {
+
+
+    $ret = array(
+        'code' => 404,
+        'status' => 'error',
+        'message' => 'was not valid.',
+        'data' => array()
+    );
+
+
+    $in_city = strtoupper($app->request()->params('city'));
+    $in_state = strtoupper($app->request()->params('state'));
+
+    if (city_state_valid($in_city, $in_state)) {
+
+        if ($dbh = connect_to_spatial_database()) {
+
+            $address = new \Code4KC\Address\Neighborhood($dbh, true);
+
+            if ($address_recs = $address->findallgeo()) {
+
+                $ret = array(
+                    'code' => 200,
+                    'status' => 'sucess',
+                    'message' => '',
+                    'data' => $address_recs
+                );
+
+            } else {
+                $ret = array(
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'Address not found',
+                    'data' => array()
+                );
+            }
+
+        } else {
+
+            $ret = array(
+                'code' => 500,
+                'status' => 'failed',
+                'message' => 'Unable to connect to database.',
+                'data' => array()
+            );
+        }
+
+    } else {
+        $ret = array(
+            'code' => 404,
+            'status' => 'error',
+            'message' => 'State or City was not valid.',
+            'data' => array()
+        );
+    }
+
+
+    $app->response->setStatus($ret['code']);
+
+    if ( $ret['code'] == 200 ) {
+        echo $address_recs[0]['row_to_json'];
+    } else {
+        echo json_encode($ret);
+    }
+});
+
+
 $app->get('/neighborhoods/V0/:id/', function ($id) use ($app) {
 
 
@@ -119,6 +187,7 @@ $app->get('/neighborhoods/V0/:id/', function ($id) use ($app) {
     $app->response->setStatus($ret['code']);
     echo json_encode($ret);
 });
+
 
 $app->get('/address-typeahead/V0/:address/', function ($in_address) use ($app) {
 
@@ -507,6 +576,29 @@ function connect_to_address_database()
 
     try {
         $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
+    } catch (PDOException $e) {
+        error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+        return false;
+    }
+
+    return $dbh;
+}
+
+
+/**
+ * @return PDO
+ * @throws Exception
+ */
+function connect_to_spatial_database()
+{
+
+    global $DB_CODE4KC_NAME;
+    global $DB_CODE4KC_USER;
+    global $DB_CODE4KC_PASS;
+    global $DB_CODE4KC_HOST;
+
+    try {
+        $dbh = new PDO("pgsql:dbname=$DB_CODE4KC_NAME", $DB_CODE4KC_USER, $DB_CODE4KC_PASS);
     } catch (PDOException $e) {
         error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
         return false;
