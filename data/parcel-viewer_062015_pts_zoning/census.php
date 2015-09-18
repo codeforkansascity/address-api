@@ -99,6 +99,10 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
     $street = urlencode(trim(preg_replace('/\s+/', ' ', "$street_number $pre_direction $street_name $street_type $post_direction $internal")));
     $city = urlencode(trim(preg_replace('/\s+/', ' ', "$city")));
 
+    // http://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?address=210+west+oak+st%2C+greenwood+mo&benchmark=4&vintage=4
+    //   Benchmark: Public_AR_Current
+    //   Vintage:   Curent_Curent
+
     $uri = "http://geocoding.geo.census.gov/geocoder/geographies/address?street=$street&city=$city&state=$state&zip=$zip&benchmark=4&vintage=4&format=json";
 
     $response = Request::get($uri)->send();
