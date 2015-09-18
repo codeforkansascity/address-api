@@ -14,6 +14,7 @@ class Address extends BaseTable
     var $primary_key_sequence = 'address_id_seq_02';
     var $single_line_address_query = '';
     var $neighbornood_query = '';
+    var $metro_area_query = '';
     var $typeahead_query = '';
     var $get_attributes_query = '';
     var $fields = array(
@@ -31,6 +32,68 @@ class Address extends BaseTable
         'longitude' => '0.0',
         'latitude' => '0.0'
     );
+
+    /**
+     * @param $metro_area
+     * @return bool
+     */
+    function get_metro_area($metro_area)
+    {
+
+        if (!$this->metro_area_query) {
+            $sql = 'SELECT 
+                a.id AS address_id,
+                a.single_line_address,
+                a.city,
+                a.state,
+                a.zip,
+                a.longitude,
+                a.latitude,
+                 
+                k.city_address_id AS city_id,
+
+                c.land_use_code AS city_land_use_code,
+                c.land_use AS city_land_use,
+                c.classification AS city_classification,
+                c.sub_class AS city_sub_class,
+                c.neighborhood AS city_nighborhood,
+                c.nhood AS city_nhood,
+                c.council_district AS city_council_district,
+
+                k.county_address_id AS county_id,
+                b.block_2010_name AS census_block_2010_name,
+                b.block_2010_id AS census_block_2010_id,
+                b.tract_name AS census_track_name,
+                b.tract_id AS census_track_id,
+                b.zip AS census_zip,
+                b.county_id AS census_county_id,
+                b.state_id AS census_county_state_id,
+                b.longitude AS census_longitude,
+                b.latitude AS census_latitude,
+                b.tiger_line_id AS census_tiger_line_id,
+                b.metro_areas AS census_metro_area
+
+                FROM city_address_attributes c
+                LEFT JOIN address_keys k ON k.city_address_id = c.id
+                LEFT JOIN address a on a.id = k.address_id
+                LEFT JOIN census_attributes b ON b.city_address_id = k.city_address_id
+                LEFT JOIN county_address_attributes j ON j.id = k.county_address_id
+                WHERE UPPER(b.metro_areas) = :metro_area
+                LIMIT 10000';
+            $this->metro_area_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
+
+        try {
+            $this->metro_area_query->execute(array(':metro_area' => strtoupper($metro_area)));
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+
+        return $this->metro_area_query->fetchAll(PDO::FETCH_ASSOC);
+
+    }
 
     /**
      * @param $nighborhood
@@ -69,7 +132,8 @@ class Address extends BaseTable
                 b.state_id AS census_county_state_id,
                 b.longitude AS census_longitude,
                 b.latitude AS census_latitude,
-                b.tiger_line_id AS census_tiger_line_id
+                b.tiger_line_id AS census_tiger_line_id,
+                b.metro_areas AS census_metro_area
 
                 FROM city_address_attributes c
                 LEFT JOIN address_keys k ON k.city_address_id = c.id
@@ -91,7 +155,6 @@ class Address extends BaseTable
         return $this->neighbornood_query->fetchAll(PDO::FETCH_ASSOC);
 
     }
-
     /**
      * @param $id
      * @return false or found record
@@ -166,7 +229,8 @@ class Address extends BaseTable
                 b.state_id AS census_county_state_id,
                 b.longitude AS census_longitude,
                 b.latitude AS census_latitude,
-                b.tiger_line_id AS census_tiger_line_id
+                b.tiger_line_id AS census_tiger_line_id,
+                b.metro_areas AS census_metro_area
 
 
                 FROM address_keys k

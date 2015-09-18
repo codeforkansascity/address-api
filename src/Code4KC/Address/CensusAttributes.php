@@ -26,6 +26,7 @@ class CensusAttributes extends BaseTable
         'tiger_line_id' => '',
         'city_address_id' => '',
         'county_address_id' => '',
+        'metro_areas' => '',
     );
 
 }
