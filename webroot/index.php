@@ -8,6 +8,65 @@ require '../vendor/Convissor/address/AddressStandardizationSolution.php';
 
 $app = new \Slim\Slim();
 
+
+/**
+ * Example of a URL argument but no parameter.  Must specify a 
+ * fake parameter
+ */
+$app->get('/test/V0(/:id)', function ( $id = 0 ) use ($app) {
+    $in_state = strtoupper($app->request()->params('state'));
+
+var_dump($in_state);
+
+});
+
+$app->get('/metro-areas/V0/', function () use ($app) {
+
+
+
+        if ($dbh = connect_to_spatial_database()) {
+
+            $address = new \Code4KC\Address\MetroArea($dbh, true);
+
+            if ($address_recs = $address->findallgeo()) {
+
+                $ret = array(
+                    'code' => 200,
+                    'status' => 'sucess',
+                    'message' => '',
+                    'data' => $address_recs
+                );
+
+            } else {
+                $ret = array(
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'Address not found',
+                    'data' => array()
+                );
+            }
+
+        } else {
+
+            $ret = array(
+                'code' => 500,
+                'status' => 'failed',
+                'message' => 'Unable to connect to database.',
+                'data' => array()
+            );
+        }
+
+
+    $app->response->setStatus($ret['code']);
+
+    if ( $ret['code'] == 200 ) {
+        echo $address_recs[0]['row_to_json'];
+    } else {
+        echo json_encode($ret);
+    }
+});
+
+
 $app->get('/address-by-metro-area/V0/:metro_area', function ($metro_area) use ($app) {
     list($metro_area, $x) = explode("?", $metro_area);
 
@@ -109,14 +168,6 @@ $app->get('/address-by-neighborhood/V0/:nighborhood', function ($nighborhood) us
 });
 
 $app->get('/neighborhoods-geo/V0/:id/', function ($id) use ($app) {
-
-
-    $ret = array(
-        'code' => 404,
-        'status' => 'error',
-        'message' => 'was not valid.',
-        'data' => array()
-    );
 
 
     $in_city = strtoupper($app->request()->params('city'));
