@@ -1,0 +1,23 @@
+#!/bin/sh
+
+#
+# Find the end point and get the data
+#
+
+#
+# should be in 4326
+#
+#curl 'https://maps.kcmo.org/kcgis/rest/services/external/DataLayers/MapServer/23/query?text=MetroAreas&geometry=&geometryType=esriGeometryPolygon&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=1+%3D+1&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=true&maxAllowableOffset=&outSR=4326&outFields=&f=pjson'> data.json
+
+#
+# Paul, great post on importing GeoJSON to Postgres: http://morphocode.com/using-ogr2ogr-convert-data-formats-geojson-postgis-esri-geodatabase-shapefiles/
+# Ogr2ogr is the swiss-army knife when it comes to conversion of GIS data. Here are a few examples on how to convert data between GeoJSON, Shapefile, PostGIS.
+# 
+# ogr2ogr -f "PostgreSQL" PG:"dbname=my_database user=postgres" "source_data.json" -nln destination_table
+# 
+
+ogr2ogr -f "PostgreSQL" \
+    PG:"dbname=code4kc user=postgres" \
+    "data.json"  \
+    -overwrite  \
+    -nln address_spatial.auto_metro_area_tmp
