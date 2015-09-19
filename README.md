@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/codeforkansascity/address-api.png?label=ready&title=Ready)](https://waffle.io/codeforkansascity/address-api)
 The system will allow people to query information about one or more addresses.
 
 The system will store the following information for an address/parcel:
