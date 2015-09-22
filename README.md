@@ -1,5 +1,7 @@
 [![Stories in Ready](https://badge.waffle.io/codeforkansascity/address-api.png?label=ready&title=Ready)](https://waffle.io/codeforkansascity/address-api)
 
+Since all open data does not have the same attributes (neighborhood, city council, TIF districts) this system give researchers and software developers an easy place to go and add them to the data they are collecting.
+
 The system is being designed for the CodeForKC projects, to make it simple for them to get information about an address in one place.  We want to keep our projects from building database with the same data.   Also to take the burden of learning how to process GIS layers from the project teams, and converting spatial data layers into columns in a database for them.
 
 The audience for the data is:
