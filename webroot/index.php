@@ -378,7 +378,9 @@ $app->get('/address-attributes-id/V0/:id/', function ($id) use ($app) {
 
 $app->get('/address-attributes-county-id/V0/:id/', function ($id) use ($app) {
 
-    $county_id = addslashes($id);
+    list($county_id, $x) = explode("?", $id);   // FIX we do not do this in other that have a numeric id.....
+
+    $county_id = addslashes($county_id);
 
     $in_city = strtoupper($app->request()->params('city'));
     $in_state = strtoupper($app->request()->params('state'));
@@ -389,12 +391,14 @@ $app->get('/address-attributes-county-id/V0/:id/', function ($id) use ($app) {
             if ($dbh = connect_to_address_database()) {
 
                 $address_keys = new \Code4KC\Address\AddressKeys($dbh, true);
+
                 if ($exisiting_address_alias_rec = $address_keys->find_by_county_address_id($county_id)) {
 
                     $address_id = $exisiting_address_alias_rec['address_id'];
                     $ret = get_address_attributes($dbh, $address_id);
 
                 } else {
+
                     $ret = array(
                         'code' => 404,
                         'status' => 'error',
