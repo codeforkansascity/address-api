@@ -129,6 +129,7 @@
 			<column name="changed" type="timestamp" jt="93" >
 				<defo>current_timestamp</defo>
 			</column>
+			<column name="metro_areas" type="varchar" length="62" decimal="0" jt="12" />
 			<index name="idx_census_attributes" unique="NORMAL" >
 				<column name="id" />
 			</index>
@@ -160,6 +161,7 @@
 				<defo>current_timestamp</defo>
 			</column>
 			<column name="council_district" type="varchar" length="5" decimal="0" jt="12" />
+			<column name="nhood" type="varchar" length="62" decimal="0" jt="12" />
 			<index name="idx_city_attributes" unique="UNIQUE" >
 				<column name="id" />
 			</index>
@@ -344,8 +346,8 @@
 		<entity schema="public" name="address" color="bfd4f5" x="45" y="120" />
 		<entity schema="public" name="city_address_attributes" color="bfd4f5" x="585" y="120" />
 		<entity schema="public" name="address_keys" color="aec7ef" x="330" y="120" />
-		<entity schema="public" name="census_attributes" color="bfd4f5" x="330" y="270" />
 		<entity schema="public" name="neighborhoods" color="aec7ef" x="75" y="45" />
 		<entity schema="public" name="county_address_attributes" color="aec7ef" x="555" y="405" />
+		<entity schema="public" name="census_attributes" color="bfd4f5" x="360" y="270" />
 	</layout>
 </project>
