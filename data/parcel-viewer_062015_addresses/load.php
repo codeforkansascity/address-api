@@ -40,7 +40,7 @@ if (($handle = fopen("kcmo_addresses_kiva_nbrhd_06_18_2015.csv", "r")) !== FALSE
     while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
         $num = count($data);
         $row++;
-print "$row\n";
+        print "$row\n";
         if ($row == 1) {
             for ($c = 0; $c < $num; $c++) {
                 $names[$c] = $data[$c];
@@ -51,13 +51,13 @@ print "$row\n";
                 $rec [$names [$c]] = $data[$c];
             }
 
-            if ( empty($rec['kivapin'] )) {
+            if (empty($rec['kivapin'])) {
                 print "ERROR: NO kivapin for line $row county id = " . $rec['apn'] . "\n";
                 $totals['input']['error']++;
                 continue;
             }
 
-            $single_line_address  = $address_converter->AddressLineStandardization($rec['address']);
+            $single_line_address = $address_converter->AddressLineStandardization($rec['address']);
             $single_line_address .= ', KANSAS CITY, MO';                    // We keep unit 'internal'
 
             $normalized_address = $census->normalize_address($single_line_address);                // Strips off unit 'internal'
@@ -70,28 +70,28 @@ print "$row\n";
 
             // We need to start out with an alias and address records
             $address_id = 0;
-            if ( $exisiting_address_alias_rec = $address_alias->find_by_single_line_address( $single_line_address ) ) {
+            if ($exisiting_address_alias_rec = $address_alias->find_by_single_line_address($single_line_address)) {
                 $totals['address_alias']['N/A']++;
                 $address_id = $exisiting_address_alias_rec['address_id'];
-                if ( $exisiting_address_rec = $address->find_by_id( $address_id ) ) {
-                    if ( $address_differences = $address->diff($exisiting_address_rec, $rec) ) {
-                        $address->update( $address_id, $address_differences );
+                if ($exisiting_address_rec = $address->find_by_id($address_id)) {
+                    if ($address_differences = $address->diff($exisiting_address_rec, $rec)) {
+                        $address->update($address_id, $address_differences);
                         $totals['address']['update']++;
                     } else {
                         $totals['address']['N/A']++;
                     }
                 } else {
-                    $address->add( $rec );
+                    $address->add($rec);
                     $totals['address']['insert']++;
                 }
 
             } else {
-                if ( $exisiting_address_rec = $address->find_by_single_line_address( $single_line_address ) ) {       // Just in case we had a failuer to clean up
+                if ($exisiting_address_rec = $address->find_by_single_line_address($single_line_address)) {       // Just in case we had a failuer to clean up
                     $address_id = $exisiting_address_rec['id'];
                     $totals['address']['N/A']++;
 
                 } else {
-                    $address_id = $address->add( $address_in );
+                    $address_id = $address->add($address_in);
                     $totals['address']['insert']++;
                 }
 
@@ -100,7 +100,7 @@ print "$row\n";
                     'address_id' => $address_id
                 );
 
-                $address_alias->add( $new_rec );
+                $address_alias->add($new_rec);
                 $totals['address_alias']['insert']++;
 
             }
@@ -110,16 +110,16 @@ print "$row\n";
                 'county_address_id' => $county_address_id
             );
 
-            if ( $address_keys_rec = $address_keys->find_by_address_id( $address_id ) ) {
-                $address_key_id = $address_keys_rec[ 'id' ];
-                if ( $address_key_differences = $address_keys->diff($address_keys_rec, $new_rec) ) {
-                    $address_keys->update( $address_key_id, $address_key_differences );
+            if ($address_keys_rec = $address_keys->find_by_address_id($address_id)) {
+                $address_key_id = $address_keys_rec['id'];
+                if ($address_key_differences = $address_keys->diff($address_keys_rec, $new_rec)) {
+                    $address_keys->update($address_key_id, $address_key_differences);
                     $totals['address_keys']['update']++;
                 } else {
                     $totals['address_keys']['N/A']++;
                 }
             } else {
-                $address_keys->add( $new_rec );
+                $address_keys->add($new_rec);
                 $totals['address_keys']['insert']++;
             }
 
@@ -128,16 +128,16 @@ print "$row\n";
                 'neighborhood' => $rec['neighborhood']
             );
 
-            if ( $city_address_attributes_rec = $city_address_attributes->find_by_id( $city_address_id ) ) {
-                $city_address_attributes_id = $city_address_attributes_rec[ 'id' ];
-                if ( $city_address_attribute_differences = $city_address_attributes->diff($city_address_attributes_rec, $new_rec) ) {
-                    $city_address_attributes->update( $city_address_attributes_id, $city_address_attribute_differences );
+            if ($city_address_attributes_rec = $city_address_attributes->find_by_id($city_address_id)) {
+                $city_address_attributes_id = $city_address_attributes_rec['id'];
+                if ($city_address_attribute_differences = $city_address_attributes->diff($city_address_attributes_rec, $new_rec)) {
+                    $city_address_attributes->update($city_address_attributes_id, $city_address_attribute_differences);
                     $totals['city_address_attributes']['update']++;
                 } else {
-                    $totals['city_address_attributes']['N/A']++; 
+                    $totals['city_address_attributes']['N/A']++;
                 }
             } else {
-                $city_address_attributes->add( $new_rec );
+                $city_address_attributes->add($new_rec);
                 $totals['city_address_attributes']['insert']++;
             }
         }
@@ -147,11 +147,11 @@ print "$row\n";
     print "\nTotals\n--------------------------------------------------------------------------\n";
 
     printf("%-30.30s %10s %10s %10s %10s\n", 'table', 'insert', 'update', 'N/A', 'ERROR');
-    foreach ( $totals AS $table => $counts ) {
+    foreach ($totals AS $table => $counts) {
         printf("%-30.30s %10d %10d %10d %10d\n", $table, $counts['insert'], $counts['update'], $counts['N/A'], $counts['error']);
     }
     print "--------------------------------------------------------------------------\n\n";
 
 }
 
-    print "Number of lines processed $row including header\n\n";
+print "Number of lines processed $row including header\n\n";
