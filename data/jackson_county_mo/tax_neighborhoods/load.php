@@ -1,9 +1,14 @@
 <?php
 
-require '../../vendor/autoload.php';
-require '../../config/config.php';
-require '../../vendor/Convissor/address/AddressStandardizationSolution.php';
+require '../../../vendor/autoload.php';
+require '../../../config/config.php';
+require '../../../vendor/Convissor/address/AddressStandardizationSolution.php';
 
+function convert2city_parcel_number($parcel_number) {
+    $p = str_replace('-', '', $parcel_number);                  // Strip off the hypens 
+    $p = "JA$p";                                                // Append the JA KCMO uses
+    return $p;
+}
 
 class JacksonCountySpatial extends \Code4KC\Address\BaseTable
 {
@@ -83,6 +88,7 @@ $out = array();
 $names = array();
 
 global $dbh;
+global $dbh_code4kc;
 
 $totals = array(
     'input' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
@@ -116,7 +122,7 @@ $city_address_attributes = new \Code4KC\Address\CityAddressAttributes($dbh, true
 
 $sql = "SELECT * FROM address_spatial.jackson_county_mo_tax_neighborhoods WHERE situs_city = 'KANSAS CITY' LIMIT 20 ";
 
-$query = $dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+$query = $dbh_code4kc->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
 
 try {
     $query->execute();
@@ -126,14 +132,14 @@ try {
     return false;
 }
 
-while ($county_rec = $query->fetch(PDO::FETCH_ASSOC)) {
+while ($data = $query->fetch(PDO::FETCH_ASSOC)) {
     $num = count($data);
     $row++;
-    $parcel_number = $county_rec['parcel_number'];
-    print "$parcel_number\n";
-
+    $parcel_number = $data['parcel_number'];
+    $city_parcel_number = convert2city_parcel_number($parcel_number);
+    print "$parcel_number $city_parcel_number\n";
+    
 }
-fclose($handle);
 
 print "\nTotals\n--------------------------------------------------------------------------\n";
 
