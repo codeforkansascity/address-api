@@ -5,6 +5,77 @@ require '../../config/config.php';
 require '../../vendor/Convissor/address/AddressStandardizationSolution.php';
 
 
+class JacksonCountySpatial extends \Code4KC\Address\BaseTable
+{
+
+    var $query = null;
+    var $table_name = 'address_spatial.jackson_county_mo_tax_neighborhoods';
+    var $primary_key_sequence = null;
+    var $fields = array(
+        'gid' => '',
+        'name' => '',
+        'situs_address' => '',
+        'situs_city' => '',
+        'situs_state' => '',
+        'situs_zip' => '',
+        'parcel_number' => '',
+        'owner' => '',
+        'owner_address' => '',
+        'owner_city' => '',
+        'owner_state' => '',
+        'owner_zip' => '',
+        'stated_area' => '',
+        'tot_sqf_l_area' => '',
+        'year_built' => '',
+        'property_area' => '',
+        'property_picture' => '',
+        'property_report' => '',
+        'market_value' => '',
+        'assessed_value' => '',
+        'assessed_improvement' => '',
+        'assessed_land' => '',
+        'taxable_value' => '',
+        'mtg_co' => '',
+        'mtg_co_address' => '',
+        'mtg_co_city' => '',
+        'mtg_co_state' => '',
+        'mtg_co_zip' => '',
+        'common_area' => '',
+        'floor_designator' => '',
+        'floor_name_designator' => '',
+        'exempt' => '',
+        'complex_name' => '',
+        'cid' => '',
+        'tif_district' => '',
+        'tif_project' => '',
+        'neighborhood_code' => '',
+        'pca_code' => '',
+        'land_use_code' => '',
+        'tca_code' => '',
+        'document_number' => '',
+        'book_number' => '',
+        'conveyance_area' => '',
+        'conveyance_designator' => '',
+        'eff_from_date' => '',
+        'eff_to_date' => '',
+        'extract_date' => '',
+        'legal_description' => '',
+        'object_id' => '',
+        'page_number' => '',
+        'shape_st_area' => '',
+        'shape_st_lenght' => '',
+        'shape_st_area_1' => '',
+        'shape_st_length_1' => '',
+        'shape_st_legnth_2' => '',
+        'shape_st_area_2' => '',
+        'sim_con_div_type' => '',
+        'tax_year' => '',
+        'type' => '',
+        'z_designator' => '',
+    );
+
+}
+
 $census = new \Code4KC\Address\Census();
 
 $row = 0;
@@ -21,137 +92,56 @@ $totals = array(
     'city_address_attributes' => array('insert' => 0, 'update' => 0, 'N/A' => 0, 'error' => 0),
 );
 
-if (($handle = fopen("kcmo_addresses_kiva_nbrhd_06_18_2015.csv", "r")) !== FALSE) {
-    try {
-        $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
+try {
+    $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
+} catch (PDOException $e) {
+    error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+    throw new Exception('Unable to connect to database');
+}
+
+try {
+    $dbh_code4kc = new PDO("pgsql:dbname=$DB_CODE4KC_NAME", $DB_CODE4KC_USER, $DB_CODE4KC_PASS);
+} catch (PDOException $e) {
+    error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+    throw new Exception('Unable to connect to database');
+}
 
 
-    } catch (PDOException $e) {
-        error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
-        throw new Exception('Unable to connect to database');
-    }
+$address_converter = new Convissor\address\AddressStandardizationSolution();
+$address = new \Code4KC\Address\Address($dbh, true);
+$address_alias = new \Code4KC\Address\AddressAlias($dbh, true);
+$address_keys = new \Code4KC\Address\AddressKeys($dbh, true);
+$city_address_attributes = new \Code4KC\Address\CityAddressAttributes($dbh, true);
 
-    $address_converter = new Convissor\address\AddressStandardizationSolution();
-    $address = new \Code4KC\Address\Address($dbh, true);
-    $address_alias = new \Code4KC\Address\AddressAlias($dbh, true);
-    $address_keys = new \Code4KC\Address\AddressKeys($dbh, true);
-    $city_address_attributes = new \Code4KC\Address\CityAddressAttributes($dbh, true);
 
-    while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-        $num = count($data);
-        $row++;
-        print "$row\n";
-        if ($row == 1) {
-            for ($c = 0; $c < $num; $c++) {
-                $names[$c] = $data[$c];
-            }
-        } else {
-            $rec = array();
-            for ($c = 0; $c < $num; $c++) {
-                $rec [$names [$c]] = $data[$c];
-            }
+$sql = "SELECT * FROM address_spatial.jackson_county_mo_tax_neighborhoods WHERE situs_city = 'KANSAS CITY' LIMIT 20 ";
 
-            if (empty($rec['kivapin'])) {
-                print "ERROR: NO kivapin for line $row county id = " . $rec['apn'] . "\n";
-                $totals['input']['error']++;
-                continue;
-            }
+$query = $dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
 
-            $single_line_address = $address_converter->AddressLineStandardization($rec['address']);
-            $single_line_address .= ', KANSAS CITY, MO';                    // We keep unit 'internal'
+try {
+    $query->execute();
+} catch (PDOException  $e) {
+    error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+    //throw new Exception('Unable to query database');
+    return false;
+}
 
-            $normalized_address = $census->normalize_address($single_line_address);                // Strips off unit 'internal'
-            $address_in = array_merge(
-                array('single_line_address' => $single_line_address),
-                $normalized_address, $rec);
-
-            $city_address_id = $rec['kivapin'];
-            $county_address_id = $rec['apn'];
-
-            // We need to start out with an alias and address records
-            $address_id = 0;
-            if ($exisiting_address_alias_rec = $address_alias->find_by_single_line_address($single_line_address)) {
-                $totals['address_alias']['N/A']++;
-                $address_id = $exisiting_address_alias_rec['address_id'];
-                if ($exisiting_address_rec = $address->find_by_id($address_id)) {
-                    if ($address_differences = $address->diff($exisiting_address_rec, $rec)) {
-                        $address->update($address_id, $address_differences);
-                        $totals['address']['update']++;
-                    } else {
-                        $totals['address']['N/A']++;
-                    }
-                } else {
-                    $address->add($rec);
-                    $totals['address']['insert']++;
-                }
-
-            } else {
-                if ($exisiting_address_rec = $address->find_by_single_line_address($single_line_address)) {       // Just in case we had a failuer to clean up
-                    $address_id = $exisiting_address_rec['id'];
-                    $totals['address']['N/A']++;
-
-                } else {
-                    $address_id = $address->add($address_in);
-                    $totals['address']['insert']++;
-                }
-
-                $new_rec = array(
-                    'single_line_address' => $single_line_address,
-                    'address_id' => $address_id
-                );
-
-                $address_alias->add($new_rec);
-                $totals['address_alias']['insert']++;
-
-            }
-
-            $new_rec = array('address_id' => $address_id,
-                'city_address_id' => $city_address_id,
-                'county_address_id' => $county_address_id
-            );
-
-            if ($address_keys_rec = $address_keys->find_by_address_id($address_id)) {
-                $address_key_id = $address_keys_rec['id'];
-                if ($address_key_differences = $address_keys->diff($address_keys_rec, $new_rec)) {
-                    $address_keys->update($address_key_id, $address_key_differences);
-                    $totals['address_keys']['update']++;
-                } else {
-                    $totals['address_keys']['N/A']++;
-                }
-            } else {
-                $address_keys->add($new_rec);
-                $totals['address_keys']['insert']++;
-            }
-
-            $new_rec = array(
-                'id' => $city_address_id,
-                'neighborhood' => $rec['neighborhood']
-            );
-
-            if ($city_address_attributes_rec = $city_address_attributes->find_by_id($city_address_id)) {
-                $city_address_attributes_id = $city_address_attributes_rec['id'];
-                if ($city_address_attribute_differences = $city_address_attributes->diff($city_address_attributes_rec, $new_rec)) {
-                    $city_address_attributes->update($city_address_attributes_id, $city_address_attribute_differences);
-                    $totals['city_address_attributes']['update']++;
-                } else {
-                    $totals['city_address_attributes']['N/A']++;
-                }
-            } else {
-                $city_address_attributes->add($new_rec);
-                $totals['city_address_attributes']['insert']++;
-            }
-        }
-    }
-    fclose($handle);
-
-    print "\nTotals\n--------------------------------------------------------------------------\n";
-
-    printf("%-30.30s %10s %10s %10s %10s\n", 'table', 'insert', 'update', 'N/A', 'ERROR');
-    foreach ($totals AS $table => $counts) {
-        printf("%-30.30s %10d %10d %10d %10d\n", $table, $counts['insert'], $counts['update'], $counts['N/A'], $counts['error']);
-    }
-    print "--------------------------------------------------------------------------\n\n";
+while ($county_rec = $query->fetch(PDO::FETCH_ASSOC)) {
+    $num = count($data);
+    $row++;
+    $parcel_number = $county_rec['parcel_number'];
+    print "$parcel_number\n";
 
 }
+fclose($handle);
+
+print "\nTotals\n--------------------------------------------------------------------------\n";
+
+printf("%-30.30s %10s %10s %10s %10s\n", 'table', 'insert', 'update', 'N/A', 'ERROR');
+foreach ($totals AS $table => $counts) {
+    printf("%-30.30s %10d %10d %10d %10d\n", $table, $counts['insert'], $counts['update'], $counts['N/A'], $counts['error']);
+}
+print "--------------------------------------------------------------------------\n\n";
+
 
 print "Number of lines processed $row including header\n\n";
