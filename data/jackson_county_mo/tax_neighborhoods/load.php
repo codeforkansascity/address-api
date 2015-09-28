@@ -123,7 +123,7 @@ $county_address_attributes = new \Code4KC\Address\CountyAddressAttributes($dbh, 
 $county_address_data = new \Code4KC\Address\CountyAddressData($dbh, true);
 
 
-$sql = "SELECT * FROM address_spatial.jackson_county_mo_tax_neighborhoods WHERE situs_city = 'KANSAS CITY' LIMIT 20 ";
+$sql = "SELECT * FROM address_spatial.jackson_county_mo_tax_neighborhoods WHERE situs_city = 'KANSAS CITY' ";
 
 $query = $dbh_code4kc->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
 
