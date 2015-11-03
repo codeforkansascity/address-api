@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    
+    <title>KC Address API Map - Code for Kansas City</title>
+	
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="css/leaflet-search.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="css/leaflet-geojson-list.css" media="all" />
+    <link rel="stylesheet" href="css/leaflet-geojson-selector.css" media="all" />
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
+
+    </head>
+    <body>
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">< KC /> Address API Map</a>
+          </div>
+          <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="http://codeforkc.org/">Code for KC Home</a></li>
+              <li><a href="https://github.com/codeforkansascity/address-api">Github</a></li>
+              <li><a href="https://github.com/codeforkansascity/address-api/wiki">Wiki</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">KCMO Open Data <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#">Crime Data - 2015</a></li>
+                  <li><a href="#">Another action</a></li>
+                  <li><a href="#">Something else here</a></li>
+                  <li class="divider"></li>
+                  <li class="dropdown-header">Nav header</li>
+                  <li><a href="#">Separated link</a></li>
+                  <li><a href="#">One more separated link</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    
+      <!-- Begin page content -->
+      <div id="mapdiv" style="width: 100%; height: 100%"></div>
+      <select id="geofilter" size="3" multiple>
+        <!--<option value="data=[out:json];way[building=residential](41.878660,12.562383,41.883125,12.571663);(._;>;);out;">buildings</option> -->
+    	<option value="data=[out:json];way[building=residential](38.827665,-94.608447,39.145869,-94.385226);(._;>;);out;" selected>woods</option>
+        <option value="data=[out:json];way[natural=wood](38.827665,-94.608447,39.145869,-94.385226);(._;>;);out;" selected>woods</option>
+    	<option value="data=[out:json];node[amenity=bar](38.827665,-94.608447,39.145869,-94.385226);(._;>;);out;" selected>bars</option>
+      </select>
+      <pre id="selection">&nbsp;</pre>
+      <footer class="footer">
+        <div class="container"><h4>Address API Neighborhood Addresses Endpoint: </h4>
+          <p id="neighborhoodapi_endpt" class="text-muted"></p>
+        </div>
+      </footer>
+      
+      <!-- Javascripts -->
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+        <script type="text/javascript" src="js/leaflet-search.js"></script>
+        <script type="text/javascript" src="js/osmtogeojson.js"></script>
+        <script type="text/javascript" src="js/leaflet-geojson-selector.js"></script>
+        <script type="text/javascript" src="js/leaflet-geojson-list.js"></script>
+        <script type="text/javascript" src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        
+    </body>
+</html>
