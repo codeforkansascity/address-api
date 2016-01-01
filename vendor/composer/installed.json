@@ -48,18 +48,40 @@
         ]
     },
     {
-        "name": "nategood/httpful",
-        "version": "0.2.19",
-        "version_normalized": "0.2.19.0",
+        "name": "Convissor/address",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
-            "url": "https://github.com/nategood/httpful.git",
-            "reference": "bd73f89d34d8f879c54ac46eb94b0f7be1d00820"
+            "url": "https://github.com/zmon/address_standardization_solution_php.git",
+            "reference": "0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/nategood/httpful/zipball/bd73f89d34d8f879c54ac46eb94b0f7be1d00820",
-            "reference": "bd73f89d34d8f879c54ac46eb94b0f7be1d00820",
+            "url": "https://api.github.com/repos/zmon/address_standardization_solution_php/zipball/0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2",
+            "reference": "0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2",
+            "shasum": ""
+        },
+        "time": "2015-08-08 05:50:12",
+        "type": "library",
+        "installation-source": "source",
+        "support": {
+            "source": "https://github.com/zmon/address_standardization_solution_php/tree/master"
+        }
+    },
+    {
+        "name": "nategood/httpful",
+        "version": "0.2.20",
+        "version_normalized": "0.2.20.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/nategood/httpful.git",
+            "reference": "c1cd4d46a4b281229032cf39d4dd852f9887c0f6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/nategood/httpful/zipball/c1cd4d46a4b281229032cf39d4dd852f9887c0f6",
+            "reference": "c1cd4d46a4b281229032cf39d4dd852f9887c0f6",
             "shasum": ""
         },
         "require": {
@@ -69,7 +91,7 @@
         "require-dev": {
             "phpunit/phpunit": "*"
         },
-        "time": "2015-03-08 15:22:23",
+        "time": "2015-10-26 16:11:30",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -98,27 +120,5 @@
             "rest",
             "restful"
         ]
-    },
-    {
-        "name": "Convissor/address",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/zmon/address_standardization_solution_php.git",
-            "reference": "0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/zmon/address_standardization_solution_php/zipball/0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2",
-            "reference": "0b4557b7c7b980021415ba23c30fdcb3e4dfd8f2",
-            "shasum": ""
-        },
-        "time": "2015-08-08 05:50:12",
-        "type": "library",
-        "installation-source": "source",
-        "support": {
-            "source": "https://github.com/zmon/address_standardization_solution_php/tree/master"
-        }
     }
 ]
