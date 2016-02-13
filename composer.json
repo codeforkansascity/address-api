@@ -7,7 +7,7 @@
     ],
     "require": {
         "slim/slim": "^2.6",
-	"nategood/httpful": "*",
+    	"nategood/httpful": "*",
         "Convissor/address": "dev-master"
     },
     "autoload": {
