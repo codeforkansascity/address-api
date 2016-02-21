@@ -4,3 +4,4 @@ _site
 log.txt
 dumps
 vendor
+composer.lock
