@@ -2,3 +2,5 @@ config.php
 _site
 .idea
 log.txt
+dumps
+vendor
