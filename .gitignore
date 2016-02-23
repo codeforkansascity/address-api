@@ -5,3 +5,4 @@ log.txt
 dumps
 vendor
 composer.lock
+.vagrant
