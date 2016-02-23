@@ -126,7 +126,7 @@ CREATE EXTENSION address_standardizer;
 You will need to grab the dumps from ....
 and copy them to `/var/www/dumps`
 
-
+https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k is where the data is stored.
 
 ````
    cd /var/www/dumps
@@ -197,6 +197,7 @@ cat > 002-dev-api.conf
 
     ServerAdmin webmaster@localhost
     ServerName dev-api.codeforkc.org
+    ServerAlias dev-api.codeforkc.local
     DocumentRoot /var/www/webroot
 
     # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
@@ -255,9 +256,10 @@ add the following to /etc/hosts
 
 
 ````
-192.168.56.219 dev.api.codeforkc.org
+192.168.56.219 dev.api.codeforkc.org dev-api.codeforkc.local
 ````
 
+http://dev-api.codeforkc.local/address-attributes/V0/210%20W%2019TH%20TER%20FL%201%2C?city=Kansas%20City&state=mo
 
 
 # Setup config file
