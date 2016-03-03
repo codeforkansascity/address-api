@@ -163,9 +163,11 @@ alter table  tmp_kcmo_all_addresses_id_seq  OWNER TO c4kc;
 \d
 
 \q
-````
 
 exit
+````
+
+
 
 
 Install GDAL/OGR
@@ -174,6 +176,7 @@ Install GDAL/OGR
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable && sudo apt-get update
 sudo apt-get install gdal-bin
 ````
+
 Install composer
 
 ````
@@ -181,6 +184,7 @@ wget https://getcomposer.org/installer
 php installer
 sudo mv composer.phar /usr/local/bin/composer
 ````
+
 2. Upate PHP with curl
 
 ````
@@ -207,7 +211,6 @@ cd /etc/apache2/sites-available
 ````
 cat > 002-dev-api.conf
 
-````
 
 <VirtualHost *:80>
 
@@ -260,22 +263,21 @@ cat > 002-dev-api.conf
 </VirtualHost>
 ````
 
+Enable the site to start 
+
 ````
 cd ../sites-enabled/
 ln -s ../sites-available/002-dev-api.conf .
 apache2ctl restart
 ````
 
-On Host
-
-add the following to /etc/hosts
+On your computer add the following to /etc/hosts
 
 
 ````
 192.168.56.219 dev.api.codeforkc.org dev-api.codeforkc.local
 ````
 
-http://dev-api.codeforkc.local/address-attributes/V0/210%20W%2019TH%20TER%20FL%201%2C?city=Kansas%20City&state=mo
 
 
 # Setup config file
@@ -318,4 +320,16 @@ if ( !empty( $_SERVER["DB_CODE4KC_USER"] )) { $DB_CODE4KC_USER = $_SERVER["DB_CO
 if ( !empty( $_SERVER["DB_CODE4KC_PASS"] )) { $DB_CODE4KC_PASS = $_SERVER["DB_CODE4KC_PASS"]; } else { $DB_CODE4KC_PASS = 'data'; }
 if ( !empty( $_SERVER["DB_CODE4KC_NAME"] )) { $DB_CODE4KC_NAME = $_SERVER["DB_CODE4KC_NAME"]; } else { $DB_CODE4KC_NAME = 'code4kc'; }
 
+````
+
+You should not beable to browse to the following
+
+````
+http://dev-api.codeforkc.local/address-attributes/V0/210%20W%2019TH%20TER%20FL%201%2C?city=Kansas%20City&state=mo
+````
+
+And see
+
+````
+{"code":200,"status":"success","message":"","data":{"id":200567,"single_line_address":"210 W 19TH TER FL 1, KANSAS CITY...
 ````
