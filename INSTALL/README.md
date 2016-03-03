@@ -12,7 +12,7 @@
 1. Clone repository
 
 ````
-    git clone git@github.com:zmon/address-api-v0.git your-dir
+    git clone git@github.com:codeforkansascity/address-api.git your-dir
 ````
 
 2. Run composer update
