@@ -15,12 +15,7 @@
     git clone git@github.com:codeforkansascity/address-api.git your-dir
 ````
 
-2. Run composer update
 
-````
-    cd your-dir
-    composer update
-````
 
 # Create image
 
@@ -58,18 +53,21 @@ Change the listen_addresses to your IP address
 listen_addresses = '192.168.56.1,192.168.56.209,localhost'      # what IP address(es) to listen on;
 ````
 
+# Remote from Vagrant Host
 
 ````
 sudo vi /etc/postgresql/9.3/main/pg_hba.conf 
 ````
 
-# Remote from Vagrant Host
 Change `peer` to `md5` on `local all all` line
+
 ````
 #local   all             all                                     peer
-local   all             all                                     md5
+local   all             all                               md5
+local   all             all                               trust
 ````
 
+Restart PostGres
 
 ````
 /etc/init.d/postgresql stop
@@ -123,10 +121,10 @@ CREATE EXTENSION address_standardizer;
 
 
 # Restore databases
-You will need to grab the dumps from ....
+You will need to grab the dumps from https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k is where the data is stored.
 and copy them to `/var/www/dumps`
 
-https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k is where the data is stored.
+
 
 ````
    cd /var/www/dumps
@@ -164,8 +162,6 @@ alter table  tmp_kcmo_all_addresses_id_seq  OWNER TO c4kc;
 
 \d
 
-SELECT postgis_full_version();
-
 \q
 ````
 
@@ -177,6 +173,26 @@ Install GDAL/OGR
 ````
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable && sudo apt-get update
 sudo apt-get install gdal-bin
+````
+Install composer
+
+````
+wget https://getcomposer.org/installer
+php installer
+sudo mv composer.phar /usr/local/bin/composer
+````
+2. Upate PHP with curl
+
+````
+sudo apt-get install php5-curl
+sudo service apache2 restart
+````
+
+2. Run composer update
+
+````
+    cd /var/wwww
+    composer update
 ````
 
 
@@ -265,6 +281,11 @@ http://dev-api.codeforkc.local/address-attributes/V0/210%20W%2019TH%20TER%20FL%2
 # Setup config file
 
 ````
+
+cd /var/www/config
+
+cat > config.php
+
 <?php
 
 global $DB_NAME;
