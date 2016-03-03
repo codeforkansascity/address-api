@@ -50,7 +50,7 @@ vi /etc/postgresql/9.3/main/postgresql.conf
 Change the listen_addresses to your IP address
 
 ````
-listen_addresses = '192.168.56.1,192.168.56.209,localhost'      # what IP address(es) to listen on;
+listen_addresses = '*'      # what IP address(es) to listen on;
 ````
 
 # Remote from Vagrant Host
@@ -65,6 +65,7 @@ Change `peer` to `md5` on `local all all` line
 #local   all             all                                     peer
 local   all             all                               md5
 local   all             all                               trust
+host    all             all             192.168.56.0/24            md5
 ````
 
 Restart PostGres
