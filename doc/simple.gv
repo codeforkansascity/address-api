@@ -1,7 +1,0 @@
-digraph G {
-        a [shape="triangle"];
-        b [shape="triangle"];
-	address -> a -> census_data;
-        address -> b -> city_data;
-
-}
