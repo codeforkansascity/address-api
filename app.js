@@ -119,6 +119,8 @@ $(document).ready(function () {
                 address_obj = jQuery.parseJSON(data);
                 console.log(address_obj);
 
+                $('.address-values').empty();
+
                 $.each(address_obj.data, function (key, value) {
 
                     var row = '';
