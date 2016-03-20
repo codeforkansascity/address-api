@@ -1,4 +1,3 @@
-config.php
-_site
+.idea/
+.idea/*
 .idea
-log.txt
