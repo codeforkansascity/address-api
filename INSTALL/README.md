@@ -15,12 +15,7 @@
     git clone git@github.com:codeforkansascity/address-api.git your-dir
 ````
 
-2. Run composer update
 
-````
-    cd your-dir
-    composer update
-````
 
 # Create image
 
@@ -55,21 +50,25 @@ vi /etc/postgresql/9.3/main/postgresql.conf
 Change the listen_addresses to your IP address
 
 ````
-listen_addresses = '192.168.56.1,192.168.56.209,localhost'      # what IP address(es) to listen on;
+listen_addresses = '*'      # what IP address(es) to listen on;
 ````
 
+# Remote from Vagrant Host
 
 ````
 sudo vi /etc/postgresql/9.3/main/pg_hba.conf 
 ````
 
-# Remote from Vagrant Host
 Change `peer` to `md5` on `local all all` line
+
 ````
 #local   all             all                                     peer
-local   all             all                                     md5
+local   all             all                               md5
+local   all             all                               trust
+host    all             all             192.168.56.0/24            md5
 ````
 
+Restart PostGres
 
 ````
 /etc/init.d/postgresql stop
@@ -123,10 +122,10 @@ CREATE EXTENSION address_standardizer;
 
 
 # Restore databases
-You will need to grab the dumps from ....
+You will need to grab the dumps from https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k is where the data is stored.
 and copy them to `/var/www/dumps`
 
-https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k is where the data is stored.
+
 
 ````
    cd /var/www/dumps
@@ -164,12 +163,12 @@ alter table  tmp_kcmo_all_addresses_id_seq  OWNER TO c4kc;
 
 \d
 
-SELECT postgis_full_version();
-
 \q
-````
 
 exit
+````
+
+
 
 
 Install GDAL/OGR
@@ -177,6 +176,28 @@ Install GDAL/OGR
 ````
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable && sudo apt-get update
 sudo apt-get install gdal-bin
+````
+
+Install composer
+
+````
+wget https://getcomposer.org/installer
+php installer
+sudo mv composer.phar /usr/local/bin/composer
+````
+
+2. Upate PHP with curl
+
+````
+sudo apt-get install php5-curl
+sudo service apache2 restart
+````
+
+2. Run composer update
+
+````
+    cd /var/wwww
+    composer update
 ````
 
 
@@ -191,7 +212,6 @@ cd /etc/apache2/sites-available
 ````
 cat > 002-dev-api.conf
 
-````
 
 <VirtualHost *:80>
 
@@ -244,27 +264,31 @@ cat > 002-dev-api.conf
 </VirtualHost>
 ````
 
+Enable the site to start 
+
 ````
 cd ../sites-enabled/
 ln -s ../sites-available/002-dev-api.conf .
 apache2ctl restart
 ````
 
-On Host
-
-add the following to /etc/hosts
+On your computer add the following to /etc/hosts
 
 
 ````
 192.168.56.219 dev.api.codeforkc.org dev-api.codeforkc.local
 ````
 
-http://dev-api.codeforkc.local/address-attributes/V0/210%20W%2019TH%20TER%20FL%201%2C?city=Kansas%20City&state=mo
 
 
 # Setup config file
 
 ````
+
+cd /var/www/config
+
+cat > config.php
+
 <?php
 
 global $DB_NAME;
@@ -297,4 +321,16 @@ if ( !empty( $_SERVER["DB_CODE4KC_USER"] )) { $DB_CODE4KC_USER = $_SERVER["DB_CO
 if ( !empty( $_SERVER["DB_CODE4KC_PASS"] )) { $DB_CODE4KC_PASS = $_SERVER["DB_CODE4KC_PASS"]; } else { $DB_CODE4KC_PASS = 'data'; }
 if ( !empty( $_SERVER["DB_CODE4KC_NAME"] )) { $DB_CODE4KC_NAME = $_SERVER["DB_CODE4KC_NAME"]; } else { $DB_CODE4KC_NAME = 'code4kc'; }
 
+````
+
+You should not beable to browse to the following
+
+````
+http://dev-api.codeforkc.local/address-attributes/V0/210%20W%2019TH%20TER%20FL%201%2C?city=Kansas%20City&state=mo
+````
+
+And see
+
+````
+{"code":200,"status":"success","message":"","data":{"id":200567,"single_line_address":"210 W 19TH TER FL 1, KANSAS CITY...
 ````
