@@ -27,6 +27,44 @@
 You should now be logged into the new virtual box, using `vagrant ssh` and beable to connect to the postgress at 192.168.33.11 from your host computer.
 
 
+````
+sudo su - postgres
+````
+
+Create user
+
+````
+createuser c4kc
+````
+
+
+````
+psql
+````
+
+
+# Final db
+````
+ALTER USER c4kc with encrypted password 'data';
+CREATE DATABASE c4kc_address_api  WITH ENCODING 'UTF8' TEMPLATE=template0;
+GRANT ALL PRIVILEGES ON DATABASE c4kc_address_api TO c4kc;
+
+CREATE DATABASE address_api  WITH ENCODING 'UTF8' TEMPLATE=template0;
+GRANT ALL PRIVILEGES ON DATABASE address_api TO c4kc;
+
+CREATE DATABASE code4kc  WITH ENCODING 'UTF8' TEMPLATE=template0;
+GRANT ALL PRIVILEGES ON DATABASE code4kc TO c4kc;
+
+
+\c code4kc
+CREATE EXTENSION postgis;
+CREATE EXTENSION postgis_topology;
+CREATE EXTENSION postgis_sfcgal;
+CREATE EXTENSION fuzzystrmatch;
+CREATE EXTENSION address_standardizer;
+\q
+````
+
 # Restore databases
 You will need to grab the dumps from https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k is where the data is stored.
 and copy them to `/var/www/dumps`
@@ -43,7 +81,7 @@ and copy them to `/var/www/dumps`
    pg_restore -C -d code4kc code4kc-20160220-0548.dump
 ````
 
-
+You will get several errors but you can ignor them
 
 # Set permissions
 ````
@@ -86,38 +124,6 @@ On your computer add the following to /etc/hosts
 
 
 
-# Setup config file
-
-````
-
-cd /var/www/config
-
-cat > config.php
-
-<?php
-
-global $DB_NAME;
-global $DB_USER;
-global $DB_PASS;
-global $DB_HOST;
-
-if ( !empty( $_SERVER["DB_HOST"] )) { $DB_HOST = $_SERVER["DB_HOST"]; } else { $DB_HOST = 'localhost'; }
-if ( !empty( $_SERVER["DB_USER"] )) { $DB_USER = $_SERVER["DB_USER"]; } else { $DB_USER = 'c4kc'; }
-if ( !empty( $_SERVER["DB_PASS"] )) { $DB_PASS = $_SERVER["DB_PASS"]; } else { $DB_PASS = 'data'; }
-if ( !empty( $_SERVER["DB_NAME"] )) { $DB_NAME = $_SERVER["DB_NAME"]; } else { $DB_NAME = 'address_api'; }
-
-global $DB_CENSUS_NAME;
-global $DB_CENSUS_USER;
-global $DB_CENSUS_PASS;
-global $DB_CENSUS_HOST;
-
-if ( !empty( $_SERVER["DB_CENSUS_HOST"] )) { $DB_CENSUS_HOST = $_SERVER["DB_CENSUS_HOST"]; } else { $DB_CENSUS_HOST = 'localhost'; }
-if ( !empty( $_SERVER["DB_CENSUS_USER"] )) { $DB_CENSUS_USER = $_SERVER["DB_CENSUS_USER"]; } else { $DB_CENSUS_USER = 'c4kc'; }
-if ( !empty( $_SERVER["DB_CENSUS_PASS"] )) { $DB_CENSUS_PASS = $_SERVER["DB_CENSUS_PASS"]; } else { $DB_CENSUS_PASS = 'data'; }
-if ( !empty( $_SERVER["DB_CENSUS_NAME"] )) { $DB_CENSUS_NAME = $_SERVER["DB_CENSUS_NAME"]; } else { $DB_CENSUS_NAME = 'census'; }
-
-global $DB_CODE4KC_NAME;
-global $DB_CODE4KC_USER;
 global $DB_CODE4KC_PASS;
 global $DB_CODE4KC_HOST;
 
