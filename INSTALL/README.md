@@ -107,6 +107,23 @@ alter table  tmp_kcmo_all_addresses_id_seq  OWNER TO c4kc;
 
 \d
 
+\c code4kc
+
+alter table  address_spatial.auto_metro_area_tmp                     OWNER TO c4kc;
+alter table  address_spatial.census_metro_area_tmp               OWNER TO c4kc;
+alter table  address_spatial.census_metro_areas                  OWNER TO c4kc;
+alter table  address_spatial.jackson_cnt_mo_1_tmp                OWNER TO c4kc;
+alter table  address_spatial.jackson_cnt_mo_2_tmp                OWNER TO c4kc;
+alter table  address_spatial.jackson_county_mo_tax_neighborhoods OWNER TO c4kc;
+alter table  address_spatial.kc_nhood_tmp                        OWNER TO c4kc;
+alter table  address_spatial.kcc_tmp                             OWNER TO c4kc;
+alter table  address_spatial.kcmo_address_nbhd_tmp               OWNER TO c4kc;
+alter table  address_spatial.mo_kc_city_council_districts_2012   OWNER TO c4kc;
+alter table  address_spatial.mo_kc_city_neighborhoods            OWNER TO c4kc;
+alter table  address_spatial.paul                                OWNER TO c4kc;
+
+\dt *.*
+
 \q
 
 exit
