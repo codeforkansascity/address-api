@@ -109,6 +109,7 @@ alter table  tmp_kcmo_all_addresses_id_seq  OWNER TO c4kc;
 
 \c code4kc
 
+alter SCHEMA  address_spatial                     OWNER TO c4kc;
 alter table  address_spatial.auto_metro_area_tmp                     OWNER TO c4kc;
 alter table  address_spatial.census_metro_area_tmp               OWNER TO c4kc;
 alter table  address_spatial.census_metro_areas                  OWNER TO c4kc;
