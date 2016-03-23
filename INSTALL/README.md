@@ -31,13 +31,6 @@ You should now be logged into the new virtual box, using `vagrant ssh` and beabl
 sudo su - postgres
 ````
 
-Create user
-
-````
-createuser c4kc
-````
-
-
 ````
 psql
 ````
@@ -59,10 +52,15 @@ GRANT ALL PRIVILEGES ON DATABASE code4kc TO c4kc;
 \c code4kc
 CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
-CREATE EXTENSION postgis_sfcgal;
 CREATE EXTENSION fuzzystrmatch;
-CREATE EXTENSION address_standardizer;
 \q
+````
+
+We need to figure out how if we need sfcgal and address_standardizer and if so how to install them.
+
+````
+CREATE EXTENSION postgis_sfcgal;
+CREATE EXTENSION address_standardizer;
 ````
 
 # Restore databases
@@ -140,17 +138,6 @@ On your computer add the following to /etc/hosts
 192.168.33.11 dev.api.codeforkc.org dev-api.codeforkc.local
 ````
 
-
-
-global $DB_CODE4KC_PASS;
-global $DB_CODE4KC_HOST;
-
-if ( !empty( $_SERVER["DB_CODE4KC_HOST"] )) { $DB_CODE4KC_HOST = $_SERVER["DB_CODE4KC_HOST"]; } else { $DB_CODE4KC_HOST = 'localhost'; }
-if ( !empty( $_SERVER["DB_CODE4KC_USER"] )) { $DB_CODE4KC_USER = $_SERVER["DB_CODE4KC_USER"]; } else { $DB_CODE4KC_USER = 'c4kc'; }
-if ( !empty( $_SERVER["DB_CODE4KC_PASS"] )) { $DB_CODE4KC_PASS = $_SERVER["DB_CODE4KC_PASS"]; } else { $DB_CODE4KC_PASS = 'data'; }
-if ( !empty( $_SERVER["DB_CODE4KC_NAME"] )) { $DB_CODE4KC_NAME = $_SERVER["DB_CODE4KC_NAME"]; } else { $DB_CODE4KC_NAME = 'code4kc'; }
-
-````
 
 You should not beable to browse to the following
 
