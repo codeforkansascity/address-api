@@ -135,7 +135,7 @@ On your computer add the following to /etc/hosts
 
 
 ````
-192.168.33.11 dev.api.codeforkc.org dev-api.codeforkc.local
+192.168.33.11 dev-api.codeforkc.local
 ````
 
 
