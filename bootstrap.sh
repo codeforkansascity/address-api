@@ -40,6 +40,10 @@
     # identify users via "md5", rather than "ident", allowing us to make postgres
     # users separate from system users. "md5" lets us simply use a password
     echo "host    all             all             0.0.0.0/0               md5" | sudo tee -a /etc/postgresql/$POSTGRE_VERSION/main/pg_hba.conf
+
+
+    sudo sed -i "s/local   all             all                                     peer/local   all             all         md5/g" /etc/postgresql/$POSTGRE_VERSION/main/pg_hba.conf
+
     sudo service postgresql start
 
     sudo -u postgres createuser c4kc
@@ -89,8 +93,7 @@ VHOST=$(cat <<EOF
 <VirtualHost *:80>
 
     ServerAdmin webmaster@localhost
-    ServerName dev-api.codeforkc.org
-    ServerAlias dev-api.codeforkc.local
+    ServerName dev-api.codeforkc.local
     DocumentRoot /var/www/webroot
 
     # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
@@ -99,8 +102,8 @@ VHOST=$(cat <<EOF
     # modules, e.g.
     #LogLevel info ssl:warn
 
-    ErrorLog ${APACHE_LOG_DIR}/dev-api-error.log
-    CustomLog ${APACHE_LOG_DIR}/dev-api-access.log combined
+    ErrorLog /var/log/apache2/dev-api-error.log
+    CustomLog /var/log/apache2/dev-api-access.log combined
 
     # For most configuration files from conf-available/, which are
     # enabled or disabled at a global level, it is possible to
@@ -140,7 +143,7 @@ EOF
     sudo ln -s ../sites-available/002-dev-api.conf .
 
 
-    cd /var/wwww
+    cd /var/www
     composer update
 
 
