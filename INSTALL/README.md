@@ -1,15 +1,11 @@
 # Requirements
 
 * Virtual Box
-* PHP 5.6
-* Composer
+
+# Create virtual box with Address API
 
 
-# Create site
-
-
-
-1. Clone repository
+## Clone repository
 
 ````
     git clone git@github.com:codeforkansascity/address-api.git your-dir
@@ -17,26 +13,38 @@
 
 
 
-# Create image
+## Create image
 
 
 ````
     vagrant up
 ````
 
-You should now be logged into the new virtual box, using `vagrant ssh` and beable to connect to the postgress at 192.168.33.11 from your host computer.
 
 
+## Login
+
+
+````
+    vagrant ssh
+````
+
+# Setup postgres
+
+## Login as postgres
 ````
 sudo su - postgres
 ````
+
+## Start psql
 
 ````
 psql
 ````
 
 
-# Final db
+## Create users and initial databases
+
 ````
 ALTER USER c4kc with encrypted password 'data';
 CREATE DATABASE c4kc_address_api  WITH ENCODING 'UTF8' TEMPLATE=template0;
@@ -63,7 +71,7 @@ CREATE EXTENSION postgis_sfcgal;
 CREATE EXTENSION address_standardizer;
 ````
 
-# Restore databases
+## Restore databases
 You will need to grab the dumps from https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k is where the data is stored.
 and copy them to `/var/www/dumps`
 
@@ -81,7 +89,7 @@ and copy them to `/var/www/dumps`
 
 You will get several errors but you can ignor them
 
-# Set permissions
+## Fix ownerships
 ````
 psql
 \c address_api
@@ -128,8 +136,14 @@ alter table  address_spatial.paul                                OWNER TO c4kc;
 exit
 ````
 
+## Restart postgres
 
+````
+sudo service postgresql stop
+sudo service postgresql start
+````
 
+# Setup host environment
 
 On your computer add the following to /etc/hosts
 
