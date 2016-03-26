@@ -18,7 +18,11 @@ The following software will be installed
  
 * PostGIS 2.1.2 r12389
   * GDAL 1.11.2, released 2015/02/10
+
+## Requirements
   
+* [Virtual Box](https://www.virtualbox.org/)
+* [Vagrant](https://www.vagrantup.com/)
 
 
 ## Clone repository
