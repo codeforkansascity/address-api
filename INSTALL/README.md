@@ -1,17 +1,52 @@
 # Requirements
 
-* Virtual Box
+# Create a Virtual Box with Address API
 
-# Create virtual box with Address API
+The following software will be installed
+
+* Ubuntu 14.04.3 LTS - trusty
+* PHP 5.5.9
+* Apache/2.4.7
+* Postgresql 9.3.11 - server encoding UTF8, installed extensions
+ 
+  * fuzzystrmatch     1.0     - determine similarities and distance between strings
+  * ogr_fdw           1.0     - foreign-data wrapper for GIS data access - https://github.com/pramsey/pgsql-ogr-fdw
+  * plpgsql           1.0     - PL/pgSQL procedural language
+  * postgis           2.1.2   - PostGIS geometry, geography, and raster spatial types and functions
+  * postgis_topology  2.1.2   - PostGIS topology spatial types and functions
+  * postgres_fdw      1.0     - foreign-data wrapper for remote PostgreSQL servers
+ 
+* PostGIS 2.1.2 r12389
+  * GDAL 1.11.2, released 2015/02/10
+  
 
 
 ## Clone repository
 
 ````
-    git clone git@github.com:codeforkansascity/address-api.git your-dir
+    git clone git@github.com:codeforkansascity/address-api.git 
+    cd address-api
 ````
 
+## Setup data to be restored
 
+You need to create a directory called `dumps` and copy the dump files to them
+
+````
+    mkdir dumps
+````
+
+Copy he dumps from https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k 
+to the dumps directory and unzip them
+
+````
+   cd dumps
+
+   gunzip address_api-20160220-0548.dump.gz
+   gunzip code4kc-20160220-0548.dump.gz 
+
+   cd ..
+````
 
 ## Create image
 
@@ -19,7 +54,6 @@
 ````
     vagrant up
 ````
-
 
 
 ## Login
@@ -36,52 +70,12 @@
 sudo su - postgres
 ````
 
-## Start psql
-
-````
-psql
-````
-
-
-## Create users and initial databases
-
-````
-ALTER USER c4kc with encrypted password 'data';
-CREATE DATABASE c4kc_address_api  WITH ENCODING 'UTF8' TEMPLATE=template0;
-GRANT ALL PRIVILEGES ON DATABASE c4kc_address_api TO c4kc;
-
-CREATE DATABASE address_api  WITH ENCODING 'UTF8' TEMPLATE=template0;
-GRANT ALL PRIVILEGES ON DATABASE address_api TO c4kc;
-
-CREATE DATABASE code4kc  WITH ENCODING 'UTF8' TEMPLATE=template0;
-GRANT ALL PRIVILEGES ON DATABASE code4kc TO c4kc;
-
-
-\c code4kc
-CREATE EXTENSION postgis;
-CREATE EXTENSION postgis_topology;
-CREATE EXTENSION fuzzystrmatch;
-\q
-````
-
-We need to figure out how if we need sfcgal and address_standardizer and if so how to install them.
-
-````
-CREATE EXTENSION postgis_sfcgal;
-CREATE EXTENSION address_standardizer;
-````
 
 ## Restore databases
-You will need to grab the dumps from https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k is where the data is stored.
-and copy them to `/var/www/dumps`
-
 
 
 ````
    cd /var/www/dumps
-
-   gunzip address_api-20160220-0548.dump.gz 
-   gunzip code4kc-20160220-0548.dump.gz 
 
    pg_restore -C -d address_api address_api-20160220-0548.dump 
    pg_restore -C -d code4kc code4kc-20160220-0548.dump
@@ -163,4 +157,16 @@ And see
 
 ````
 {"code":200,"status":"success","message":"","data":{"id":200567,"single_line_address":"210 W 19TH TER FL 1, KANSAS CITY...
+````
+
+
+You should have access to OGR Foreign Data Wrapper see https://github.com/pramsey/pgsql-ogr-fdw
+### Notes
+
+
+We need to figure out how if we need sfcgal and address_standardizer and if so how to install them.
+
+````
+CREATE EXTENSION postgis_sfcgal;
+CREATE EXTENSION address_standardizer;
 ````
