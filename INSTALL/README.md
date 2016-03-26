@@ -1,6 +1,7 @@
 # Requirements
 
-* Virtual Box
+* [Virtual Box](https://www.virtualbox.org/)
+* [Vagrant](https://www.vagrantup.com/)
 
 # Create virtual box with Address API
 
