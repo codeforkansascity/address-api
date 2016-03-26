@@ -12,21 +12,36 @@
     echo 'source "$HOME/.rvm/scripts/rvm"' >> .bashrc
     echo "rvm use 2.2.3" >> .bashrc
 
+    sudo apt-get update -y
+
+    # Install some friends
+    sudo apt-get -y install unzip wget git make
+
     # install postgres
     sudo apt-get -y install postgresql postgresql-contrib libpq-dev postgresql-9.3-postgis-2.1 redis-server
 
+    ### support PostGres Foreign data wrapers
+
     # Install GDAL/OGR
-    sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable && sudo apt-get update
-    sudo apt-get install gdal-bin
-
-    # Install some friends
-    sudo apt-get -y unzip wget
-
-    # From https://trac.osgeo.org/postgis/wiki/UsersWikiPostGIS22UbuntuPGSQL95Apt
-    # sudo apt-get -y install postgresql-9.5-postgis-2.2 pgadmin3 postgresql-contrib-9.5 
+    apt-get install -y python-software-properties
+    add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable && sudo apt-get update
+    apt-get install -y gdal-bin
 
     # From previous postgresql install line
-    sudo apt-get -y install libpq-dev
+    apt-get install -y libgdal-dev  
+
+    # since we do not have pgxs.mk needed for making pgsql-ogr-fdw in the next step
+    # WARNING:  this may cause issues
+    apt-get install -y --force-yes postgresql-server-dev-9.3
+
+    (
+        cd /tmp
+        git clone https://github.com/pramsey/pgsql-ogr-fdw.git
+        cd pgsql-ogr-fdw
+        make
+        sudo make install
+    )
+   
 
     sudo -u postgres psql -c "CREATE USER vagrant WITH PASSWORD 'vagrant';"
     sudo -u postgres psql -c "ALTER ROLE vagrant SUPERUSER CREATEROLE CREATEDB REPLICATION;"
@@ -63,14 +78,38 @@ GRANT ALL PRIVILEGES ON DATABASE code4kc TO c4kc;
 \c code4kc
 CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
-CREATE EXTENSION postgis_sfcgal;
 CREATE EXTENSION fuzzystrmatch;
-CREATE EXTENSION address_standardizer;
+CREATE EXTENSION postgres_fdw;
+CREATE EXTENSION ogr_fdw;
 \q
 EOF
 )
 
-   echo "${SQL}" > sudo -u postgres psql
+   echo "${SQL}" | sudo -u postgres psql
+
+
+OGR=$(cat <<EOF
+#
+# OGR profile
+#
+# /etc/profile.d/ogr.sh # sh extension required for loading.
+#
+
+if
+  [ -n "\${BASH_VERSION:-}" -o -n "\${ZSH_VERSION:-}" ] &&
+  test "`\command \ps -p \$\$ -o ucomm=`" != dash &&
+  test "`\command \ps -p \$\$ -o ucomm=`" != sh
+then
+  ogr_bin_path="/usr/lib/postgresql/9.3/bin"
+  # Add \$ogr_bin_path to \$PATH if necessary
+  if [[ -n "\${ogr_bin_path}" && ! ":\${PATH}:" == *":\${ogr_bin_path}:"* ]]
+  then PATH="\${PATH}:\${ogr_bin_path}"
+  fi
+fi
+EOF
+)
+
+   echo "${OGR}" > /etc/profile.d/ogr.sh
 
 
     ### Apache + PHP ###
@@ -187,10 +226,5 @@ EOF
 
     sudo service apache2 restart
 
-    # sudo apt-get install -y libgmp-dev node
-    # gem install bundle
-    # bundle install
-
-    # bundle exec rake db:create db:migrate
-
-    # sudo service redis-server stop
+    sudo service postgresql stop
+    sudo service postgresql start
