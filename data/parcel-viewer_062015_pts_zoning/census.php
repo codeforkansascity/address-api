@@ -63,7 +63,8 @@ $census_attributes = new \Code4KC\Address\CensusAttributes($dbh, true);
 
 $sql = 'SELECT a.id, a.street_number, a.pre_direction, a.street_name, a.street_type, a.post_direction, a.internal, a.city, a.state, a.zip, k.city_address_id, k.county_address_id, c.city_address_id AS census_city_address_id FROM address a 
 LEFT JOIN address_keys k ON ( k.address_id = a.id) 
-LEFT JOIN census_attributes c ON ( k.city_address_id = c.city_address_id) ';
+LEFT JOIN census_attributes c ON ( k.city_address_id = c.city_address_id) 
+ORDER BY a.id DESC';
 
 $query = $dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
 
@@ -84,7 +85,6 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
         $totals['input']['N/A']++;
         continue;
     }
-
 
     $street_number = $address_rec['street_number'];
     $pre_direction = $address_rec['pre_direction'];
@@ -113,7 +113,8 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
         && property_exists($response->body, 'result')
         && property_exists($response->body->result, 'addressMatches')
     ) {
-
+        $address_id = $address_rec['id'];
+//print "\n$address_id:";
         $c_matches = $response->body->result->addressMatches;
 
         if (!empty($c_matches)) {
@@ -123,7 +124,7 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
 //print_r($address_rec);
 //print_r($f_rec);
             $zip = $f_rec->addressComponents->zip;
-            $address_id = $address_rec['id'];
+
             $new_rec = array(
                 'id' => $address_id,
                 'zip' => $zip,
@@ -132,19 +133,20 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
             if ($address_differences = $address->diff($address_rec, $new_rec)) {
                 $address->update($address_id, $address_differences);
                 $totals['address']['update']++;
+//print 'u';
             } else {
                 $totals['address']['N/A']++;
             }
 
             $new_rec = array();
             $new_rec['id'] = $address_id;
-            $new_rec['block_2010_name'] = $f_rec->geographies->{'2010 Census Blocks'}['0']->NAME;
-            $new_rec['block_2010_id'] = $f_rec->geographies->{'2010 Census Blocks'}['0']->BLOCK;
-            $new_rec['tract_name'] = $f_rec->geographies->{'Census Tracts'}['0']->NAME;
-            $new_rec['tract_id'] = $f_rec->geographies->{'Census Tracts'}['0']->TRACT;
+            if ( property_exists( $f_rec->geographies->{'2010 Census Blocks'}['0'], 'NAME' ))  $new_rec['block_2010_name'] = $f_rec->geographies->{'2010 Census Blocks'}['0']->NAME;
+            if ( property_exists( $f_rec->geographies->{'2010 Census Blocks'}['0'], 'BLOCK' )) $new_rec['block_2010_id'] = $f_rec->geographies->{'2010 Census Blocks'}['0']->BLOCK;
+            if ( property_exists( $f_rec->geographies->{'Census Tracts'}['0'], 'NAME' )) $new_rec['tract_name'] = $f_rec->geographies->{'Census Tracts'}['0']->NAME;
+            if ( property_exists( $f_rec->geographies->{'Census Tracts'}['0'], 'BLOCK' )) $new_rec['tract_id'] = $f_rec->geographies->{'Census Tracts'}['0']->TRACT;
             $new_rec['zip'] = $zip;
-            $new_rec['county_id'] = $f_rec->geographies->Counties['0']->COUNTY;
-            $new_rec['state_id'] = $f_rec->geographies->States['0']->STATE;
+            if ( property_exists( $f_rec->geographies->Counties['0'], 'COUNTY' )) $new_rec['county_id'] = $f_rec->geographies->Counties['0']->COUNTY;
+            if ( property_exists( $f_rec->geographies->States['0'], 'STATE' )) $new_rec['state_id'] =  $f_rec->geographies->States['0']->STATE;
             $new_rec['longitude'] = $f_rec->coordinates->x;
             $new_rec['latitude'] = $f_rec->coordinates->y;
             $new_rec['tiger_line_id'] = $f_rec->tigerLine->tigerLineId;
@@ -158,24 +160,32 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
                 if ($city_address_attribute_differences = $census_attributes->diff($census_attributes_rec, $new_rec)) {
                     $census_attributes->update($census_attributes_id, $city_address_attribute_differences);
                     $totals['census_attributes']['update']++;
+//print "U";
                 } else {
                     $totals['census_attributes']['N/A']++;
                 }
             } else {
 //print_r($new_rec);
                 $census_attributes->add($new_rec);
+//print "A";
                 $totals['census_attributes']['insert']++;
             }
 
+        } else {
+            // Census did not find a matching address.
+//print "No match found for $street $city, $state, $zip";
+
         }
 
+    } else {
+//print "Census returned bad results for $street $city, $state, $zip";
     }
 
 
 
 }
 
-print "\nTotals\n--------------------------------------------------------------------------\n";
+print "\n\nTotals\n--------------------------------------------------------------------------\n";
 
 printf("%-30.30s %10s %10s %10s %10s\n", 'table', 'insert', 'update', 'N/A', 'ERROR');
 foreach ($totals AS $table => $counts) {
