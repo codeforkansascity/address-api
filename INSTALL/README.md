@@ -20,7 +20,8 @@ The following software will be installed
   * GDAL 1.11.2, released 2015/02/10
 
 ## Requirements
-  
+
+* Make certain ssh can be executed and it must be in you path  
 * [Virtual Box](https://www.virtualbox.org/)
 * [Vagrant](https://www.vagrantup.com/)
 
@@ -151,7 +152,7 @@ On your computer add the following to /etc/hosts
 ````
 
 
-You should not beable to browse to the following
+You should now be able to browse to the following
 
 ````
 http://dev-api.codeforkc.local/address-attributes/V0/210%20W%2019TH%20TER%20FL%201%2C?city=Kansas%20City&state=mo
