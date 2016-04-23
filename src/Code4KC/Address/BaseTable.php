@@ -111,18 +111,44 @@ class BaseTable
 
     }
 
-    public function update_field_not_in($field, $value, $ids)
+
+    public function git_ids_not_in($ids)
+    {
+
+        $inQuery = implode(',', $ids);
+
+        $sql = 'SELECT id  AS id FROM ' . $this->table_name . '  WHERE id  NOT IN (' . $inQuery . ')';
+
+        try {
+            $query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+
+            $query->execute();
+
+            $result = $query->fetchAll(PDO::FETCH_COLUMN);
+
+        } catch (PDOException  $e) {
+            print ($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+
+        return $result;
+
+    }
+
+    public function update_field_in($field, $value, $ids)
     {
 
         $inQuery = implode(',', array_fill(0, count($ids), '?'));
 
-        $sql = 'UPDATE ' . $this->table_name . ' SET ' . $field . ' = ?,  changed = current_timestamp ' . ' WHERE id  NOT IN (' . $inQuery . ')';
+        $sql = 'UPDATE ' . $this->table_name . ' SET ' . $field . ' = ?,  changed = current_timestamp ' . ' WHERE id IN (' . $inQuery . ')';
 
         try {
             $query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
             $query->bindValue(1, $value);
             foreach ($ids as $k => $id)
-                $query->bindValue(($k+2), $id);
+                $query->bindValue(($k + 2), $id);
             $ret = $query->execute();
         } catch (PDOException  $e) {
             print ($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
@@ -143,7 +169,8 @@ class BaseTable
      * @param $changes
      * @return bool
      */
-    public function save_changes( $id, $changes ) {
+    public function save_changes($id, $changes)
+    {
         $query = '';
         $sep = '';
         $fields = '';
@@ -239,12 +266,12 @@ class BaseTable
     }
 
 
-
-    function is_same($data, $current_record, $fields ) {
+    function is_same($data, $current_record, $fields)
+    {
 
         $changes = array();
 
-        foreach ($fields AS $field ) {
+        foreach ($fields AS $field) {
 
             if (array_key_exists($field, $data) && $current_record[$field] != $data[$field]) {
 
@@ -253,7 +280,7 @@ class BaseTable
                     'to' => $data[$field]
                 );
 
-                $changes[ $field ] = $change;
+                $changes[$field] = $change;
             }
         }
 
@@ -290,7 +317,7 @@ class BaseTable
         if (array_key_exists($field_name, $this->field_definitions)) {
             $size = $this->field_definitions[$field_name]['size'];
 
-            if ($size && $size > 0 ) {
+            if ($size && $size > 0) {
                 if (strlen($value) > $size) {
                     $this->add_to_error_messages($field_name, ' is ' . strlen($value) . ' long, only ' . $size . ' allowed  "' . $value . '""');
                     $valid_record = false;
@@ -324,8 +351,8 @@ class BaseTable
 
                 case 'lookup':
 
-                    if ( array_key_exists( $field_name, $this->field_value_lookup)) {
-                        if ( !array_key_exists( $value, $this->field_value_lookup[ $field_name ] ) ) {
+                    if (array_key_exists($field_name, $this->field_value_lookup)) {
+                        if (!array_key_exists($value, $this->field_value_lookup[$field_name])) {
                             $this->add_to_error_messages($field_name, $value . ' is not a valid value');
                             $valid_record = false;
                         }
@@ -337,8 +364,8 @@ class BaseTable
 
                 case 'YN':
 
-                    if ( !( $value == 'Y' || $value == 'N' ) ) {
-                        $this->add_to_error_messages($field_name, ' is not Y/N it is ' . $value );
+                    if (!($value == 'Y' || $value == 'N')) {
+                        $this->add_to_error_messages($field_name, ' is not Y/N it is ' . $value);
                         $valid_record = false;
                     }
 
