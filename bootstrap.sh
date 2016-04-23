@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+#
+# Used by Vagrant startup
+#
     # print command to stdout before executing it:
     set -x
 
