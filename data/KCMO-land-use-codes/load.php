@@ -12,8 +12,8 @@ class KCMOLandUse extends \Code4KC\Address\BaseLoad
 {
 
     var $totals = array(
-        'input' => array('insert' => 0, 'update' => 0, 'inactive' => 0, 'N/A' => 0, 'error' => 0),
-        'land_use_codes' => array('insert' => 0, 'update' => 0,'inactive' => 0, 'N/A' => 0, 'error' => 0),
+        'input' => array('insert' => 0, 'update' => 0, 'inactive' => 0, 're-activate' => 0, 'N/A' => 0, 'error' => 0),
+        'land_use_codes' => array('insert' => 0, 'update' => 0, 'inactive' => 0, 're-activate' => 0, 'N/A' => 0, 'error' => 0),
     );
 
     function __construct(&$dbh, $DB_NAME, $debug = false)
@@ -39,8 +39,8 @@ class KCMOLandUse extends \Code4KC\Address\BaseLoad
 
         $LandUseCodes = new \Code4KC\Address\LandUseCodes($this->dbh, true);
 
-        if ( !empty($this->input_file) ) {
-            if ( file_exists( $this->input_file)) {
+        if (!empty($this->input_file)) {
+            if (file_exists($this->input_file)) {
                 $records = $this->get_data_file($this->input_file);
             } else {
                 print "\nERROR: input file " . $this->input_file . " was not found or readable.\n";
@@ -51,10 +51,6 @@ class KCMOLandUse extends \Code4KC\Address\BaseLoad
             $records = json_decode($json, true);        // Convert JSON into an array
         }
 
-        $fields_to_update = array(
-            'land_use_code',
-            'land_use_description'
-        );
 
         $active_ids = array();
 
@@ -67,15 +63,27 @@ class KCMOLandUse extends \Code4KC\Address\BaseLoad
                 $this->totals['input']['error']++;
             } else {
 
+                $fields_to_update = array(
+                    'land_use_code',
+                    'land_use_description'
+                );
+
                 $land_use_code = $data['land_use_code'];
 
                 if ($current_record = $LandUseCodes->find_by_code($land_use_code)) {
+
+                    if ($current_record['active'] == 0) {                                // Record is inactive
+                        $this->totals['land_use_codes']['re-activate']++;                   // ReActivate it and count it
+                        $fields_to_update[] = 'active';                                     // Setup it up to update to active
+                        $current_record['active'] = 1;
+                    }
+
 
                     $changes = $LandUseCodes->is_same($data, $current_record, $fields_to_update);
 
                     if (count($changes)) {
 
-                        if ( $this->verbose ) {
+                        if ($this->verbose) {
                             $this->display_record($this->row, 'Change', $data);
                         }
 
@@ -89,7 +97,7 @@ class KCMOLandUse extends \Code4KC\Address\BaseLoad
                         $active_ids[] = $current_record['id'];
                         $this->totals['land_use_codes']['update']++;
                     } else {
-                        if ( $this->verbose ) {
+                        if ($this->verbose) {
                             $this->display_record($this->row, 'N/A', $data);
                         }
 
@@ -99,7 +107,7 @@ class KCMOLandUse extends \Code4KC\Address\BaseLoad
 
                 } else {
                     $this->totals['land_use_codes']['insert']++;
-                    if ( $this->verbose ) {
+                    if ($this->verbose) {
                         $this->display_record($this->row, 'Add', $data);
                     }
 
@@ -111,19 +119,20 @@ class KCMOLandUse extends \Code4KC\Address\BaseLoad
             }
         }
 
-        if ( !$this->dry_run                                                // Can not report correct number of deletes on a dry run
-        && count($active_ids) > 0 ) {
+        if (!$this->dry_run                                                // Can not report correct number of deletes on a dry run
+            && count($active_ids) > 0
+        ) {
             $inactive_ids = $LandUseCodes->git_ids_not_in($active_ids);
 
-            if ( $this->verbose) {
+            if ($this->verbose) {
 
-                if ( count($inactive_ids)) {
+                if (count($inactive_ids)) {
                     $ids_to_inactivate = implode(',', $inactive_ids);
                     printf("%d %10s: %5s %s\n", count($inactive_ids), "id's  to Inactivate", '', $ids_to_inactivate);
                 }
             }
-            if ( count($inactive_ids)) {
-                $this->totals['land_use_codes']['inactive'] = $LandUseCodes->update_field_not_in('active', 0, $active_ids);
+            if (count($inactive_ids)) {
+                $this->totals['land_use_codes']['inactive'] = $LandUseCodes->update_field_in('active', 0, $inactive_ids);
             }
         }
     }
@@ -164,6 +173,3 @@ try {
 }
 
 $run = new KCMOLandUse($dbh, $DB_NAME);
-
-
-

@@ -64,13 +64,13 @@ class BaseLoad
     function end_load() {
 
 
-        print "\nTotals\n------------------------------------------------------------------------------------\n";
+        print "\nTotals\n--------------------------------------------------------------------------------------\n";
 
-        printf("%-30.30s %10s %10s %10s %10s %10s\n", 'table', 'insert', 'update', 'inactive', 'N/A', 'ERROR');
+        printf("%-30.30s %10s %10s %10s %10s %10s\n", 'table', 'insert', 'update', 'inactive', 're-activate', 'N/A', 'ERROR');
         foreach ($this->totals AS $table => $counts) {
-            printf("%-30.30s %10d %10d %10d %10d %10d\n", $table, $counts['insert'], $counts['update'], $counts['inactive'], $counts['N/A'], $counts['error']);
+            printf("%-30.30s %10d %10d %10d %10d %10d\n", $table, $counts['insert'], $counts['update'], $counts['inactive'], $counts['re-activate'], $counts['N/A'], $counts['error']);
         }
-        print "------------------------------------------------------------------------------------\n\n";
+        print "--------------------------------------------------------------------------------------\n\n";
 
 
         print "Number of lines processed $this->row\n";
@@ -222,7 +222,7 @@ class BaseLoad
 
                     case 'v':
                     case 'verbose':
-                        $this->verbose = true;
+                    $this->verbose = true;
                         break;
 
                 }
