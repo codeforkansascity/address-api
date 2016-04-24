@@ -130,6 +130,10 @@ EOF
     php installer
     sudo mv composer.phar /usr/local/bin/composer
 
+    ###php unit###
+    wget https://phar.phpunit.de/phpunit-4.8.9.phar
+    chmod +x phpunit-4.8.9.phar
+    sudo mv phpunit-4.8.9.phar /usr/local/bin/phpunit.phar
 
 VHOST=$(cat <<EOF
 <VirtualHost *:80>
