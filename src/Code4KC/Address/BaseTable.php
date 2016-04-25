@@ -49,6 +49,7 @@ class BaseTable
             }
 
             $sql = 'INSERT INTO ' . $this->table_name . ' (' . $names . ') VALUES (' . $values . ')';
+
             $this->add_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
         }
 

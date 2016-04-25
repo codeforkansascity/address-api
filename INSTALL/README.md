@@ -175,3 +175,71 @@ We need to figure out how if we need sfcgal and address_standardizer and if so h
 CREATE EXTENSION postgis_sfcgal;
 CREATE EXTENSION address_standardizer;
 ````
+
+# Installing `gh-pages` and Jekyll
+
+
+Do this above the `address-api` directory, so both are at the same level.
+
+1 .Create clone of `address-api` and switch to the `gh-pages` branch
+
+````
+git clone git@github.com:zmon/address-api.git address-api-gh-pages
+cd address-api-gh-pages
+git remote add upstream git@github.com:codeforkansascity/address-api.git
+git checkout gh-pages
+````
+
+2. Make it so your local git does not include CNAME by editing .git/info/exclude and adding the line
+
+````
+CNAME
+````
+
+2. Contect `address-api-gh-pages` to your virual box
+
+Edit `Vagrantfile` in the `address-api` directory, and add the following line at about line 42.
+
+````
+  config.vm.synced_folder "../address-api-gh-pages", "/var/www-gh-pages"
+````
+
+3. Start or restart your Vagrant box from the `address-api` directory.
+
+````
+vagrant reload
+````
+
+4. Log into the Vagrant box
+
+````
+vagrant ssh
+````
+
+5. Install Ruby 2.2.3 
+
+
+````
+sudo su -
+rvm install ruby-2.2.3
+rvm use ruby-2.2.3 --default
+gem install jekyll
+
+````
+
+May need to do
+
+````
+sudo apt-get install ruby-dev
+````
+
+Start Jekyll
+
+````
+cd /var/www-gh-pages
+jekyll serve --host 0.0.0.0
+````
+
+Now go view the site at http://192.168.33.11:4000/
+
+
