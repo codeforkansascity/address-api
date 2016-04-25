@@ -190,6 +190,12 @@ git remote add upstream git@github.com:codeforkansascity/address-api.git
 git checkout gh-pages
 ````
 
+2. Make it so your local git does not include CNAME by editing .git/info/exclude and adding the line
+
+````
+CNAME
+````
+
 2. Contect `address-api-gh-pages` to your virual box
 
 Edit `Vagrantfile` in the `address-api` directory, and add the following line at about line 42.
