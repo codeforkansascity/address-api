@@ -21,6 +21,13 @@ class CityAddressAttributes extends BaseTable
         'neighborhood' => '',
         'nhood' => '',
         'council_district' => '',
+        'land_bank_property' => 0,
+    );
+
+    var $field_definitions = array(
+        'land_use_code' => array('size' => 10, 'type' => 'char'),
+        'land_bank_property' => array('size' => false, 'type' => 'int')
+
     );
 
 }
