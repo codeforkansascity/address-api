@@ -18,6 +18,7 @@ class BaseLoad
 
     var $input_file = '';       // CLI Options
     var $input_url = '';
+    var $parameters = '';
     var $dry_run = true;
     var $verbose = false;
 
@@ -42,12 +43,16 @@ class BaseLoad
 
     }
 
-    function get_data_curl($source_url)
+    function get_data_curl($source_url, $parameters = '')
     {
-
         $ch = curl_init();                // create curl resource
         curl_setopt($ch, CURLOPT_URL, $source_url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //return the transfer as a string
+        if ( !empty( $parameters )) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
+        }
+
+
         $data = curl_exec($ch); // $output contains the output string
         curl_close($ch); // close curl resource to free up system resources
 
@@ -64,13 +69,13 @@ class BaseLoad
     function end_load() {
 
 
-        print "\nTotals\n--------------------------------------------------------------------------------------\n";
+        print "\nTotals\n-------------------------------------------------------------------------------------------------\n";
 
-        printf("%-30.30s %10s %10s %10s %10s %10s\n", 'table', 'insert', 'update', 'inactive', 're-activate', 'N/A', 'ERROR');
+        printf("%-30.30s %10s %10s %10s %10s %10s %10s \n", 'table', 'insert', 'update', 'inactive', 're-activate', 'N/A', 'ERROR');
         foreach ($this->totals AS $table => $counts) {
-            printf("%-30.30s %10d %10d %10d %10d %10d\n", $table, $counts['insert'], $counts['update'], $counts['inactive'], $counts['re-activate'], $counts['N/A'], $counts['error']);
+            printf("%-30.30s %10d %10d %10d %10d %10d %10d\n", $table, $counts['insert'], $counts['update'], $counts['inactive'], $counts['re-activate'], $counts['N/A'], $counts['error']);
         }
-        print "--------------------------------------------------------------------------------------\n\n";
+        print "-------------------------------------------------------------------------------------------------\n\n";
 
 
         print "Number of lines processed $this->row\n";
@@ -164,7 +169,9 @@ class BaseLoad
         $shortopts = "";
         $shortopts .= "f::";  // Optional value
         $shortopts .= "u::";  // Optional value
+        $shortopts .= "p::"; // Optional value
         $shortopts .= "d"; // Optional value
+
         $shortopts .= "U"; // Optional value
         $shortopts .= "v"; // Optional value
         $shortopts .= "h"; // Optional value
@@ -173,7 +180,9 @@ class BaseLoad
         $longopts = array(
             "input-file::",     // Optional value
             "input-url::",
+            'param::',
             "dry-run",    // Optional value
+
             "update",    // Optional value
             "production",    // Optional value
             "help",
@@ -209,11 +218,17 @@ class BaseLoad
                         }
                         break;
 
+                    case 'p':
+                    case 'param':
+                        $this->parameters = $val;
+                        break;
 
                     case 'd':
                     case 'dry-run':
                         $this->dry_run = true;
                         break;
+
+
 
                     case 'U':
                     case 'update':
@@ -248,10 +263,11 @@ class BaseLoad
 
         $input_file = empty($this->input_file) ? 'filename' : $this->input_file;
         $input_url = empty($this->input_url) ? 'http://some.url' : $this->input_url;
+        $input_param = empty($this->input_param) ? 'type=json&no-spaces=true' : $this->input_param;
 
 
-        print $argv[0] . " [--input-file=$input_file | --input-url=$input_url ] [ [ --dry-run | --update ] --verbose ]\n";
-        print $argv[0] . " [-f=$input_file | -u=$input_url ] [ [ -d | -U ] -v ]\n";
+        print $argv[0] . " [--input-file=$input_file | --input-url=$input_url ] [ --input-param=$input_param ] [ --dry-run | --update ] --verbose ]\n";
+        print $argv[0] . " [-f=$input_file | -u=$input_url ] [ -p=$input_param ] [ [ -d | -U ] -v ]\n";
     }
 
 

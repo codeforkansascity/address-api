@@ -1,0 +1,20 @@
+#!/bin/sh
+TEMP_FILE_NAME=/tmp/land_bank_properties.json
+SCRIPT_PATH=`dirname $0`
+#
+# Grab and put the data into a temp file
+#
+curl --data 'geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&where=1%3D1&returnCountOnly=false&returnIdsOnly=false&returnGeometry=true&maxAllowableOffset=&outSR=&outFields=&f=pjson' https://maps.kcmo.org/kcgis/rest/services/external/DataLayers/MapServer/12/query > $TEMP_FILE_NAME 
+#
+# Load the data
+#
+cd $SCRIPT_PATH
+/usr/bin/php ./load.php -U  -f=$TEMP_FILE_NAME
+#
+# Remove the temp file
+#
+rm  $TEMP_FILE_NAME
+
+#/usr/bin/php load.php  -u=https://maps.kcmo.org/kcgis/rest/services/external/DataLayers/MapServer/12/query -p='geometryType=esriGeometryPolygon&inSR=4326&spatialRel=esriSpatialRelIntersects&where=1%3D1&returnCountOnly=false&returnIdsOnly=false&returnGeometry=true&maxAllowableOffset=&outSR=&outFields=&f=pjson'
+
+
