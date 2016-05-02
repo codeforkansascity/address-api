@@ -113,7 +113,7 @@ class KCMOLandBankParcels extends \Code4KC\Address\BaseLoad
                         }
 
                         if (!$this->dry_run
-                            && $current_record['active']
+     //                       && $current_record['active']
                             && $CityAddressAttributes->save_changes($current_record['id'], $changes)
                         ) {
 

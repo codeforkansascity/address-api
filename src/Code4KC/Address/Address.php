@@ -51,6 +51,7 @@ class Address extends BaseTable
                 c.neighborhood AS city_nighborhood,
                 c.nhood AS city_nhood,
                 c.council_district AS city_council_district,
+                c.land_bank_property AS city_land_bank_property,
 
                 k.county_address_id AS county_id,
                 b.block_2010_name AS census_block_2010_name,
