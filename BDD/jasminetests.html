@@ -1,0 +1,134 @@
+<html>
+<head>
+    <link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-core/jasmine_favicon.png">
+    <link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-core/jasmine.css">
+
+
+    <script type="text/javascript" src="jasmine/lib/jasmine-core/jasmine.js"></script>
+    <script type="text/javascript" src="jasmine/lib/jasmine-core/jasmine-html.js"></script>
+    <script type="text/javascript" src="jasmine/lib/jasmine-core/boot.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+</head>
+<div>
+    <a href="http://jasmine.github.io/2.4/introduction.html">Click Here for the Jasmine Tutorial</a>
+</div>
+<script>
+    describe("A suite", function() {
+        it("contains spec with an expectation", function() {
+            expect(true).toBe(true);
+        });
+    });
+
+    describe("A suite is just a function", function() {
+        var a;
+
+        it("and so is a spec", function() {
+            a = true;
+
+            expect(a).toBe(true);
+        });
+    });
+
+    describe("dev-api.codeforkc.local basic test", function() {
+        var callback = jasmine.createSpy('callback');
+        beforeEach(function(done) {
+            (function() {
+                var url = "http://dev-api.codeforkc.local/address-attributes/V0/210%20W%2019TH%20TER%20FL%201%2C?city=Kansas%20City&state=mo";
+                $.getJSON( url, {
+                            //tags: "mount rainier",
+                            //tagmode: "any",
+                            //tagmode: "any",
+                            //format: "json"
+                        })
+                        .done(function(data){
+                            callback(data);
+                            done();
+                        });
+
+            })();
+        }, 200);
+
+
+       it("returns some data", function(done){
+           setTimeout(function() {
+               done();
+           }, 800);
+
+           expect(callback).toHaveBeenCalledWith(jasmine.objectContaining({
+               code: 200, status: 'success', message: '',
+               data:
+               {
+                   id: 200567,
+                   single_line_address: '210 W 19TH TER FL 1, KANSAS CITY, MO',
+                   street_number: '210',
+                   pre_direction: 'W',
+                   street_name: '19TH',
+                   street_type: 'TER',
+                   post_direction: '',
+                   internal: 'FL 1      ',
+                   city: 'KANSAS CITY',
+                   state: 'MO', zip: '',
+                   zip4: '', longitude: '0.0000000000',
+                   latitude: '0.0000000000', added: '2016-01-03 18:03:12.381492',
+                   changed: '2016-01-03 18:03:12.381492',
+                   address_id: 200567, city_id: 124911,
+                   city_land_use_code: '3120 - Light Industry / Storage / Distribution / Vehicle Sale/Service',
+                   city_land_use: 'Industrial',
+                   city_classification: 'M1-5',
+                   city_sub_class: 'M1', city_nighborhood: '',
+                   city_nhood: 'Crossroads',
+                   city_council_district: '4',
+                   county_id: 'JA29520250800000000',
+                   census_block_2010_name: 'Block 1017',
+                   census_block_2010_id: '1017',
+                   census_track_name: 'Census Tract 158',
+                   census_track_id: '015800',
+                   census_zip: '64108',
+                   census_county_id: '095',
+                   census_county_state_id: '29',
+                   census_longitude: '-94.586296',
+                   census_latitude: '39.090057',
+                   census_tiger_line_id: '91445832',
+                   census_metro_area: 'Kansas City, MO-KS',
+                   county_parcel_number: '29-520-25-08-00-0-00-000',
+                   county_name: '29-520-25-08-00-0-00-000',
+                   county_tif_district: null,
+                   county_tif_project: null,
+                   county_neighborhood_code: '9937',
+                   county_pca_code: '3010',
+                   county_land_use_code: '2240',
+                   county_tca_code: '001', county_document_number: null, county_book_number: null, county_conveyance_area: null,
+                   county_conveyance_designator: null,
+                   county_legal_description: null, county_object_id: '41260', county_page_number: null, county_situs_address: '210 W 19TH TER',
+                   county_situs_city: 'KANSAS CITY',
+                   county_situs_state: 'MO', county_situs_zip: '64108', county_owner: 'KC-STUDIO LLC', county_owner_address: '1614 15TH STREET STE 300',
+                   county_owner_city: 'DENVER',
+                   county_owner_state: 'CO', county_owner_zip: '80202', county_stated_area: '0.2870 a', county_tot_sqf_l_area: '0', county_year_built: '0',
+                   county_property_area: '12500.000000000000000',
+                   county_property_picture: 'http://maps.jacksongov.org/AscendPics/Pictures/29-520/29-520-25-08-00-0-00-000_AA.jpg',
+                   county_property_report: 'http://maps.jacksongov.org/PropertyReport/PropertyReport.cfm?pid=29-520-25-08-00-0-00-000', county_market_value: '1855000', county_assessed_value: '593600',
+                   county_assessed_improvement: '513600',
+                   county_assessed_land: '80000', county_taxable_value: '593600', county_mtg_co: null, county_mtg_co_address: null, county_mtg_co_city: null,
+                   county_mtg_co_state: null,
+                   county_mtg_co_zip: null, county_common_area: null, county_floor_designator: null, county_floor_name_designator: null, county_exempt: 'N', county_complex_name: null,
+                   county_cid: 'Crossroads CID',
+                   county_eff_from_date: '1980-01-01T00:00:00.000Z', county_eff_to_date: '1753-01-01T00:00:00.000Z', county_extract_date: '2015-09-17T13:30:42.000Z',
+                   county_shape_st_area: '12500.002876000000470',
+                   county_shape_st_lenght: '450.000073999999984', county_shape_st_area_1: '12500.002876000000470', county_shape_st_length_1: '12500.002876000000470',
+                   county_shape_st_legnth_2: '450.000073999999984',
+                   county_shape_st_area_2: '450.000073999999984',
+                   county_sim_con_div_type: null, county_tax_year: '2015',
+                   county_type: '7',
+                   county_z_designator: null
+               }
+           }));
+           expect(callback).not.toHaveBeenCalledWith(jasmine.objectContaining({
+               some_weird_property: 123456//for example we could set things not to see here.
+           }));
+
+       });
+    });
+</script>
+
+</html>
