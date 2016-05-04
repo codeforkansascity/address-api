@@ -31,7 +31,7 @@
     apt-get install -y gdal-bin
 
     # From previous postgresql install line
-    apt-get install -y libgdal-dev  
+    apt-get install -y libgdal-dev
 
     # since we do not have pgxs.mk needed for making pgsql-ogr-fdw in the next step
     # WARNING:  this may cause issues
@@ -44,7 +44,7 @@
         make
         sudo make install
     )
-   
+
 
     sudo -u postgres psql -c "CREATE USER vagrant WITH PASSWORD 'vagrant';"
     sudo -u postgres psql -c "ALTER ROLE vagrant SUPERUSER CREATEROLE CREATEDB REPLICATION;"
@@ -158,7 +158,7 @@ VHOST=$(cat <<EOF
     # after it has been globally disabled with "a2disconf".
     #Include conf-available/serve-cgi-bin.conf
 
-    DirectoryIndex index.php
+    DirectoryIndex index.php index.html
 
 
     <Directory /var/www/webroot>
@@ -168,7 +168,7 @@ VHOST=$(cat <<EOF
 
         Options Indexes FollowSymLinks
         AllowOverride All
-        Require all granted 
+        Require all granted
 
         RewriteEngine On
         RewriteCond %{REQUEST_FILENAME} !-d
