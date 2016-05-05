@@ -169,9 +169,8 @@
         },
         "data": {
           "description": "The data returned in response to the request",
-          "schema": {
-            "$ref": "#/definitions/Address"
-          }
+          "type": "object",
+          "$ref": "#/definitions/Address"
         }
       }
     },
