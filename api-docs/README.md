@@ -5,4 +5,6 @@ The Address API is documented in the "swagger.json" file in this directory. The 
 
 To add or modify the documentation, simply alter the "swagger.json" file. The "paths" node contains the endpoints, and the "definitions" node contains the descriptions of the response objects. For a complete reference, check out [the specification](http://swagger.io/specification/).
 
+The Swagger UI is served at {host}/api-docs. Locally, that would be: [http://dev-api.codeforkc.local/api-docs](http://dev-api.codeforkc.local/api-docs).
+
 Eventually, we should look at further isolating what is unique to our project (the JSON documentation) from the Swagger UI distribution.
