@@ -22,7 +22,7 @@ psql address_api < create.sql
 3. Add to cron to run every Monday at 10:10am
 
 ````
-10 10 * * 1 /usr/bin/php /var/www/data/KCMO-land-use-codes/load.php -U -u=https://data.kcmo.org/resource/mgwp-vfsh.json
+55 3 * * * (cd /var/wwwsites/dev-api.codeforkc.org/data/KCMO-land-use-codes; /usr/bin/php ./load.php -U -u=https://data.kcmo.org/resource/mgwp-vfsh.json | mail -s "KCMO-land-use-codes" paulb@savagesoft.com )
 ````
 
 
