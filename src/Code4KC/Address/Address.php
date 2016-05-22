@@ -2,7 +2,7 @@
 
 namespace Code4KC\Address;
 
-use \PDO as PDO;
+use PDO as PDO;
 
 /**
  * Class Address
@@ -137,18 +137,9 @@ class Address extends BaseTable
 
     VAR $all_base_sql = 'SELECT
                 a.id AS address_id,
-                a.single_line_address,
-                a.city,
-                a.state,
-                a.zip,
-                a.longitude,
-                a.latitude,
-
                 k.city_address_id AS city_id,
                 c.land_bank_property AS city_land_bank_property,
-
                 k.county_address_id AS county_id,
-
                 cd.situs_address AS county_situs_address,
                 cd.situs_city AS county_situs_city,
                 cd.situs_state AS county_situs_state,
@@ -157,23 +148,7 @@ class Address extends BaseTable
                 cd.owner_address AS county_owner_address,
                 cd.owner_city AS county_owner_city,
                 cd.owner_state AS county_owner_state,
-                cd.owner_zip AS county_owner_zip,
-                cd.stated_area AS county_stated_area,
-                cd.tot_sqf_l_area AS county_tot_sqf_l_area,
-                cd.year_built AS county_year_built,
-                cd.property_area AS county_property_area,
-                cd.property_picture AS county_property_picture,
-                cd.property_report AS county_property_report,
-                cd.market_value AS county_market_value,
-                cd.assessed_value AS county_assessed_value,
-                cd.assessed_improvement AS county_assessed_improvement,
-                cd.assessed_land AS county_assessed_land,
-                cd.taxable_value AS county_taxable_value,
-                cd.mtg_co AS county_mtg_co,
-                cd.mtg_co_address AS county_mtg_co_address,
-                cd.mtg_co_city AS county_mtg_co_city,
-                cd.mtg_co_state AS county_mtg_co_state,
-                cd.mtg_co_zip AS county_mtg_co_zip
+                cd.owner_zip AS county_owner_zip
 
 
                 FROM city_address_attributes c
@@ -287,11 +262,50 @@ class Address extends BaseTable
     function findall()
     {
 
+<<<<<<< HEAD
+        /*
+         * We ended up copying to a csv file on the server as the postgres user due to memory and time issues
+         *
+         * copy (SELECT
+                a.id AS address_id,
+                k.city_address_id AS city_id,
+                c.land_bank_property AS city_land_bank_property,
+                k.county_address_id AS county_id,
+                cd.situs_address AS county_situs_address,
+                cd.situs_city AS county_situs_city,
+                cd.situs_state AS county_situs_state,
+                cd.situs_zip AS county_situs_zip,
+                cd.owner AS county_owner,
+                cd.owner_address AS county_owner_address,
+                cd.owner_city AS county_owner_city,
+                cd.owner_state AS county_owner_state,
+                cd.owner_zip AS county_owner_zip
+
+
+
+                FROM city_address_attributes c
+                LEFT JOIN address_keys k ON k.city_address_id = c.id
+                LEFT JOIN address a on a.id = k.address_id
+                LEFT JOIN county_address_data cd ON cd.id = k.county_address_id
+) TO '/tmp/all-addresses.csv' With CSV DELIMITER ',';
+         */
+
+
+        if (!$this->metro_area_query) {
+            $sql = $this->all_base_sql . '
+
+
+                ';
+
+            print "<pre>$sql -- " . __FILE__ . ' ' . __LINE__ . "</pre>";
+            die;
+=======
         if (!$this->metro_area_query) {
             $sql = $this->all_base_sql  . '
 
              
                 ';
+>>>>>>> 403d2137a2cfc8483a0088677e3ba5085fa4a1dc
             $this->metro_area_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
         }
 
