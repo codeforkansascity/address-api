@@ -151,7 +151,6 @@ class Address extends BaseTable
                 cd.owner_zip AS county_owner_zip
 
 
-
                 FROM city_address_attributes c
                 LEFT JOIN address_keys k ON k.city_address_id = c.id
                 LEFT JOIN address a on a.id = k.address_id
@@ -263,6 +262,7 @@ class Address extends BaseTable
     function findall()
     {
 
+<<<<<<< HEAD
         /*
          * We ended up copying to a csv file on the server as the postgres user due to memory and time issues
          *
@@ -299,6 +299,13 @@ class Address extends BaseTable
 
             print "<pre>$sql -- " . __FILE__ . ' ' . __LINE__ . "</pre>";
             die;
+=======
+        if (!$this->metro_area_query) {
+            $sql = $this->all_base_sql  . '
+
+             
+                ';
+>>>>>>> 403d2137a2cfc8483a0088677e3ba5085fa4a1dc
             $this->metro_area_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
         }
 
