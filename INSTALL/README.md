@@ -8,14 +8,14 @@ The following software will be installed
 * PHP 5.5.9
 * Apache/2.4.7
 * Postgresql 9.3.11 - server encoding UTF8, installed extensions
- 
+
   * fuzzystrmatch     1.0     - determine similarities and distance between strings
   * ogr_fdw           1.0     - foreign-data wrapper for GIS data access - https://github.com/pramsey/pgsql-ogr-fdw
   * plpgsql           1.0     - PL/pgSQL procedural language
   * postgis           2.1.2   - PostGIS geometry, geography, and raster spatial types and functions
   * postgis_topology  2.1.2   - PostGIS topology spatial types and functions
   * postgres_fdw      1.0     - foreign-data wrapper for remote PostgreSQL servers
- 
+
 * PostGIS 2.1.2 r12389
   * GDAL 1.11.2, released 2015/02/10
 
@@ -29,7 +29,7 @@ The following software will be installed
 ## Clone repository
 
 ````
-    git clone git@github.com:codeforkansascity/address-api.git 
+    git clone git@github.com:codeforkansascity/address-api.git
     cd address-api
 ````
 
@@ -41,14 +41,14 @@ You need to create a directory called `dumps` and copy the dump files to them
     mkdir dumps
 ````
 
-Copy he dumps from https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k 
+Copy he dumps from https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k
 to the dumps directory and unzip them
 
 ````
    cd dumps
 
    gunzip address_api-20160220-0548.dump.gz
-   gunzip code4kc-20160220-0548.dump.gz 
+   gunzip code4kc-20160220-0548.dump.gz
 
    cd ..
 ````
@@ -82,56 +82,19 @@ sudo su - postgres
 ````
    cd /var/www/dumps
 
-   pg_restore -C -d address_api address_api-20160220-0548.dump 
+   pg_restore -C -d address_api address_api-20160220-0548.dump
    pg_restore -C -d code4kc code4kc-20160220-0548.dump
 ````
 
 You will get several errors but you can ignor them
 
 ## Fix ownerships
+
+Run the "fix_ownerships.psql" script, as shown below. Tap the "q" key to continue when execution pauses.
+
 ````
-psql
-\c address_api
-alter table  address                     OWNER TO c4kc;
-alter table  address_alias               OWNER TO c4kc;
-alter table  address_id_seq              OWNER TO c4kc;
-alter table  address_id_seq_02           OWNER TO c4kc;
-alter table  address_key_id_seq          OWNER TO c4kc;
-alter table  address_keys                OWNER TO c4kc;
-alter table  address_string_alias_id_seq OWNER TO c4kc;
-alter table  census_attributes           OWNER TO c4kc;
-alter table  city_address_attributes     OWNER TO c4kc;
-alter table  county_address_attributes   OWNER TO c4kc;
-alter table  county_address_data         OWNER TO c4kc;
-alter table  jd_wp                       OWNER TO c4kc;
-alter table  jd_wp_id_seq                OWNER TO c4kc;
-alter table  neighborhoods               OWNER TO c4kc;
-alter table  neighborhoods_id_seq        OWNER TO c4kc;
-alter table  tmp_kcmo_all_addresses      OWNER TO c4kc;
-alter table  tmp_kcmo_all_addresses_id_seq  OWNER TO c4kc;
-
-\d
-
-\c code4kc
-
-alter SCHEMA  address_spatial                     OWNER TO c4kc;
-alter table  address_spatial.auto_metro_area_tmp                     OWNER TO c4kc;
-alter table  address_spatial.census_metro_area_tmp               OWNER TO c4kc;
-alter table  address_spatial.census_metro_areas                  OWNER TO c4kc;
-alter table  address_spatial.jackson_cnt_mo_1_tmp                OWNER TO c4kc;
-alter table  address_spatial.jackson_cnt_mo_2_tmp                OWNER TO c4kc;
-alter table  address_spatial.jackson_county_mo_tax_neighborhoods OWNER TO c4kc;
-alter table  address_spatial.kc_nhood_tmp                        OWNER TO c4kc;
-alter table  address_spatial.kcc_tmp                             OWNER TO c4kc;
-alter table  address_spatial.kcmo_address_nbhd_tmp               OWNER TO c4kc;
-alter table  address_spatial.mo_kc_city_council_districts_2012   OWNER TO c4kc;
-alter table  address_spatial.mo_kc_city_neighborhoods            OWNER TO c4kc;
-alter table  address_spatial.paul                                OWNER TO c4kc;
-
-\dt *.*
-
-\q
-
+cd /var/www/data/scripts
+psql -f fix_ownerships.psql
 exit
 ````
 
@@ -162,6 +125,12 @@ And see
 
 ````
 {"code":200,"status":"success","message":"","data":{"id":200567,"single_line_address":"210 W 19TH TER FL 1, KANSAS CITY...
+````
+
+You should also be able to navigate to the api documentation:
+
+````
+http://dev-api.codeforkc.local/api-docs
 ````
 
 
@@ -216,7 +185,7 @@ vagrant reload
 vagrant ssh
 ````
 
-5. Install Ruby 2.2.3 
+5. Install Ruby 2.2.3
 
 
 ````
@@ -241,5 +210,3 @@ jekyll serve --host 0.0.0.0
 ````
 
 Now go view the site at http://192.168.33.11:4000/
-
-

@@ -545,6 +545,59 @@ $app->get('/address-attributes/V0/:address/', function ($id) use ($app) {
 
 });
 
+$app->get('/all/V0/', function () use ($app) {
+
+
+    $ret = array(
+        'code' => 404,
+        'status' => 'error',
+        'message' => 'was not valid.',
+        'data' => array()
+    );
+
+
+
+
+        if ($dbh = connect_to_address_database()) {
+
+            $address = new \Code4KC\Address\Address($dbh, true);
+
+            if ($address_recs = $address->findall()) {
+
+                $ret = array(
+                    'code' => 200,
+                    'status' => 'sucess',
+                    'message' => '',
+                    'data' => $address_recs
+                );
+
+            } else {
+                $ret = array(
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'Address not found',
+                    'data' => array()
+                );
+            }
+
+        } else {
+
+            $ret = array(
+                'code' => 500,
+                'status' => 'failed',
+                'message' => 'Unable to connect to database.',
+                'data' => array()
+            );
+        }
+
+
+
+
+
+    $app->response->setStatus($ret['code']);
+    echo json_encode($ret);
+});
+
 
 $app->get('/jd_wp/(:id)', function ($id) use ($app) {
 

@@ -5,7 +5,6 @@
     "title": "Address API",
     "description": "CodeForKC projects often rely on address information. But each project may begin with only a fraction of the information available about the property at the address. For instance, projects may need to know the census tract or block group, the coordinates (for mapping purposes), the square footage, the year the property was built, etc. Address API offers a one-stop shop to obtain this additional information. It also provides a variety of ways to look up this rich trove of property data."
   },
-  "host": "dev-api.codeforkc.local",
   "paths": {
     "/address-attributes/{version}/{streetNumber}": {
       "get": {
@@ -170,9 +169,8 @@
         },
         "data": {
           "description": "The data returned in response to the request",
-          "schema": {
-            "$ref": "#/definitions/Address"
-          }
+          "type": "object",
+          "$ref": "#/definitions/Address"
         }
       }
     },
