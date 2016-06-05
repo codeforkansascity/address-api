@@ -149,8 +149,8 @@
     },
   "/address-attributes-city-id/{version}/{cityId}": {
       "get": {
-        "summary": "Property information for a city id (KIVA PIN)",
-        "description": "City and state are also required.",
+        "summary": "TEST ENDPOINT",
+        "description": "This is a test, this is only a test.",
         "tags": [""],
         "parameters": [{
           "name": "version",
