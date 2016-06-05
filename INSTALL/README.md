@@ -21,7 +21,7 @@ The following software will be installed
 
 ## Requirements
 
-* Make certain ssh can be executed and it must be in you path  
+* Make certain ssh can be executed and it must be in you path
 * [Virtual Box](https://www.virtualbox.org/)
 * [Vagrant](https://www.vagrantup.com/)
 
@@ -32,6 +32,12 @@ The following software will be installed
     git clone git@github.com:codeforkansascity/address-api.git
     cd address-api
 ````
+
+## Install required Vagrant plugins
+```
+  $ vagrant plugin install vagrant-hostmanager
+  $ vagrant plugin install vagrant-vbguest
+```
 
 ## Setup data to be restored
 
@@ -105,20 +111,13 @@ sudo service postgresql stop
 sudo service postgresql start
 ````
 
-# Setup host environment
 
-On your computer add the following to /etc/hosts
-
-
-````
-192.168.33.11 dev-api.codeforkc.local
-````
-
+## Test that everything works
 
 You should now be able to browse to the following
 
 ````
-http://dev-api.codeforkc.local/address-attributes/V0/210%20W%2019TH%20TER%20FL%201%2C?city=Kansas%20City&state=mo
+http://dev-api.codeforkc.devel/address-attributes/V0/210%20W%2019TH%20TER%20FL%201%2C?city=Kansas%20City&state=mo
 ````
 
 And see
@@ -130,7 +129,7 @@ And see
 You should also be able to navigate to the api documentation:
 
 ````
-http://dev-api.codeforkc.local/api-docs
+http://dev-api.codeforkc.devel/api-docs
 ````
 
 
