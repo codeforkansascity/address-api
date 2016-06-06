@@ -139,7 +139,7 @@ VHOST=$(cat <<EOF
 <VirtualHost *:80>
 
     ServerAdmin webmaster@localhost
-    ServerName dev-api.codeforkc.local
+    ServerName dev-api.codeforkc.devel
     DocumentRoot /var/www/webroot
 
     # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
