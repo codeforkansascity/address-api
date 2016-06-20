@@ -147,10 +147,10 @@
         }
       }
     },
-  "/address-attributes-city-id/{version}/{cityId}": {
+    "/address-by-neighborhood/{version}/{NeighborhoodID}": {
       "get": {
-        "summary": "TEST ENDPOINT",
-        "description": "This is a test, this is only a test.",
+        "summary": "Information for properties associated with a given neighborhood ID",
+        "description": "City and state are also required.",
         "tags": [""],
         "parameters": [{
           "name": "version",
@@ -160,9 +160,56 @@
           "type": "string",
           "default": "V0"
         }, {
-          "name": "cityId",
+          "name": "NeighborhoodID",
           "in": "path",
-          "description": "The city id (KIVA PIN) of the address",
+          "description": "The unique ID for the neighborhood",
+          "required": true,
+          "type": "string"
+        }, {
+          "name": "city",
+          "in": "query",
+          "description": "The city in which the address is located",
+          "required": true,
+          "type": "string"
+        }, {
+          "name": "state",
+          "in": "query",
+          "description": "The state in which the address is located",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/AddressWrapper"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ErrorAddressNotFound"
+            }
+          }
+        }
+      }
+    },
+    "/address-attributes-county-id/{version}/{streetNumber}": {
+      "get": {
+        "summary": "Property information for the County ID",
+        "description": "City and state are also required.",
+        "tags": [""],
+        "parameters": [{
+          "name": "version",
+          "in": "path",
+          "description": "The API version. Only V0 currently supported.",
+          "required": true,
+          "type": "string",
+          "default": "V0"
+        }, {
+          "name": "CountyID",
+          "in": "path",
+          "description": "The unique ID number within the County",
           "required": true,
           "type": "string"
         }, {
