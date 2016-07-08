@@ -92,13 +92,18 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
 
     // Build address line
 
-    $single_line_address = '';
-    $single_line_address .= $address_rec['addr'];
-    $single_line_address .= !empty($address_rec['fraction']) ? ' ' . $address_rec['fraction'] : '';
-    $single_line_address .= !empty($address_rec['prefix']) ? ' ' . $address_rec['prefix'] : '';
-    $single_line_address .= !empty($address_rec['street']) ? ' ' . $address_rec['street'] : '';
-    $single_line_address .= !empty($address_rec['street_type']) ? ' ' . $address_rec['street_type'] : '';
-    $single_line_address .= !empty($address_rec['suite']) ? ' ' . $address_rec['suite'] : '';
+    $street_address = '';
+    $street_address .= $address_rec['addr'];
+    $street_address .= !empty($address_rec['fraction']) ? ' ' . $address_rec['fraction'] : '';
+    $street_address .= !empty($address_rec['prefix']) ? ' ' . $address_rec['prefix'] : '';
+    $street_address .= !empty($address_rec['street']) ? ' ' . $address_rec['street'] : '';
+    $street_address .= !empty($address_rec['street_type']) ? ' ' . $address_rec['street_type'] : '';
+    $street_address .= !empty($address_rec['suite']) ? ' ' . $address_rec['suite'] : '';
+
+    $street_address = strtoupper($street_address);
+
+    $single_line_address = $street_address;
+
     $single_line_address .= !empty($address_rec['city']) ? ', ' . $address_rec['city'] : '';
     $single_line_address .= !empty($address_rec['state']) ? ', ' . $address_rec['state'] : '';
 
@@ -121,6 +126,7 @@ while ($address_rec = $query->fetch(PDO::FETCH_ASSOC)) {
         } else {
 
             $rec = array();
+            $rec['street_address'] = $street_address;
             $rec['single_line_address'] = $single_line_address;
             $rec['street_number'] = $address_rec['addr'];
             $rec['street_number'] .= !empty($address_rec['fraction']) ? ' ' . $address_rec['fraction'] : '';
