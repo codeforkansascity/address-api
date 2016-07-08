@@ -57,6 +57,8 @@ if (($handle = fopen("kcmo_addresses_kiva_nbrhd_06_18_2015.csv", "r")) !== FALSE
                 continue;
             }
 
+            die('Need to add code for stree_address field');
+
             $single_line_address = $address_converter->AddressLineStandardization($rec['address']);
             $single_line_address .= ', KANSAS CITY, MO';                    // We keep unit 'internal'
 

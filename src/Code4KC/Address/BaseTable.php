@@ -16,9 +16,8 @@ class BaseTable
     var $field_definitions = array();
 
     var $id_query = null;
+    var $find_all_query = null;
     var $add_query = null;
-
-    var $single_line_address_query = null;
 
     /**
      * @param $dbh
@@ -226,6 +225,28 @@ class BaseTable
         }
 
         return $this->id_query->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param $id
+     * @return false or found record
+     */
+    function find_all()
+    {
+        if (!$this->find_all_query) {
+            $sql = 'SELECT *  FROM ' . $this->table_name . ' ORDER BY id';
+            $this->find_all_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
+
+        try {
+            $this->find_all_query->execute();
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+
+        return $this->find_all_query;
     }
 
 

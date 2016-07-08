@@ -276,6 +276,11 @@
           "type": "integer",
           "example": 112357
         },
+        "street_address": {
+          "type": "string",
+          "description": "Mailing address with out city and state",
+          "example": "7401 MAIN ST"
+        },
         "single_line_address": {
           "type": "string",
           "description": "Mailing address on a single line",
