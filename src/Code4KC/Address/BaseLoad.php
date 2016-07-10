@@ -22,6 +22,8 @@ class BaseLoad
     var $dry_run = true;
     var $verbose = false;
 
+    var $area_name = "SET area_name";
+
 
 
     /**
@@ -69,7 +71,8 @@ class BaseLoad
     function end_load() {
 
 
-        print "\nTotals\n-------------------------------------------------------------------------------------------------\n";
+        print "\nTotals for " . $this->area_name . "\n";
+        print "-------------------------------------------------------------------------------------------------\n";
 
         printf("%-30.30s %10s %10s %10s %10s %10s %10s \n", 'table', 'insert', 'update', 'inactive', 're-activate', 'N/A', 'ERROR');
         foreach ($this->totals AS $table => $counts) {

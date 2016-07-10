@@ -35,6 +35,7 @@ class Address extends BaseTable
 
     VAR $base_sql = 'SELECT
                 a.id AS address_id,
+                a.street_address,
                 a.single_line_address,
                 a.city,
                 a.state,
@@ -52,6 +53,10 @@ class Address extends BaseTable
                 c.nhood AS city_nhood,
                 c.council_district AS city_council_district,
                 c.land_bank_property AS city_land_bank_property,
+                c.tif AS city_tif,
+                c.police_division AS city_police_division,
+                c.neighborhood_census AS city_neighborhood_census,
+                c.vacant_parcel AS city_vacant_parcel,
 
                 k.county_address_id AS county_id,
                 b.block_2010_name AS census_block_2010_name,
@@ -156,6 +161,25 @@ class Address extends BaseTable
                 LEFT JOIN address a on a.id = k.address_id
                 LEFT JOIN county_address_data cd ON cd.id = k.county_address_id
           ';
+
+    function get_all_address_lat_lng() {
+        $sql = 'SELECT a.id, a.longitude, a.latitude, k.city_address_id FROM address a
+                LEFT JOIN address_keys k ON ( k.address_id = a.id)
+                LEFT JOIN census_attributes c ON ( k.city_address_id = c.city_address_id) ';
+
+
+        $query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+
+        try {
+            $query->execute();
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+
+        return $query;
+    }
 
     /**
      * @param $metro_area

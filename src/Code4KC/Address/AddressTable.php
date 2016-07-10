@@ -164,7 +164,7 @@ class AddressTable
         if ($fields_to_update) {                    // Set fields to update
             $fields = $fields_to_update;
         } else {
-            $fields = array('single_line_address', 'street_number', 'pre_direction',
+            $fields = array('street_address', 'single_line_address', 'street_number', 'pre_direction',
                 'street_name', 'street_type', 'post_direction', 'internal', 'city', 'state');
         }
 
@@ -235,7 +235,7 @@ class AddressTable
         if ($fields_to_update) {                    // Set fields to update
             $fields = $fields_to_update;
         } else {
-            $fields = array('single_line_address', 'street_number', 'pre_direction',
+            $fields = array('street_address', 'single_line_address', 'street_number', 'pre_direction',
                 'street_name', 'street_type', 'post_direction', 'internal', 'city', 'state');
         }
 
