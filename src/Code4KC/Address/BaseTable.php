@@ -42,6 +42,7 @@ class BaseTable
             $values = '';                                                                               // Build it
             $sep = '';
             foreach ($this->fields AS $f => $v) {
+                if ( $f == 'id') continue;
                 $names .= $sep . $f;
                 $values .= $sep . ':' . $f;
                 $sep = ', ';
@@ -55,6 +56,7 @@ class BaseTable
         try {                                                                                           // Now we can add thr record
             $new_rec = array();
             foreach ($this->fields AS $f => $v) {
+                if ( $f == 'id') continue;
                 if (array_key_exists($f, $record)) {
                     $value = $record[$f];
                 } else {
@@ -63,8 +65,12 @@ class BaseTable
                 $new_rec[':' . $f] = $value;
             }
             $ret = $this->add_query->execute($new_rec);
+
         } catch (PDOException  $e) {
+
             error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+
+            $this->add_query->debugDumpParams();
             //throw new Exception('Unable to query database');
             return false;
         }
@@ -115,6 +121,9 @@ class BaseTable
     public function git_ids_not_in($ids)
     {
 
+        if ( ! count($ids) ) {
+            return array();
+        }
         $inQuery = implode(',', $ids);
 
         $sql = 'SELECT id  AS id FROM ' . $this->table_name . '  WHERE id  NOT IN (' . $inQuery . ')';
@@ -158,6 +167,23 @@ class BaseTable
         }
 
         return $ret;
+
+    }
+
+    public function mark_inactive_if_not_in( $active_ids ) {
+
+        $inactive_ids = $this->git_ids_not_in( $active_ids );
+
+        $count = 0;
+
+        if ( count($inactive_ids)) {                                // If we found any that need to be marked
+            foreach ($inactive_ids AS $id) {
+                $this->update_field_in('active', 0, array($id));
+                $count++;
+            }
+        }
+
+        return $count;
 
     }
 

@@ -20,6 +20,13 @@ var_dump($in_state);
 
 });
 
+$app->get('/police_divisions/V0/',      function () use ($app) {return find_all_areas( $app, 'PoliceDivisions'); });
+$app->get('/kcmo_tifs/V0/',             function () use ($app) {return find_all_areas( $app, 'TIF'); });
+$app->get('/neighborhood_census/V0/',   function () use ($app) {return find_all_areas( $app, 'NeighborhoodCensus'); });
+
+
+
+
 $app->get('/metro-areas/V0/', function () use ($app) {
 
 
@@ -642,6 +649,50 @@ $app->get('/jd_wp/(:id)', function ($id) use ($app) {
 });
 
 $app->run();
+
+function find_all_areas( &$app, $area ) {
+    if ($dbh = connect_to_spatial_database()) {
+
+        $address = new \Code4KC\Address\Areas($area, $dbh, true);
+
+        if ($address_recs = $address->findallgeo()) {
+
+            $ret = array(
+                'code' => 200,
+                'status' => 'sucess',
+                'message' => '',
+                'data' => $address_recs
+            );
+
+        } else {
+            $ret = array(
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'Area type not found',
+                'data' => array()
+            );
+        }
+
+    } else {
+
+        $ret = array(
+            'code' => 500,
+            'status' => 'failed',
+            'message' => 'Unable to connect to database.',
+            'data' => array()
+        );
+    }
+
+
+    $app->response->setStatus($ret['code']);
+
+    if ( $ret['code'] == 200 ) {
+        echo $address_recs[0]['row_to_json'];
+    } else {
+        echo json_encode($ret);
+    }
+}
+
 
 /**
  * @param $dbh

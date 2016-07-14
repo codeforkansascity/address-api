@@ -6,6 +6,93 @@
     "description": "CodeForKC projects often rely on address information. But each project may begin with only a fraction of the information available about the property at the address. For instance, projects may need to know the census tract or block group, the coordinates (for mapping purposes), the square footage, the year the property was built, etc. Address API offers a one-stop shop to obtain this additional information. It also provides a variety of ways to look up this rich trove of property data."
   },
   "paths": {
+    "/neighborhood_census/{version}": {
+      "get": {
+        "summary": "Shape of Neighborhood Census areas",
+        "description": "KCMO ",
+        "tags": [""],
+        "parameters": [{
+          "name": "version",
+          "in": "path",
+          "description": "The API version. Only V0 currently supported.",
+          "required": true,
+          "type": "string",
+          "default": "V0"
+        }],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/Areas"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ErrorAreaNotFound"
+            }
+          }
+        }
+      }
+    },
+    "/kcmo_tifs/{version}": {
+      "get": {
+        "summary": "Shape of Incentive Tax Increment Financing areas",
+        "description": "Shapes for all Incentive Tax Increment Financing areas.",
+        "tags": [""],
+        "parameters": [{
+          "name": "version",
+          "in": "path",
+          "description": "The API version. Only V0 currently supported.",
+          "required": true,
+          "type": "string",
+          "default": "V0"
+        }],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/Areas"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ErrorAreaNotFound"
+            }
+          }
+        }
+      }
+    },
+
+    "/police_divisions/{version}": {
+      "get": {
+        "summary": "Police Divisions with shapes",
+        "tags": [""],
+        "parameters": [{
+          "name": "version",
+          "in": "path",
+          "description": "The API version. Only V0 currently supported.",
+          "required": true,
+          "type": "string",
+          "default": "V0"
+        }],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/Areas"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ErrorAreaNotFound"
+            }
+          }
+        }
+      }
+    },
     "/address-attributes/{version}/{streetNumber}": {
       "get": {
         "summary": "Property information for a given street number",
@@ -402,6 +489,32 @@
           "description": "[Need more info]",
           "example": "6"
         },
+        "city_land_bank_property": {
+          "type": "string",
+          "description": "[Need more info]",
+          "example": "6"
+        },
+        "city_tif": {
+          "type": "string",
+          "description": "[Need more info]",
+          "example": "6"
+        },
+        "city_police_division": {
+          "type": "string",
+          "description": "[Need more info]",
+          "example": "6"
+        },
+        "city_neighborhood_census": {
+          "type": "string",
+          "description": "[Need more info]",
+          "example": "6"
+        },
+        "city_vacant_parcel": {
+          "type": "integer",
+          "description": "0 indicates it is not a vacant parcel",
+          "example": "0"
+        },
+
         "county_id": {
           "type": "string",
           "description": "The unique id for an address within the county. [Note: does this refer out to other systems or is it internal to the api DB?]",
@@ -757,6 +870,54 @@
         }
       }
     },
+    "Areas" : {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "FeatureCollection",
+          "description": "Allways set to FeatureCollection"
+        },
+        "features": {
+          "description": "The areas",
+          "type": "object",
+          "$ref": "#/definitions/features"
+        }
+      }
+    },
+    "features" : {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "Feature",
+          "description": "Allways set to Feature"
+        },
+        "geometry": {
+          "type": "object",
+          "description": "The Polygon including type of"
+        },
+        "properties": {
+          "description": "properties",
+          "type": "object",
+          "$ref": "#/definitions/properties"
+        }
+      }
+    },
+    "properties" : {
+      "type": "object",
+      "properties": {
+        "fid": {
+          "type": "integer",
+          "example": "276",
+          "description": "ID from the source"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name assocaited with the area"
+        }
+      }
+    },
     "ErrorAddressNotFound": {
       "type": "object",
       "properties": {
@@ -774,6 +935,26 @@
           "type": "string",
           "description": "A messsage describing the error.",
           "example": "Address not found."
+        }
+      }
+    },
+    "ErrorAreaNotFound": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "An error code, usually the same as the HTTP status code",
+          "example": 404
+        },
+        "status": {
+          "type": "string",
+          "description": "A description of the status of the request.",
+          "example": "Error"
+        },
+        "message": {
+          "type": "string",
+          "description": "A messsage describing the error.",
+          "example": "Area type not found."
         }
       }
     }
