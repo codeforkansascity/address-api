@@ -86,6 +86,13 @@ class Address extends BaseTable
                 j.legal_description AS county_legal_description,
                 j.object_id AS county_object_id,
                 j.page_number AS county_page_number,
+                j.delinquent_tax_2010 AS county_delinquent_tax_2010,
+                j.delinquent_tax_2011 AS county_delinquent_tax_2011,
+                j.delinquent_tax_2012 AS county_delinquent_tax_2012,
+                j.delinquent_tax_2013 AS county_delinquent_tax_2013,
+                j.delinquent_tax_2014 AS county_delinquent_tax_2014,
+                j.delinquent_tax_2015 AS county_delinquent_tax_2015,
+                
                 cd.situs_address AS county_situs_address,
                 cd.situs_city AS county_situs_city,
                 cd.situs_state AS county_situs_state,
