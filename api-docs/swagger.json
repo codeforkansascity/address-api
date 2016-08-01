@@ -645,7 +645,37 @@
           "description": "",
           "example": ""
         },
-        "county_situs_address": {
+        "county_delinquent_tax_2010": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2011": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2012": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2013": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2014": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2015": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+       "county_situs_address": {
           "type": "string",
           "description": "",
           "example": "7401 MAIN ST"
