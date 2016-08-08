@@ -17,7 +17,6 @@ alter table  neighborhoods_id_seq        OWNER TO c4kc;
 alter table  tmp_kcmo_all_addresses      OWNER TO c4kc;
 alter table  tmp_kcmo_all_addresses_id_seq  OWNER TO c4kc;
 
-\d
 
 \c code4kc
 
@@ -35,4 +34,4 @@ alter table  address_spatial.mo_kc_city_council_districts_2012   OWNER TO c4kc;
 alter table  address_spatial.mo_kc_city_neighborhoods            OWNER TO c4kc;
 alter table  address_spatial.paul                                OWNER TO c4kc;
 
-\dt *.*
+
