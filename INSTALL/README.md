@@ -128,6 +128,36 @@ CREATE EXTENSION postgis_sfcgal;
 CREATE EXTENSION address_standardizer;
 ```
 
+### Verifiy Install
+
+* Postgres Server: run `pg_config --version`
+* Postgres Client: run `psql --version`
+* GDB with ESRI File GDB: run `ogrinfo --formats | grep -i OpenFileGDB` you should see `"OpenFileGDB" (readonly)`
+* FWD with ESRI file GDB: run `ogr_fdw_info -f | grep -i OpenFileGDB` you should see `GDAL 2.1.0, released 2016/04/25`
+* GDAL: run `ogr2ogr --version`
+* Postgres extensions: in `psql run
+
+````
+    SELECT PostGIS_full_version();
+    SELECT PostGIS_Lib_Version();
+````
+
+You should see
+
+Package        |  Virtual Box                            | 
+-------------- | --------------------------------------- | 
+Postgres Sever | PostgreSQL 9.3.13                       | 
+Postgres Client| psql (PostgreSQL) 9.3.13                | 
+-------------- | --------------------------------------- | 
+PostGIS        | OSTGIS="2.1.2 r12389"                   | 
+               | GEOS="3.4.2-CAPI-1.8.2 r3921"           | 
+               | PROJ="Rel. 4.8.0, 6 March 2012"         | 
+               | GDAL="GDAL 1.11.2, released 2015/02/10" | 
+               | LIBXML="2.9.1" LIBJSON="UNKNOWN" RASTER | 
+
+
+ 
+
 # Installing `gh-pages` and Jekyll
 Do this above the `address-api` directory, so both are at the same level.
 
