@@ -12,9 +12,10 @@ class CountyAddressAttributes extends BaseTable
 
     var $table_name = 'county_address_attributes';
     var $primary_key_sequence = null;
+    var $id_auto_increment = false;                     // We are going to assigne the id field value
     var $fields = array(
         'id' => '',
-        'gid' => '',
+        'gid' => 0,
         'parcel_number' => '',
         'name' => '',
         'tif_district' => '',
@@ -28,8 +29,14 @@ class CountyAddressAttributes extends BaseTable
         'conveyance_area' => '',
         'conveyance_designator' => '',
         'legal_description' => '',
-        'object_id' => '',
+        'object_id' => 0,
         'page_number' => '',
+        'delinquent_tax_2010' => 0,
+        'delinquent_tax_2011' => 0,
+        'delinquent_tax_2012' => 0,
+        'delinquent_tax_2013' => 0,
+        'delinquent_tax_2014' => 0,
+        'delinquent_tax_2015' => 0
     );
 
 }

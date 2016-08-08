@@ -1,0 +1,70 @@
+#!/bin/sh
+#
+# Will need to extract 
+#
+TEMP_FILE_NAME=/tmp/Other.gdb
+
+SCRIPT_PATH=`dirname $0`
+
+#
+# Create a Foreign Data Wrapper to connect to the CSV file
+#
+SQL=$(cat <<EOF
+--
+-- Drop just in case
+--
+DROP FOREIGN TABLE jackson_county_delinquent_tax_parcels; 
+DROP SERVER myserver;
+--
+-- Create
+--
+CREATE SERVER myserver
+  FOREIGN DATA WRAPPER ogr_fdw
+  OPTIONS (
+    datasource '/tmp/tax.csv',
+    format 'CSV' );
+
+CREATE FOREIGN TABLE jackson_county_delinquent_tax_parcels (
+  fid bigint,
+  parcel_number varchar OPTIONS (column_name 'Parcel Number'),
+  organization varchar,
+  line_care_of varchar OPTIONS (column_name 'Line Care Of'),
+  mailing_line_1 varchar OPTIONS (column_name 'Mailing Line 1'),
+  mailing_line_2 varchar OPTIONS (column_name 'Mailing Line 2'),
+  mailing_city varchar OPTIONS (column_name 'Mailing City'),
+  mailing_state varchar OPTIONS (column_name 'Mailing State'),
+  tca varchar,
+  mailing_zip varchar OPTIONS (column_name 'Mailing Zip'),
+  situs_address varchar OPTIONS (column_name 'Situs Address'),
+  situs_city varchar OPTIONS (column_name 'Situs City'),
+  situs_school_district varchar OPTIONS (column_name 'Situs School District'),
+  tax_year varchar OPTIONS (column_name 'Tax Year'),
+  balance_amt varchar OPTIONS (column_name 'Balance Amt')
+) SERVER myserver
+OPTIONS (layer 'tax');
+
+alter FOREIGN table jackson_county_delinquent_tax_parcels                                OWNER TO c4kc;
+
+\q
+EOF
+)
+
+echo "${SQL}" | sudo -u postgres psql address_api
+
+
+
+/usr/bin/php ./load-jackson-county-tax-delinquency.php -U
+
+
+#
+# Cleanup Foreign Data Wrapper to connect to the CSV file
+#
+SQL=$(cat <<EOF
+DROP FOREIGN TABLE jackson_county_delinquent_tax_parcels; 
+DROP SERVER myserver;
+\q
+EOF
+)
+
+echo "${SQL}" | sudo -u postgres psql address_api
+
