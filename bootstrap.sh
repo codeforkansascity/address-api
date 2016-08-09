@@ -16,26 +16,39 @@
     echo "rvm use 2.2.3" >> .bashrc
 
     sudo apt-get update -y
+    sudo sudo apt-get autoclean -y
+    sudo dpkg --configure -a 
+    sudo apt-get -u dist-upgrade
+    sudo sudo apt-get autoclean -y
+
 
     # Install some friends
     sudo apt-get -y install unzip wget git make
 
+    # Used for postgres and  GDAL/OGR
+
+    sudo apt-get install -y python-software-properties
+    sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable && sudo apt-get update
+
     # install postgres
-    sudo apt-get -y install postgresql postgresql-contrib libpq-dev postgresql-9.3-postgis-2.1 redis-server
+    sudo apt-get -y install postgresql postgresql-contrib libpq-dev postgresql-9.3-postgis-2.2 redis-server
+
+#
+# ------------
+#
+
 
     ### support PostGres Foreign data wrapers
 
     # Install GDAL/OGR
-    apt-get install -y python-software-properties
-    add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable && sudo apt-get update
-    apt-get install -y gdal-bin
+    sudo apt-get install -y gdal-bin
 
     # From previous postgresql install line
-    apt-get install -y libgdal-dev
+    sudo apt-get install -y libgdal-dev
 
     # since we do not have pgxs.mk needed for making pgsql-ogr-fdw in the next step
     # WARNING:  this may cause issues
-    apt-get install -y --force-yes postgresql-server-dev-9.3
+    sudo apt-get install -y --force-yes postgresql-server-dev-9.3
 
     (
         cd /tmp
@@ -112,7 +125,8 @@ fi
 EOF
 )
 
-   echo "${OGR}" > /etc/profile.d/ogr.sh
+   echo "${OGR}" > /tmp/ogr.sh
+   sudo mv /tmp/ogr.sh /etc/profile.d/ogr.sh
 
 
     ### Apache + PHP ###
@@ -188,6 +202,8 @@ EOF
     cd /etc/apache2/sites-enabled
     sudo ln -s ../sites-available/002-dev-api.conf .
 
+
+    sudo rm /etc/apache2/sites-enabled/000-default.conf
 
     cd /var/www
     composer update
