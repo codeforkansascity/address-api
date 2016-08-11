@@ -182,7 +182,8 @@ VHOST=$(cat <<EOF
 EOF
 )
 
-    echo "${VHOST}" > /etc/apache2/sites-available/002-dev-api.conf
+    echo "${VHOST}" > /tmp/002-dev-api.conf
+    sudo mv /tmp/002-dev-api.conf /etc/apache2/sites-available/002-dev-api.conf
 
 
     cd /etc/apache2/sites-enabled
