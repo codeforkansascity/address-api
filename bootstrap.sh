@@ -2,6 +2,13 @@
 #
 # Used by Vagrant startup
 #
+
+    # Resolve error dpkg-reconfigure: unable to re-open stdin: No file or directory
+    # From: http://serverfault.com/questions/500764/dpkg-reconfigure-unable-to-re-open-stdin-no-file-or-directory
+    #    This makes debconf use a frontend that expects no interactive input at all
+    #
+    export DEBIAN_FRONTEND=noninteractive
+
     # print command to stdout before executing it:
     set -x
 
