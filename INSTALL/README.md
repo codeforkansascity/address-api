@@ -75,7 +75,7 @@ $ sudo su - postgres
 
 ## Restore databases
 ```
-$ cd /var/www/dumps
+$ cd /var/www/address-api/dumps
 $ pg_restore -C -d address_api address_api-20160220-0548.dump
 $ pg_restore -C -d code4kc code4kc-20160220-0548.dump
 ```
@@ -86,7 +86,7 @@ You will get several errors but you can ignore them.
 Run the `fix_ownerships.psql` script, as shown below. Tap the _Q_ key to continue when execution pauses.
 
 ```
-$ cd /var/www/data/scripts
+$ cd /var/www/address-api/data/scripts
 $ psql -f fix_ownerships.psql
 $ exit
 ```
@@ -149,7 +149,7 @@ CNAME
 2. Contect `address-api-gh-pages` to your virual box by editing the `Vagrantfile` in the `address-api` directory, and add the following line at about line 42.
 
 ```ruby
-config.vm.synced_folder "../address-api-gh-pages", "/var/www-gh-pages"
+config.vm.synced_folder "../address-api-gh-pages", "/var/www/gh-pages"
 ```
 
 3. Start or restart your Vagrant box from the `address-api` directory.
@@ -177,7 +177,7 @@ $ sudo su -
 6. Start Jekyll
 
 ```
-cd /var/www-gh-pages
+cd /var/www/gh-pages
 jekyll serve --host 0.0.0.0
 ```
 
