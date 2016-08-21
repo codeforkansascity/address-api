@@ -73,13 +73,6 @@ $ rm address-api.box
 $ cd ..
 ````
 
-## Setup application configuration
-
-```
-$ cd config
-$ cp config-example.php config.php
-```
-
 ## Create image
 ```
 $ vagrant up
