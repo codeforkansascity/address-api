@@ -5,6 +5,12 @@
     # print command to stdout before executing it:
     set -x
 
+    # Resolve error dpkg-reconfigure: unable to re-open stdin: No file or directory
+    # From: http://serverfault.com/questions/500764/dpkg-reconfigure-unable-to-re-open-stdin-no-file-or-directory
+    #    This makes debconf use a frontend that expects no interactive input at all
+    #
+    export DEBIAN_FRONTEND=noninteractive
+
     curl -sSL https://rvm.io/mpapis.asc | gpg --import -
     curl -L https://get.rvm.io | bash -s stable --autolibs=enabled --ruby
 
@@ -246,7 +252,8 @@ if ( !empty( \$_SERVER["DB_CODE4KC_NAME"] )) { \$DB_CODE4KC_NAME = \$_SERVER["DB
 EOF
 )
 
-    echo "${APPCONFIG}" > /var/www/address-api/config/config.php
+    echo "${APPCONFIG}" > /tmp/config.php
+    sudo mv /tmp/config.php /var/www/address-api/config
 
     sudo service apache2 restart
 

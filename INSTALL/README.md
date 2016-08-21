@@ -108,6 +108,13 @@ $ sudo service postgresql stop
 $ sudo service postgresql start
 ```
 
+## Resolve some other issues
+
+````
+cd /var/www/address-api/
+composer update
+
+````
 
 ## Test that everything works
 
