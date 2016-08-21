@@ -67,12 +67,18 @@ to the dumps directory.
 Now install the `address-api` box
 
 ````
-cd dumps
-vagrant box add address-api address-api.box
-rm address-api.box
-cd ..
+$ cd dumps
+$ vagrant box add address-api address-api.box
+$ rm address-api.box
+$ cd ..
 ````
 
+## Setup application configuration
+
+```
+$ cd config
+$ cp config-example.php config.php
+```
 
 ## Create image
 ```

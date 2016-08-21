@@ -57,5 +57,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.cpus = 2
     vb.customize ["modifyvm", :id, "--cpuexecutioncap", "85"]
   end
+  config.vm.provision :shell, path: "bootstrap.sh"
 end
 
