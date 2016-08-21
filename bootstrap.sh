@@ -153,7 +153,7 @@ VHOST=$(cat <<EOF
 
     ServerAdmin webmaster@localhost
     ServerName dev-api.codeforkc.devel
-    DocumentRoot /var/www/webroot
+    DocumentRoot /var/www/address-api/webroot
 
     # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
     # error, crit, alert, emerg.
@@ -174,7 +174,7 @@ VHOST=$(cat <<EOF
     DirectoryIndex index.php index.html
 
 
-    <Directory /var/www/webroot>
+    <Directory /var/www/address-api/webroot>
         Header set Access-Control-Allow-Origin "*"
         Header set Access-Control-Allow-Credentials "true"
         Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
@@ -206,7 +206,7 @@ EOF
 
     sudo rm /etc/apache2/sites-enabled/000-default.conf
 
-    cd /var/www
+    cd /var/www/address-api
     composer update
 
 
@@ -246,7 +246,7 @@ if ( !empty( \$_SERVER["DB_CODE4KC_NAME"] )) { \$DB_CODE4KC_NAME = \$_SERVER["DB
 EOF
 )
 
-    echo "${APPCONFIG}" > /var/www/config/config.php
+    echo "${APPCONFIG}" > /var/www/address-api/config/config.php
 
     sudo service apache2 restart
 
