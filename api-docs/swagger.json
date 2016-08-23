@@ -93,7 +93,7 @@
         }
       }
     },
-    "/address-attributes/{version}/{streetNumber}": {
+    "/address-attributes/{version}/{street_address}": {
       "get": {
         "summary": "Property information for a given street number",
         "description": "City and state are also required.",
@@ -106,21 +106,24 @@
           "type": "string",
           "default": "V0"
         }, {
-          "name": "streetNumber",
+          "name": "street_address",
           "in": "path",
           "description": "The number and street of the address",
+          "default": "7401 MAIN ST",
           "required": true,
           "type": "string"
         }, {
           "name": "city",
           "in": "query",
           "description": "The city in which the address is located",
+          "default": "Kansas City",
           "required": true,
           "type": "string"
         }, {
           "name": "state",
           "in": "query",
           "description": "The state in which the address is located",
+          "default": "MO",
           "required": true,
           "type": "string"
         }],
@@ -155,19 +158,22 @@
         }, {
           "name": "id",
           "in": "path",
-          "description": "The id of the address",
+          "description": "The address api id of the address, address_id",
+          "default": "112357",
           "required": true,
           "type": "string"
         }, {
           "name": "city",
           "in": "query",
           "description": "The city in which the address is located",
+          "default": "Kansas City",
           "required": true,
           "type": "string"
         }, {
           "name": "state",
           "in": "query",
           "description": "The state in which the address is located",
+          "default": "MO",
           "required": true,
           "type": "string"
         }],
@@ -203,18 +209,21 @@
           "name": "cityId",
           "in": "path",
           "description": "The city id (KIVA PIN) of the address",
+          "default": "112760",
           "required": true,
           "type": "string"
         }, {
           "name": "city",
           "in": "query",
           "description": "The city in which the address is located",
+          "default": "Kansas City",
           "required": true,
           "type": "string"
         }, {
           "name": "state",
           "in": "query",
           "description": "The state in which the address is located",
+          "default": "MO",
           "required": true,
           "type": "string"
         }],
@@ -234,7 +243,7 @@
         }
       }
     },
-    "/address-by-neighborhood/{version}/{NeighborhoodID}": {
+    "/address-by-neighborhood/{version}/{NeighborhoodName}": {
       "get": {
         "summary": "Information for properties associated with a given neighborhood ID",
         "description": "City and state are also required.",
@@ -247,21 +256,24 @@
           "type": "string",
           "default": "V0"
         }, {
-          "name": "NeighborhoodID",
+          "name": "NeighborhoodName",
           "in": "path",
-          "description": "The unique ID for the neighborhood",
+          "description": "The unique Name for the neighborhood",
+          "default": "Tower Homes",
           "required": true,
           "type": "string"
         }, {
           "name": "city",
           "in": "query",
           "description": "The city in which the address is located",
+          "default": "Kansas City",
           "required": true,
           "type": "string"
         }, {
           "name": "state",
           "in": "query",
           "description": "The state in which the address is located",
+          "default": "MO",
           "required": true,
           "type": "string"
         }],
@@ -297,18 +309,21 @@
           "name": "CountyID",
           "in": "path",
           "description": "The unique ID number within the County",
+          "default": "JA47530270200000000",
           "required": true,
           "type": "string"
         }, {
           "name": "city",
           "in": "query",
           "description": "The city in which the address is located",
+          "default": "Kansas City",
           "required": true,
           "type": "string"
         }, {
           "name": "state",
           "in": "query",
           "description": "The state in which the address is located",
+          "default": "MO",
           "required": true,
           "type": "string"
         }],
@@ -645,7 +660,37 @@
           "description": "",
           "example": ""
         },
-        "county_situs_address": {
+        "county_delinquent_tax_2010": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2011": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2012": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2013": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2014": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2015": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+       "county_situs_address": {
           "type": "string",
           "description": "",
           "example": "7401 MAIN ST"

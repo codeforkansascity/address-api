@@ -14,6 +14,7 @@ class BaseTable
     var $table_name = '';
     var $fields = array();
     var $field_definitions = array();
+    var $id_auto_increment = true;              // If id field is auto increment we will skip putting it in INSERT
 
     var $id_query = null;
     var $find_all_query = null;
@@ -34,6 +35,7 @@ class BaseTable
 
     /**
      * Add record's fields.  Use default values from $fields
+     *
      */
     function add($record)
     {
@@ -42,7 +44,7 @@ class BaseTable
             $values = '';                                                                               // Build it
             $sep = '';
             foreach ($this->fields AS $f => $v) {
-                if ( $f == 'id') continue;
+                if ( $f == 'id' && $this->id_auto_increment) continue;
                 $names .= $sep . $f;
                 $values .= $sep . ':' . $f;
                 $sep = ', ';
@@ -56,7 +58,7 @@ class BaseTable
         try {                                                                                           // Now we can add thr record
             $new_rec = array();
             foreach ($this->fields AS $f => $v) {
-                if ( $f == 'id') continue;
+                if ( $f == 'id' && $this->id_auto_increment) continue;
                 if (array_key_exists($f, $record)) {
                     $value = $record[$f];
                 } else {
@@ -64,17 +66,21 @@ class BaseTable
                 }
                 $new_rec[':' . $f] = $value;
             }
+
             $ret = $this->add_query->execute($new_rec);
 
         } catch (PDOException  $e) {
 
             error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
 
+
+            print $e->getMessage() . "******\n";
+
+
             $this->add_query->debugDumpParams();
             //throw new Exception('Unable to query database');
             return false;
         }
-
 
         if ($this->primary_key_sequence) {
             $id = $this->dbh->lastInsertId($this->primary_key_sequence);
@@ -82,9 +88,7 @@ class BaseTable
             $id = null;
         }
 
-
         return $id;
-
 
     }
 
