@@ -339,6 +339,52 @@ $app->get('/address-typeahead/V0/:address/', function ($in_address) use ($app) {
     }
 });
 
+/**
+ * address_spatial.mo_kc_city_neighborhoods
+ */
+$app->get('/neighborhood-typeahead/V0/:neighborhood/', function ($in_neighborhood) use ($app) {
+
+    $in_neighborhood = addslashes($in_neighborhood);
+
+
+    if ($dbh = connect_to_address_database()) {
+
+        $neighborhood = new \Code4KC\Address\Neighborhood($dbh, true);
+        if ($neighborhood_recs = $neighborhood->typeahead($in_neighborhood)) {
+
+            $ret = array(
+                'code' => 200,
+                'status' => 'sucess',
+                'message' => '',
+                'data' => $neighborhood_recs
+            );
+
+        } else {
+            $ret = array(
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'Address not found',
+                'data' => array()
+            );
+        }
+    } else {
+        $ret = array(
+            'code' => 404,
+            'status' => 'error',
+            'message' => 'State or City was not valid.',
+            'data' => array()
+        );
+    }
+
+    if ($neighborhood_recs == false) {
+        echo json_encode($neighborhood_recs);
+    } else {
+        $app->response->setStatus($ret['code']);
+        echo json_encode($ret);
+    }
+});
+
+
 $app->get('/address-attributes-id/V0/:id/', function ($id) use ($app) {
     list($county_id, $x) = explode("?", $id);
 

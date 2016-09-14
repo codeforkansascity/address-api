@@ -12,10 +12,13 @@ class Neighborhood extends BaseTable
     var $table_name = 'neighborhoods';
     var $primary_key_sequence = null;
     var $list_query = null;
+    var $typeahead_query = '';
     var $fields = array(
         'id' => '',
         'name' => '',
     );
+
+
 
     /**
      * @param $id
@@ -71,5 +74,30 @@ class Neighborhood extends BaseTable
             return false;
         }
         return $this->list_query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param $id
+     * @return false or found record
+     */
+    function typeahead($name)
+    {
+
+        $name = strtoupper($name);
+        $name .= '%';
+
+        if (!$this->typeahead_query) {
+            $sql = 'SELECT id, name  FROM ' . $this->table_name . ' WHERE UPPER(name) LIKE :name LIMIT 50';
+            $this->typeahead_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
+
+        try {
+            $this->typeahead_query->execute(array(':name' => $name));
+        } catch (PDOException  $e) {
+            error_log($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+        return $this->typeahead_query->fetchAll(PDO::FETCH_ASSOC);
     }
 }
