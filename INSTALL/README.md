@@ -29,7 +29,7 @@ The following software will be installed:
 
 ## Clone repository
 ```
-$ git clone ggit@github.com:codeforkansascity/address-api.git
+$ git clone git@github.com:codeforkansascity/address-api.git
 $ cd address-api
 ```
 ## Install required Vagrant plugins
