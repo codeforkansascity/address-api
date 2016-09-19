@@ -5,6 +5,18 @@
     # print command to stdout before executing it:
     set -x
 
+
+
+SQL=$(cat <<EOF
+CREATE EXTENSION address_standardizer;
+CREATE EXTENSION postgis_tiger_geocoder;
+\q
+EOF
+)
+
+   echo "${SQL}" | sudo -u postgres psql
+
+
     cd /var/www/address-api/webroot
     composer update
 
