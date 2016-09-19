@@ -184,10 +184,7 @@ EOF
 
     echo "${VHOST}" > /tmp/002-dev-api.conf
     sudo mv /tmp/002-dev-api.conf /etc/apache2/sites-available/002-dev-api.conf
-
-
-    cd /etc/apache2/sites-enabled
-    sudo ln -s ../sites-available/002-dev-api.conf .
+    sudo a2ensite 002-dev-api
     sudo a2dissite 000-default
 
 
