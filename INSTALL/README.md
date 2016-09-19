@@ -90,8 +90,8 @@ $ sudo su - postgres
 ## Restore databases
 ```
 $ cd /var/www/address-api/dumps
-$ pg_restore -C -d address_api address_api-20160820-1552.dump
-$ pg_restore -C -d code4kc code4kc-20160820-1552.dump
+$ pg_restore -C -d address_api address_api-20160919-1829.dump
+$ pg_restore -C -d code4kc code4kc-20160919-1829.dump
 $ exit
 ```
 
