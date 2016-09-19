@@ -97,6 +97,12 @@ $ exit
 
 You will get several errors but you can ignore them.
 
+## Run Composer
+
+````
+$ cd /var/www/address-api
+$ composer update
+````
 
 ## Test that everything works
 
