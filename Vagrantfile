@@ -35,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     raise 'vagrant-vbguest is not installed. run: vagrant plugin install vagrant-vbguest'
   end
 
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "address-api"
   config.vm.hostname = "dev-api.codeforkc.devel"
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
@@ -44,15 +44,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: "5000", host: "5000"
   if OS.unix?
     config.vm.synced_folder "./", "/vagrant/", type: "nfs"
-    config.vm.synced_folder "./", "/var/www/", type: "nfs"
+    config.vm.synced_folder "./", "/var/www/address-api/", type: "nfs"
   elsif OS.windows?
     config.vm.synced_folder "./", "/vagrant/", type: "smb"
-    config.vm.synced_folder "./", "/var/www/", type: "smb"
+    config.vm.synced_folder "./", "/var/www/address-api/", type: "smb"
   else
     raise 'Unknown host operating system. Cannot continue.'
   end
   config.vm.provider "virtualbox" do |vb|
-    vb.name = "devapi"
+    vb.name = "address-api"
     vb.memory = 1024
     vb.cpus = 2
     vb.customize ["modifyvm", :id, "--cpuexecutioncap", "85"]

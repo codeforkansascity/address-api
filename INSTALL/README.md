@@ -11,13 +11,13 @@ The following software will be installed:
 
   * fuzzystrmatch     1.0     - determine similarities and distance between strings
   * ogr_fdw           1.0     - foreign-data wrapper for GIS data access - https://github.com/pramsey/pgsql-ogr-fdw
-  * plpgsql           1.0     - PL/pgSQL procedural language
+  * plpgsql           9.2.14  - PL/pgSQL procedural language
   * postgis           2.1.2   - PostGIS geometry, geography, and raster spatial types and functions
   * postgis_topology  2.1.2   - PostGIS topology spatial types and functions
   * postgres_fdw      1.0     - foreign-data wrapper for remote PostgreSQL servers
 
-* PostGIS 2.1.2 r12389
-  * GDAL 1.11.2, released 2015/02/10
+* PostGIS 2.2.2 r14797
+  * GDAL 2.1.0, released 2016/04/250
 
 ## Requirements
 * Make certain `ssh` can be executed and is in your`PATH`
@@ -26,11 +26,15 @@ The following software will be installed:
 * [Virtual Box](https://www.virtualbox.org/)
 * [Vagrant](https://www.vagrantup.com/)
 
+
 ## Clone repository
 ```
-$ git clone git@github.com:codeforkansascity/address-api.git
+$ git clone ggit@github.com:codeforkansascity/address-api.git
 $ cd address-api
+$ git checkout address-api-box
+$ git status
 ```
+Status should show that your are on branch address-api-box
 
 ## Install required Vagrant plugins
 ```
@@ -45,15 +49,29 @@ You need to create a directory called `dumps` and copy the dump files to them
 $ mkdir dumps
 ```
 
-Copy he dumps from `https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k`
+Copy the dumps from `https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k`
 to the dumps directory and unzip them.
 
 ```
 $ cd dumps
-$ gunzip address_api-20160220-0548.dump.gz
-$ gunzip code4kc-20160220-0548.dump.gz
+$ gunzip address_api-20160919-1829.dump.gz
+$ gunzip code4kc-20160919-1829.dump.gz
 $ cd ..
 ```
+
+## Add our `address-api` box to vagrant
+
+Copy the `address-api.box` from `https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k`
+to the dumps directory.
+
+Now install the `address-api` box
+
+````
+$ cd dumps
+$ vagrant box add address-api address-api.box
+$ rm address-api.box
+$ cd ..
+````
 
 ## Create image
 ```
@@ -75,27 +93,13 @@ $ sudo su - postgres
 
 ## Restore databases
 ```
-$ cd /var/www/dumps
-$ pg_restore -C -d address_api address_api-20160220-0548.dump
-$ pg_restore -C -d code4kc code4kc-20160220-0548.dump
-```
-
-You will get several errors but you can ignore them.
-
-## Fix ownerships
-Run the `fix_ownerships.psql` script, as shown below. Tap the _Q_ key to continue when execution pauses.
-
-```
-$ cd /var/www/data/scripts
-$ psql -f fix_ownerships.psql
+$ cd /var/www/address-api/dumps
+$ pg_restore -C -d address_api address_api-20160820-1552.dump
+$ pg_restore -C -d code4kc code4kc-20160820-1552.dump
 $ exit
 ```
 
-## Restart postgres
-```
-$ sudo service postgresql stop
-$ sudo service postgresql start
-```
+You will get several errors but you can ignore them.
 
 
 ## Test that everything works
@@ -149,7 +153,7 @@ CNAME
 2. Contect `address-api-gh-pages` to your virual box by editing the `Vagrantfile` in the `address-api` directory, and add the following line at about line 42.
 
 ```ruby
-config.vm.synced_folder "../address-api-gh-pages", "/var/www-gh-pages"
+config.vm.synced_folder "../address-api-gh-pages", "/var/www/gh-pages"
 ```
 
 3. Start or restart your Vagrant box from the `address-api` directory.
@@ -177,7 +181,7 @@ $ sudo su -
 6. Start Jekyll
 
 ```
-cd /var/www-gh-pages
+cd /var/www/gh-pages
 jekyll serve --host 0.0.0.0
 ```
 
