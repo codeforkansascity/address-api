@@ -31,11 +31,7 @@ The following software will be installed:
 ```
 $ git clone ggit@github.com:codeforkansascity/address-api.git
 $ cd address-api
-$ git checkout address-api-box
-$ git status
 ```
-Status should show that your are on branch address-api-box
-
 ## Install required Vagrant plugins
 ```
 $ vagrant plugin install vagrant-hostmanager
