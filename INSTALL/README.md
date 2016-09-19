@@ -29,7 +29,7 @@ The following software will be installed:
 
 ## Clone repository
 ```
-$ git clone git@github.com:zmon/address-api.git
+$ git clone ggit@github.com:codeforkansascity/address-api.git
 $ cd address-api
 $ git checkout address-api-box
 $ git status
@@ -54,8 +54,8 @@ to the dumps directory and unzip them.
 
 ```
 $ cd dumps
-$ gunzip address_api-20160820-1552.dump.gz
-$ gunzip code4kc-20160820-1552.dump.gz
+$ gunzip address_api-20160919-1829.dump.gz
+$ gunzip code4kc-20160919-1829.dump.gz
 $ cd ..
 ```
 
