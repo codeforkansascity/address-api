@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Used by Vagrant startup
+# Commands to install on AWS server
 #
     # print command to stdout before executing it:
     set -x
