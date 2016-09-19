@@ -188,6 +188,7 @@ EOF
 
     cd /etc/apache2/sites-enabled
     sudo ln -s ../sites-available/002-dev-api.conf .
+    a2dissite 000-default
 
 
     cd /var/www
