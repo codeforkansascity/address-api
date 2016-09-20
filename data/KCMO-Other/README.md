@@ -10,20 +10,20 @@
 
 ## Load
 
-1) Update Area/Shape data
-    1) Download shape file and extract 
-    2) Create temporary area/shape table
-    3) Update spatial table with City, State, ID, Name, and shape
+1. Update Area/Shape data
+    1. Download shape file and extract 
+    2. Create temporary area/shape table
+    3. Update spatial table with City, State, ID, Name, and shape
       * What do we do with ordnum, status, amendment, lastupdate?
       * Add, Change, Delete
-2) Update address attributes
+2. Update address attributes
   * For each address, lookup longitude, latitude
   * See what areas the address is in
      * Add, Change, Delete as needed
 
 
 
-99) cleanup
+99. cleanup
 
 
 UPDATE GIS
