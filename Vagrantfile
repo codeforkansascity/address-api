@@ -43,10 +43,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "private_network", ip: "192.168.33.11"
   config.vm.network "forwarded_port", guest: "5000", host: "5000"
   if OS.unix?
-    config.vm.synced_folder "./", "/var/www/address-api/", type: "nfs"
+    config.vm.synced_folder "./", "/vagrant/", type: "nfs"
   elsif OS.windows?
     config.vm.synced_folder "./", "/vagrant/", type: "smb"
-    config.vm.synced_folder "./", "/var/www/address-api/", type: "smb"
   else
     raise 'Unknown host operating system. Cannot continue.'
   end
