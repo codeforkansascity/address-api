@@ -65,7 +65,6 @@ Now install the `address-api` box
 ````
 $ cd dumps
 $ vagrant box add address-api address-api.box
-$ rm address-api.box
 $ cd ..
 ````
 
