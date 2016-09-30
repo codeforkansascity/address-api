@@ -1,4 +1,0 @@
-#!/bin/sh
-php 01-load.php
-php 02-add-address-api.php
-php 03-add-new-addresses.php
