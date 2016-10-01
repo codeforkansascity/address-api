@@ -11,9 +11,9 @@ ini_set("auto_detect_line_endings", true);
 class KCMOTIF extends \Code4KC\Address\AreaLoad
 {
 
-    /*  councildistricts_2010
+    /*  councildistricts_2001
      *  ----------------------
-     *  ogc_fid      | integer                     | not null default nextval('councildistricts_2010_ogc_fid_seq'::regclass)
+     *  ogc_fid      | integer                     | not null default nextval('councildistricts_2001_ogc_fid_seq'::regclass)
      *  wkb_geometry | geometry(MultiPolygon,4326) |
      *  district     | character varying           |
      *  acres        | double precision            |
@@ -22,7 +22,7 @@ class KCMOTIF extends \Code4KC\Address\AreaLoad
      *  shape_length | double precision            |
      *  shape_area   | double precision            |
      */
-    var $area_name = "NeighborhoodCensus";
+    var $area_name = "CouncilDistricts2001";
 
     var $spatial_fields_to_update = array(
         'fid',
@@ -33,7 +33,7 @@ class KCMOTIF extends \Code4KC\Address\AreaLoad
         'shape_area',
     );
 
-    var $sql = "SELECT ogc_fid AS fid, wkb_geometry::geography::geometry AS geom, CONCAT(district, ' (', ord_no , ')') AS name, lastupdate, shape_length, shape_area  FROM public.councildistricts_2010;";
+    var $sql = "SELECT objectid AS fid, wkb_geometry::geography::geometry AS geom, CONCAT(district, ' (', ord_no , ')') AS name, lastupdate, shape_length, shape_area  FROM public.councildistricts_2001;";
 
     function load_spatial()
     {
@@ -163,13 +163,13 @@ class KCMOTIF extends \Code4KC\Address\AreaLoad
     function display_record($line_number, $msg, $data)
     {
 
-        printf("%10s: %5d %16.16s %s \n", $msg, $line_number, $data['land_use_code'], $data['land_use_description']);
+        printf("%10s: %5d %16.16s %s \n", $msg, $line_number, $data['district'], $data['ord_no']);
     }
 
     function display_rejected_record($line_number, $data, $data_errors)
     {
 
-        printf("\nERROR: %5d %16.16s %s \n", $line_number, $data['land_use_code'], $data['land_use_description']);
+        printf("\nERROR: %5d %16.16s %s \n", $line_number, $data['district'], $data['ord_no']);
         $last_field = '.';
         foreach ($data_errors AS $field => $msgs) {
             foreach ($msgs AS $msg) {

@@ -45,6 +45,7 @@ class Areas extends BaseTable
         'NeighborhoodCensus' => 3,
         'VacantParcels' => 4,
         'CouncilDistricts' => 5,
+        'CouncilDistricts2001' => 6,
 
 
     );

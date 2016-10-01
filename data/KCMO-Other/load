@@ -26,6 +26,7 @@ sh load-neighborhood-census.sh
 sh load-police-divisions.sh
 sh load-tif.sh
 sh load-vacant-parcels.sh
+sh load-council-districts-2001.sh
 
 
 #
