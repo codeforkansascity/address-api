@@ -36,11 +36,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.box = "ubuntu/trusty64"
-  config.vm.hostname = "dev-api.codeforkc.devel"
+  config.vm.hostname = "makebox-api.codeforkc.devel"
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
   config.hostmanager.manage_guest = true
-  config.vm.network "private_network", ip: "192.168.33.11"
+  config.vm.network "private_network", ip: "192.168.33.211"
   config.vm.network "forwarded_port", guest: "5000", host: "5000"
   if OS.unix?
     config.vm.synced_folder "./", "/vagrant/", type: "nfs"
@@ -52,7 +52,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     raise 'Unknown host operating system. Cannot continue.'
   end
   config.vm.provider "virtualbox" do |vb|
-    vb.name = "devapi"
+    vb.name = "makebox-api"
     vb.memory = 1024
     vb.cpus = 2
     vb.customize ["modifyvm", :id, "--cpuexecutioncap", "85"]

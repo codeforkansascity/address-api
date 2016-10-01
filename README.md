@@ -1,53 +1,56 @@
-[![Stories in Ready](https://badge.waffle.io/codeforkansascity/address-api.png?label=ready&title=Ready)](https://waffle.io/codeforkansascity/address-api)
-#Code for KC Address API
-## Consuming C4KC address-api
-See [http://codeforkc.org/address-api] (http://codeforkc.org/address-api/)!
+# Code for KC Address API - Script to build Vagrant Box
 
-## Contributing to C4KC address-api
-See [INSTALL/readme.md] (INSTALL)
+This will create an address-api.box that is uploaded to the Google Drive for the install at 
+[https://github.com/codeforkansascity/address-api/tree/master/INSTALL](https://github.com/codeforkansascity/address-api/tree/master/INSTALL)
 
-## About
-Since all open data does not have the same attributes (neighborhood, city council, TIF districts) this system give researchers and software developers an easy place to go and add them to the data they are collecting.
+1. Create the image
 
-The system is being designed for the CodeForKC projects, to make it simple for them to get information about an address in one place.  We want to keep our projects from building database with the same data.   Also to take the burden of learning how to process GIS layers from the project teams, and converting spatial data layers into columns in a database for them.
+````
+vagrant up
+````
 
-The audience for the data is:
+2. Login to the box
 
-1. Programs that can consume data from a API.
-2. Statistical programmers using packages like R that can consume data from an API.
-3. Spreadsheet users to download a CSV file of the data. 
+````
+vagrant ssh
+````
 
-Data we are planning to store are:
+3. Test the image
+All of the following should produce output.  
+I did have a problem with the entry at the bottom of `/etc/bash.bashrc` that should be fixed.
 
-* Identifiers that other systems use to identify the address/parcel, City Identifiers, County Identifiers
-* Attributes of an address/parcel such as Census Tract, City Council District, TIF, ...
-* Some data about an address/parcel if it is not readily available , amount paid in taxes, ...
+````
+pg_config --version
+psql --version
+ogrinfo --formats | grep -i OpenFileGDB
+ogr_fdw_info -f | grep -i OpenFileGDB
+ogr2ogr --version
+sudo -u postgres psql code4kc -c 'SELECT PostGIS_full_version();'
+sudo -u postgres psql code4kc -c 'SELECT PostGIS_Lib_Version();'
+````
 
-The system is intended to answer the following:
+4. Logout
 
-* Get a normalized standard address, for example "210 W 19th Ter, Kansas City, MO" 
-standard address might be 
-"210 West 19th Terrace, Kansas City, MO, 64108"
-* Return selected identifiers, attributes, and data related to one or more address.
-* Get a list of addresses with attributes/data within a Attribute, for example all addresses in a given City Council District
-* Get a list of addresses with attributes/data within a radius of a coordinate or other boundary.
-* Provide data for address type ahead fields in web forms.
+````
+exit
+````
 
-In addition with the data we collect for the above we can return other information such as:
+5. Repackage the VM into a new Box
 
-* All addresses in a census tract
-* Census tracts that are in a neighborhood
-
-Sources of data attributes:
-* City
-* County
-* State
-* Census
-* Others
-
-We plan to have some simple web pages developed on top of this so people can make queries about the data.
+````
+vagrant package --output address-api.box
+````
 
 
-Please see the [Wiki](https://github.com/codeforkansascity/address-api/wiki) for more information
+6. Add new box into Vagrant, you may need to remove and existing one.
 
-Having issue with CORS
+````
+vagrant box add address-api address-api.box
+````
+
+7. In another directory follow the install instructions at [address-api](https://github.com/codeforkansascity/address-api/tree/master/INSTALL) skipping the add vagrant box step.
+
+8. If the test works, then copy the `address-api.box` to the google drive https://drive.google.com/drive/u/0/folders/0B1F5BJsDsPCXb2NYSmxCT09TX1k
+
+
+Most of this is from [How to Create a Vagrant Base Box from an Existing One](https://scotch.io/tutorials/how-to-create-a-vagrant-base-box-from-an-existing-one)
