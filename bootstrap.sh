@@ -7,18 +7,6 @@
 
 
 
-SQL=$(cat <<EOF
-CREATE EXTENSION address_standardizer;
-CREATE EXTENSION postgis_tiger_geocoder;
-\q
-EOF
-)
-
-   echo "${SQL}" | sudo -u postgres psql
-
-
-    cd /var/www/address-api/webroot
-    composer update
 
 
 APPCONFIG=$(cat <<EOF
@@ -59,6 +47,9 @@ EOF
 
     echo "${APPCONFIG}" > /tmp/config.php
     sudo mv /tmp/config.php /var/www/address-api/config
+
+    cd /var/www/address-api/webroot
+    composer update
 
     sudo service apache2 restart
 
