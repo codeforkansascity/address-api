@@ -5,193 +5,8 @@
     # print command to stdout before executing it:
     set -x
 
-    curl -sSL https://rvm.io/mpapis.asc | gpg --import -
-    curl -L https://get.rvm.io | bash -s stable --autolibs=enabled --ruby
-
-    source "$HOME/.rvm/scripts/rvm"
-    rvm install 2.2.3
-    rvm use 2.2.3
-
-    echo 'source "$HOME/.rvm/scripts/rvm"' >> .bashrc
-    echo "rvm use 2.2.3" >> .bashrc
-
-    sudo apt-get update -y
-
-    # Install some friends
-    sudo apt-get -y install unzip wget git make
-
-    # install postgres
-    sudo apt-get -y install postgresql postgresql-contrib libpq-dev postgresql-9.3-postgis-2.1 redis-server
-
-    ### support PostGres Foreign data wrapers
-
-    # Install GDAL/OGR
-    apt-get install -y python-software-properties
-    add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable && sudo apt-get update
-    apt-get install -y gdal-bin
-
-    # From previous postgresql install line
-    apt-get install -y libgdal-dev
-
-    # since we do not have pgxs.mk needed for making pgsql-ogr-fdw in the next step
-    # WARNING:  this may cause issues
-    apt-get install -y --force-yes postgresql-server-dev-9.3
-
-    (
-        cd /tmp
-        git clone https://github.com/pramsey/pgsql-ogr-fdw.git
-        cd pgsql-ogr-fdw
-        make
-        sudo make install
-    )
 
 
-    sudo -u postgres psql -c "CREATE USER vagrant WITH PASSWORD 'vagrant';"
-    sudo -u postgres psql -c "ALTER ROLE vagrant SUPERUSER CREATEROLE CREATEDB REPLICATION;"
-    sudo -u postgres psql -c "CREATE EXTENSION postgis;"
-
-    POSTGRE_VERSION=9.3
-
-    # listen for localhost connections
-    sudo sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/$POSTGRE_VERSION/main/postgresql.conf
-
-    # identify users via "md5", rather than "ident", allowing us to make postgres
-    # users separate from system users. "md5" lets us simply use a password
-    echo "host    all             all             0.0.0.0/0               md5" | sudo tee -a /etc/postgresql/$POSTGRE_VERSION/main/pg_hba.conf
-
-
-    sudo sed -i "s/local   all             all                                     peer/local   all             all         md5/g" /etc/postgresql/$POSTGRE_VERSION/main/pg_hba.conf
-
-    sudo service postgresql start
-
-    sudo -u postgres createuser c4kc
-
-SQL=$(cat <<EOF
-ALTER USER c4kc with encrypted password 'data';
-CREATE DATABASE c4kc_address_api  WITH ENCODING 'UTF8' TEMPLATE=template0;
-GRANT ALL PRIVILEGES ON DATABASE c4kc_address_api TO c4kc;
-
-CREATE DATABASE address_api  WITH ENCODING 'UTF8' TEMPLATE=template0;
-GRANT ALL PRIVILEGES ON DATABASE address_api TO c4kc;
-
-CREATE DATABASE code4kc  WITH ENCODING 'UTF8' TEMPLATE=template0;
-GRANT ALL PRIVILEGES ON DATABASE code4kc TO c4kc;
-
-
-\c code4kc
-CREATE EXTENSION postgis;
-CREATE EXTENSION postgis_topology;
-CREATE EXTENSION fuzzystrmatch;
-CREATE EXTENSION postgres_fdw;
-CREATE EXTENSION ogr_fdw;
-\q
-EOF
-)
-
-   echo "${SQL}" | sudo -u postgres psql
-
-
-OGR=$(cat <<EOF
-#
-# OGR profile
-#
-# /etc/profile.d/ogr.sh # sh extension required for loading.
-#
-
-if
-  [ -n "\${BASH_VERSION:-}" -o -n "\${ZSH_VERSION:-}" ] &&
-  test "`\command \ps -p \$\$ -o ucomm=`" != dash &&
-  test "`\command \ps -p \$\$ -o ucomm=`" != sh
-then
-  ogr_bin_path="/usr/lib/postgresql/9.3/bin"
-  # Add \$ogr_bin_path to \$PATH if necessary
-  if [[ -n "\${ogr_bin_path}" && ! ":\${PATH}:" == *":\${ogr_bin_path}:"* ]]
-  then PATH="\${PATH}:\${ogr_bin_path}"
-  fi
-fi
-EOF
-)
-
-   echo "${OGR}" > /etc/profile.d/ogr.sh
-
-
-    ### Apache + PHP ###
-    sudo apt-get update -y
-    sudo apt-get install -y apache2
-    sudo apt-get install -y php5 libapache2-mod-php5 php5-cli php5-mcrypt php5-gd php5-curl php5-pgsql
-
-    sudo a2enmod headers
-    sudo a2enmod rewrite
-
-
-
-    cd /tmp
-    wget https://getcomposer.org/installer
-    php installer
-    sudo mv composer.phar /usr/local/bin/composer
-
-    ###php unit###
-    wget https://phar.phpunit.de/phpunit-4.8.9.phar
-    chmod +x phpunit-4.8.9.phar
-    sudo mv phpunit-4.8.9.phar /usr/local/bin/phpunit.phar
-
-VHOST=$(cat <<EOF
-<VirtualHost *:80>
-
-    ServerAdmin webmaster@localhost
-    ServerName dev-api.codeforkc.devel
-    DocumentRoot /var/www/webroot
-
-    # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
-    # error, crit, alert, emerg.
-    # It is also possible to configure the loglevel for particular
-    # modules, e.g.
-    #LogLevel info ssl:warn
-
-    ErrorLog /var/log/apache2/dev-api-error.log
-    CustomLog /var/log/apache2/dev-api-access.log combined
-
-    # For most configuration files from conf-available/, which are
-    # enabled or disabled at a global level, it is possible to
-    # include a line for only one particular virtual host. For example the
-    # following line enables the CGI configuration for this host only
-    # after it has been globally disabled with "a2disconf".
-    #Include conf-available/serve-cgi-bin.conf
-
-    DirectoryIndex index.php index.html
-
-
-    <Directory /var/www/webroot>
-        Header set Access-Control-Allow-Origin "*"
-        Header set Access-Control-Allow-Credentials "true"
-        Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
-
-        Options Indexes FollowSymLinks
-        AllowOverride All
-        Require all granted
-
-        RewriteEngine On
-        RewriteCond %{REQUEST_FILENAME} !-d
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
-        Order allow,deny
-        Allow from all
-
-    </Directory>
-</VirtualHost>
-EOF
-)
-
-    echo "${VHOST}" > /tmp/002-dev-api.conf
-    sudo mv /tmp/002-dev-api.conf /etc/apache2/sites-available/002-dev-api.conf
-
-
-    cd /etc/apache2/sites-enabled
-    sudo ln -s ../sites-available/002-dev-api.conf .
-
-
-    cd /var/www
-    composer update
 
 
 APPCONFIG=$(cat <<EOF
@@ -230,7 +45,11 @@ if ( !empty( \$_SERVER["DB_CODE4KC_NAME"] )) { \$DB_CODE4KC_NAME = \$_SERVER["DB
 EOF
 )
 
-    echo "${APPCONFIG}" > /var/www/config/config.php
+    echo "${APPCONFIG}" > /tmp/config.php
+    sudo mv /tmp/config.php /var/www/address-api/config
+
+    cd /var/www/address-api/webroot
+    composer update
 
     sudo service apache2 restart
 
