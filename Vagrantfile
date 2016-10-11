@@ -52,7 +52,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     raise 'Unknown host operating system. Cannot continue.'
   end
   config.vm.provider "virtualbox" do |vb|
-    vb.name = "address-api-nhood"
+    vb.name = "address-api"
     vb.memory = 1024
     vb.cpus = 2
     vb.customize ["modifyvm", :id, "--cpuexecutioncap", "85"]
