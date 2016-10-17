@@ -37,5 +37,9 @@ class TypeAheadTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(29, $result[0]["id"]);
         $this->assertEquals("East Meyer", $result[0]["name"]);
 
+
+        $result = $neighborhood->find_by_name("210 w 19th TER FL 1");
+        var_dump($result);
+
     }
 }

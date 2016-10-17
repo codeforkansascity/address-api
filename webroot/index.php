@@ -10,63 +10,66 @@ $app = new \Slim\Slim();
 
 
 /**
- * Example of a URL argument but no parameter.  Must specify a 
+ * Example of a URL argument but no parameter.  Must specify a
  * fake parameter
  */
-$app->get('/test/V0(/:id)', function ( $id = 0 ) use ($app) {
+$app->get('/test/V0(/:id)', function ($id = 0) use ($app) {
     $in_state = strtoupper($app->request()->params('state'));
 
-var_dump($in_state);
+    var_dump($in_state);
 
 });
 
-$app->get('/police_divisions/V0/',      function () use ($app) {return find_all_areas( $app, 'PoliceDivisions'); });
-$app->get('/kcmo_tifs/V0/',             function () use ($app) {return find_all_areas( $app, 'TIF'); });
-$app->get('/neighborhood_census/V0/',   function () use ($app) {return find_all_areas( $app, 'NeighborhoodCensus'); });
-
-
+$app->get('/police_divisions/V0/', function () use ($app) {
+    return find_all_areas($app, 'PoliceDivisions');
+});
+$app->get('/kcmo_tifs/V0/', function () use ($app) {
+    return find_all_areas($app, 'TIF');
+});
+$app->get('/neighborhood_census/V0/', function () use ($app) {
+    return find_all_areas($app, 'NeighborhoodCensus');
+});
 
 
 $app->get('/metro-areas/V0/', function () use ($app) {
 
 
+    if ($dbh = connect_to_spatial_database()) {
 
-        if ($dbh = connect_to_spatial_database()) {
+        $address = new \Code4KC\Address\MetroArea($dbh, true);
 
-            $address = new \Code4KC\Address\MetroArea($dbh, true);
-
-            if ($address_recs = $address->findallgeo()) {
-
-                $ret = array(
-                    'code' => 200,
-                    'status' => 'sucess',
-                    'message' => '',
-                    'data' => $address_recs
-                );
-
-            } else {
-                $ret = array(
-                    'code' => 404,
-                    'status' => 'error',
-                    'message' => 'Address not found',
-                    'data' => array()
-                );
-            }
-
-        } else {
+        if ($address_recs = $address->findallgeo()) {
 
             $ret = array(
-                'code' => 500,
-                'status' => 'failed',
-                'message' => 'Unable to connect to database.',
+                'code' => 200,
+                'status' => 'sucess',
+                'message' => '',
+                'data' => $address_recs
+            );
+
+        } else {
+            $ret = array(
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'Address not found',
                 'data' => array()
             );
         }
 
+    } else {
+
+        $ret = array(
+            'code' => 500,
+            'status' => 'failed',
+            'message' => 'Unable to connect to database.',
+            'data' => array()
+        );
+    }
+
 
     $app->response->setStatus($ret['code']);
 
-    if ( $ret['code'] == 200 ) {
+    if ($ret['code'] == 200) {
         echo $address_recs[0]['row_to_json'];
     } else {
         echo json_encode($ret);
@@ -226,7 +229,7 @@ $app->get('/neighborhoods-geo/V0/:id/', function ($id) use ($app) {
 
     $app->response->setStatus($ret['code']);
 
-    if ( $ret['code'] == 200 ) {
+    if ($ret['code'] == 200) {
         echo $address_recs[0]['row_to_json'];
     } else {
         echo json_encode($ret);
@@ -382,6 +385,59 @@ $app->get('/neighborhood-typeahead/V0/:neighborhood/', function ($in_neighborhoo
         $app->response->setStatus($ret['code']);
         echo json_encode($ret);
     }
+});
+
+$app->get('/neighborhood-attributes/V0/:neighborhood/', function ($name) use ($app) {
+
+    list($in_neighborhood, $x) = explode("?", $name);
+    $in_neighborhood = addslashes($in_neighborhood);
+
+    $in_city = strtoupper($app->request()->params('city'));
+    $in_state = strtoupper($app->request()->params('state'));
+
+    if (city_state_valid($in_city, $in_state)) {
+
+        if ($dbh = connect_to_address_database()) {
+
+            $neighborhood = new \Code4KC\Address\Neighborhood($dbh, true);
+
+            if ($neighborhood_rec = $neighborhood->find_by_name($in_neighborhood)) {
+
+                $ret = array(
+                    'code' => 202,
+                    'status' => 'sucess',
+                    'message' => '',
+                    'data' => $neighborhood_rec
+                );
+
+            } else {
+                $ret = array(
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'Neighborhood not found' . $in_neighborhood,
+                    'data' => array()
+                );
+            }
+        } else {
+            $ret = array(
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'State or City was not valid.',
+                'data' => array()
+            );
+        }
+    } else {
+        $ret = array(
+            'code' => 500,
+            'status' => 'failed',
+            'message' => 'Unable to connect to database.',
+            'data' => array()
+        );
+    }
+
+    $app->response->setStatus($ret['code']);
+    echo json_encode($ret);
+
 });
 
 
@@ -609,42 +665,37 @@ $app->get('/all/V0/', function () use ($app) {
     );
 
 
+    if ($dbh = connect_to_address_database()) {
 
+        $address = new \Code4KC\Address\Address($dbh, true);
 
-        if ($dbh = connect_to_address_database()) {
-
-            $address = new \Code4KC\Address\Address($dbh, true);
-
-            if ($address_recs = $address->findall()) {
-
-                $ret = array(
-                    'code' => 200,
-                    'status' => 'sucess',
-                    'message' => '',
-                    'data' => $address_recs
-                );
-
-            } else {
-                $ret = array(
-                    'code' => 404,
-                    'status' => 'error',
-                    'message' => 'Address not found',
-                    'data' => array()
-                );
-            }
-
-        } else {
+        if ($address_recs = $address->findall()) {
 
             $ret = array(
-                'code' => 500,
-                'status' => 'failed',
-                'message' => 'Unable to connect to database.',
+                'code' => 200,
+                'status' => 'sucess',
+                'message' => '',
+                'data' => $address_recs
+            );
+
+        } else {
+            $ret = array(
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'Address not found',
                 'data' => array()
             );
         }
 
+    } else {
 
-
+        $ret = array(
+            'code' => 500,
+            'status' => 'failed',
+            'message' => 'Unable to connect to database.',
+            'data' => array()
+        );
+    }
 
 
     $app->response->setStatus($ret['code']);
@@ -696,7 +747,8 @@ $app->get('/jd_wp/(:id)', function ($id) use ($app) {
 
 $app->run();
 
-function find_all_areas( &$app, $area ) {
+function find_all_areas(&$app, $area)
+{
     if ($dbh = connect_to_spatial_database()) {
 
         $address = new \Code4KC\Address\Areas($area, $dbh, true);
@@ -732,7 +784,7 @@ function find_all_areas( &$app, $area ) {
 
     $app->response->setStatus($ret['code']);
 
-    if ( $ret['code'] == 200 ) {
+    if ($ret['code'] == 200) {
         echo $address_recs[0]['row_to_json'];
     } else {
         echo json_encode($ret);
