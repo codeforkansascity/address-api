@@ -3,12 +3,15 @@ layout: default
 custom_css:
 - index
 custom_js:
+- config
 - examples/neighborhood-type-a-head
 - typeahead.bundle.min
 ---
 
     <div class="row">
         <div class="col-md-12">
+            <h1>Neighborhood Type-A-Head Example</h1>
+
             <form id="neighborhood-form">
                 <div class="form-group  col-md-10">
                     <label for="neighborhood">Neighborhood</label>
@@ -16,8 +19,9 @@ custom_js:
                     <div id="remote" >
                         <input type="text" class="typeahead form-control" id="neighborhood_id"
 
-                               placeholder="1000 Main St., Kansas City, MO">
+                               placeholder="River Market">
                     </div>
+                    <input type="hidden" id="neighborhood_was_selected">
                 </div>
                 <button id="submit" type="submit" class="btn btn-default">Submit</button>
             </form>

@@ -16,7 +16,7 @@ $(document).ready(function () {
         crossDomain: true,
 
         remote: {
-            url: 'http://dev-api.codeforkc.devel/neighborhood-typeahead/V0/%QUERY',
+            url: config.url + 'neighborhood-typeahead/V0/%QUERY',
             wildcard: '%QUERY',
             transform: function (response) {
                 console.log('transform', response.data);
@@ -107,7 +107,7 @@ $(document).ready(function () {
 
         var one_line_neighborhood = encodeURIComponent($("#neighborhood_id").val().replace(/ KANSAS CITY, MO/,''));
 
-        var url = "http://dev-api.codeforkc.org//neighborhood-attributes/V0/" + one_line_neighborhood + "?city=Kansas%20City&state=mo";
+        var url = config.url + "neighborhood-attributes/V0/" + one_line_neighborhood + "?city=Kansas%20City&state=mo";
 
         $.ajax({
             method: "GET",
