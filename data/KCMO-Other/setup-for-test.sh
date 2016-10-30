@@ -44,10 +44,10 @@ echo "${SQL}" | sudo -u postgres psql code4kc
 # Load the backups
 #
 (
-    cd /var/www/dumps
+    cd /var/www/address-api/dumps
 
-    sudo -u postgres pg_restore -C -d address_api address_api-20160220-0548.dump
-    sudo -u postgres pg_restore -C -d code4kc code4kc-20160220-0548.dump
+    sudo -u postgres pg_restore -C -d address_api address_api-20160919-1829.dump
+    sudo -u postgres pg_restore -C -d code4kc code4kc-20160919-1829.dump
 
 )
 sudo service postgresql stop
