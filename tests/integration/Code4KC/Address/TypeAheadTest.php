@@ -15,7 +15,9 @@ class TypeAheadTest extends PHPUnit_Framework_TestCase
 
     public function testTypeAhead()
     {
+
         require 'config/config.php';
+        print "pgsql:dbname=$DB_NAME, $DB_USER, $DB_PASS";
         try {
             $dbh = new PDO("pgsql:dbname=$DB_NAME", $DB_USER, $DB_PASS);
         } catch (PDOException $e) {
@@ -29,6 +31,8 @@ class TypeAheadTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(200567, $result[0]["id"]);
         $this->assertEquals("210 W 19TH TER FL 1, KANSAS CITY, MO", $result[0]["single_line_address"]);
 
+        $result = $address->by_address("1114 E 45th St");
+        var_dump($result);
 
         $neighborhood = new \Code4KC\Address\Neighborhood($dbh, true);
 
@@ -40,6 +44,7 @@ class TypeAheadTest extends PHPUnit_Framework_TestCase
 
         $result = $neighborhood->find_by_name("210 w 19th TER FL 1");
         var_dump($result);
+
 
     }
 }
