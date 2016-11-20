@@ -265,6 +265,32 @@ class Address extends BaseTable
     }
 
     /**
+     * @param $single_line_address
+     * @return false or found record
+     */
+    function by_address($single_line_address)
+    {
+
+        $single_line_address = strtoupper($single_line_address);
+
+
+        if (!$this->typeahead_query) {
+            $sql = 'SELECT id, single_line_address  FROM ' . $this->table_name . ' WHERE street_address = :single_line_address';
+            $this->typeahead_query = $this->dbh->prepare("$sql  -- " . __FILE__ . ' ' . __LINE__);
+        }
+
+        try {
+            $this->typeahead_query->execute(array(':single_line_address' => $single_line_address));
+        } catch (PDOException  $e) {
+            print($e->getMessage() . ' ' . __FILE__ . ' ' . __LINE__);
+            //throw new Exception('Unable to query database');
+            return false;
+        }
+        return  $this->typeahead_query->fetch(PDO::FETCH_ASSOC);
+
+    }
+
+    /**
      * @param $id
      * @return false or found record
      */

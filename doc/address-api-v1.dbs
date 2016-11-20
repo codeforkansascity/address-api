@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="address-api-v1" id="Project_2e8ea8a6" html="y" template="Default" database="PostgreSQL" >
+	<schema name="address-api-v1" schemaname="address-api-v1" >
+		<table name="area_types" >
+			<column name="id" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Auto Incroment]]></comment>
+			</column>
+			<column name="name" type="varchar" length="100" jt="12" >
+				<comment><![CDATA[Name of area type.  Example Neighborhood, TIFF, School District, Council District]]></comment>
+			</column>
+			<index name="pk_area_types" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="areas" >
+			<comment><![CDATA[Geographic areas that represent attributes.]]></comment>
+			<column name="id" type="integer" jt="4" mandatory="y" >
+				<comment><![CDATA[Auto Incroment]]></comment>
+			</column>
+			<column name="area_type_id" type="integer" jt="4" />
+			<column name="jurisdiction_id" type="integer" jt="4" />
+			<column name="effective_date" type="date" jt="91" >
+				<comment><![CDATA[Date that this data became effective.  Unless load data has an effedtive date, it will be the date loaded.  (This may have an issue)]]></comment>
+			</column>
+			<column name="name" type="varchar" length="100" jt="12" >
+				<comment><![CDATA[Name of area.]]></comment>
+			</column>
+			<column name="polygon" type="json" jt="2000" >
+				<comment><![CDATA[The graphical representation of the area.]]></comment>
+			</column>
+			<index name="pk_areas" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_areas" unique="NORMAL" >
+				<column name="area_type_id" />
+			</index>
+			<index name="idx_areas_0" unique="NORMAL" >
+				<column name="jurisdiction_id" />
+			</index>
+			<fk name="fk_areas_type" to_schema="address-api-v1" to_table="area_types" >
+				<fk_column name="area_type_id" pk="id" />
+			</fk>
+			<fk name="fk_areas_jurisdiction" to_schema="address-api-v1" to_table="jurisdictions" >
+				<fk_column name="jurisdiction_id" pk="id" />
+			</fk>
+		</table>
+		<table name="jurisdictions" >
+			<column name="id" type="integer" jt="4" >
+				<comment><![CDATA[Auto Increment]]></comment>
+			</column>
+			<column name="name" type="varchar" length="100" jt="12" >
+				<comment><![CDATA[Name of jurisdiction.  Example City, County, State]]></comment>
+			</column>
+			<index name="pk_jurisdictions" unique="UNIQUE" >
+				<column name="id" />
+			</index>
+		</table>
+	</schema>
+	<layout name="Default Layout" id="Layout_2789aa87" confirmed="y" show_relation="columns" />
+	<layout name="Layout" id="Layout_12db137a" show_relation="columns" >
+		<entity schema="address-api-v1" name="area_types" color="c1d8ee" x="45" y="45" />
+		<entity schema="address-api-v1" name="jurisdictions" color="c1d8ee" x="45" y="180" />
+		<entity schema="address-api-v1" name="areas" color="c1d8ee" x="285" y="120" />
+	</layout>
+</project>

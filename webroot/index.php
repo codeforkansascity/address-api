@@ -1,5 +1,8 @@
 <?php
 // http://api.codeforkc.org/normalize_address/v0000/210%20West%2019th%20terrace/?city=KANSAS%20CITY&state=MO
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 require '../vendor/autoload.php';
 require '../config/config.php';
@@ -316,6 +319,45 @@ $app->get('/address-typeahead/V0/:address/', function ($in_address) use ($app) {
                 'message' => '',
                 'data' => $address_recs
             );
+
+        } else {
+            $ret = array(
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'Address not found',
+                'data' => array()
+            );
+        }
+    } else {
+        $ret = array(
+            'code' => 404,
+            'status' => 'error',
+            'message' => 'State or City was not valid.',
+            'data' => array()
+        );
+    }
+
+    if ($address_recs == false) {
+        echo json_encode($address_recs);
+    } else {
+        $app->response->setStatus($ret['code']);
+        echo json_encode($ret);
+    }
+});
+
+$app->get('/by-address/V0/:address/', function ($in_address) use ($app) {
+
+    list($in_address, $x) = explode("?", $in_address);
+
+    $in_address = addslashes($in_address);
+
+    if ($dbh = connect_to_address_database()) {
+
+        $address = new \Code4KC\Address\Address($dbh, true);
+        if ($address_recs = $address->by_address($in_address)) {
+
+            $address_id = $address_recs['id'];
+            $ret = get_address_attributes($dbh, $address_id);
 
         } else {
             $ret = array(
