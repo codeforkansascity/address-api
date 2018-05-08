@@ -30255,6 +30255,7 @@ AS $function$xpath_exists$function$
 		</browser>
 	</layout>
 	<layout name="Layout" id="Layout_12db137a" joined_routing="y" show_relation="columns" >
+		<entity schema="address-api-v1" name="orgranizations" color="c1d8ee" x="352" y="48" />
 		<entity schema="address-api-v1" name="loads" color="c1d8ee" x="80" y="528" />
 		<entity schema="address-api-v1" name="spatial_obj" color="c1d8ee" x="64" y="752" />
 		<entity schema="address-api-v1" name="address_attributes" color="c1d8ee" x="48" y="1040" />
@@ -30268,7 +30269,6 @@ AS $function$xpath_exists$function$
 			<callout x="528" y="528" pointer="SV" />
 		</entity>
 		<entity schema="address-api-v1" name="attribute_types" color="c1d8ee" x="400" y="768" />
-		<entity schema="address-api-v1" name="orgranizations" color="c1d8ee" x="352" y="48" />
 		<callout x="688" y="576" pointer="SV" >
 			<comment><![CDATA[FIPS CODE
 ]]></comment>
@@ -30302,8 +30302,5 @@ for an address and load
 			<comment><![CDATA[Councel District Name
 ]]></comment>
 		</callout>
-		<browser id="Browse_1506b9fc" name="orgranizations" confirm_updates="y" >
-			<browse_table schema="address-api-v1" entity="orgranizations" x="10" y="10" width="400" height="346" />
-		</browser>
 	</layout>
 </project>
