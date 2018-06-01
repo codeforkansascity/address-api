@@ -690,6 +690,16 @@
           "description": "",
           "example": ""
         },
+        "county_delinquent_tax_2016": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
+        "county_delinquent_tax_2017": {
+          "type": "string",
+          "description": "",
+          "example": ""
+        },
        "county_situs_address": {
           "type": "string",
           "description": "",
