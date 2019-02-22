@@ -3,6 +3,11 @@
 This will create an address-api.box that is uploaded to the Google Drive for the install at 
 [https://github.com/codeforkansascity/address-api/tree/master/INSTALL](https://github.com/codeforkansascity/address-api/tree/master/INSTALL)
 
+1. Clone this repo and change directory to the clone.
+   1. If you are using this for a non address api project remove the two lines in Vagrantfile 
+   ````
+   config.vm.synced_folder "../address-api-gh-pages", "/var/www/gh-pages",...
+   ````
 1. Create the image
 
 ````
