@@ -448,6 +448,7 @@ Run time:  24s
 4. Run the `load` script
     ```
     cd /var/www/address-api/data/jackson-county-tax-delinquency-2019
+    sudo -u postgres psql code4kc < install.sql
     sh ./load
     ```
 5. Verify data was loaded.
