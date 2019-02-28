@@ -36,7 +36,10 @@ class CountyAddressAttributes extends BaseTable
         'delinquent_tax_2012' => 0,
         'delinquent_tax_2013' => 0,
         'delinquent_tax_2014' => 0,
-        'delinquent_tax_2015' => 0
+        'delinquent_tax_2015' => 0,
+        'delinquent_tax_2016' => 0,
+        'delinquent_tax_2017' => 0,
+        'delinquent_tax_2018' => 0
     );
 
 }
