@@ -927,6 +927,11 @@
           "type": "string",
           "description": "",
           "example": ""
+        },
+        "approximate_building_area_in_feet": {
+          "type": "string",
+          "description": "Approximate building area base data is Microsoft US Building Outlines and then processed",
+          "example": "1341.20"
         }
       }
     },

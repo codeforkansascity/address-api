@@ -139,12 +139,14 @@ class Address extends BaseTable
                 cd.sim_con_div_type AS county_sim_con_div_type,
                 cd.tax_year AS county_tax_year,
                 cd.type AS county_type,
-                cd.z_designator AS county_z_designator
+                cd.z_designator AS county_z_designator,
+                o.approximate_building_area_in_feet AS approximate_building_area_in_feet
 
                 FROM city_address_attributes c
                 LEFT JOIN address_keys k ON k.city_address_id = c.id
                 LEFT JOIN address a on a.id = k.address_id
                 LEFT JOIN census_attributes b ON b.city_address_id = k.city_address_id
+                LEFT JOIN other_attributes o ON o.id = k.city_address_id
                 LEFT JOIN county_address_attributes j ON j.id = k.county_address_id
                 LEFT JOIN county_address_data cd ON cd.id = k.county_address_id
           ';

@@ -12,56 +12,46 @@ SQL=$(cat <<EOF
 --
 -- Drop just in case
 --
-DROP FOREIGN TABLE jackson_county_delinquent_tax_parcels;
-DROP SERVER myserver;
+DROP FOREIGN TABLE building_area;
+DROP SERVER building_area_server;
 --
 -- Create
 --
-CREATE SERVER myserver
-  FOREIGN DATA WRAPPER ogr_fdw
-  OPTIONS (
-    datasource '/tmp/Legal-Aid-Data-Request-2-26-19.xlsx',
-                         format 'XLSX' );
+CREATE SERVER building_area_server
+  FOREIGN DATA WRAPPER file_fdw;
 
-CREATE FOREIGN TABLE jackson_county_delinquent_tax_parcels (
-  fid bigint,
-  parcel_number varchar,
-  inactive_date varchar,
-  year integer,
-  base_delq_amt real,
-  taxpayer_name varchar,
-  line_care_of varchar,
-  mailing_line_1 varchar,
-  mailing_line_2 varchar,
-  mailing_city varchar,
-  mailing_state varchar,
-  mailing_zip_code varchar,
-  physical_address varchar,
-  physical_city varchar,
-  physical_zip_code varchar
-) SERVER myserver
-OPTIONS (layer 'DATA REQUEST');
 
-alter FOREIGN table jackson_county_delinquent_tax_parcels                                OWNER TO c4kc;
+
+CREATE FOREIGN TABLE building_area (
+    id text,
+    bldgsqft text,
+    kivapin  text) SERVER building_area_server
+    OPTIONS ( filename '`pwd`/kcblgdapproxarea.csv', format 'csv' );
+
+alter FOREIGN table building_area OWNER TO c4kc;
 
 \q
 EOF
 )
 
+echo "Create building_area FWD table\n";
 echo "${SQL}" | sudo -u postgres psql address_api
 
 
-echo "select * from jackson_county_delinquent_tax_parcels limit 10;" | sudo -u postgres psql address_api
+echo "select count(*), kivapin, sum(cast(bldgsqft AS NUMERIC(10,1))) FROM building_area WHERE id <> 'id' GROUP BY kivapin HAVING count(*) > 1 LIMIT 5;" \
+| sudo -u postgres psql address_api
 
-/usr/bin/php ./load-jackson-county-tax-delinquency.php -U
+echo "Load.php\n";
 
+/usr/bin/php ./load.php -U
 
+echo "Cleanup\n";
 #
 # Cleanup Foreign Data Wrapper to connect to the CSV file
 #
 SQL=$(cat <<EOF
-DROP FOREIGN TABLE jackson_county_delinquent_tax_parcels;
-DROP SERVER myserver;
+DROP FOREIGN TABLE building_area;
+DROP SERVER building_area_server;
 \q
 EOF
 )

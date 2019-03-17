@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/codeforkansascity/address-api.png?label=ready&title=Ready)](https://waffle.io/codeforkansascity/address-api)
+d[![Stories in Ready](https://badge.waffle.io/codeforkansascity/address-api.png?label=ready&title=Ready)](https://waffle.io/codeforkansascity/address-api)
 #Code for KC Address API
 ## Consuming C4KC address-api
 See [http://codeforkc.org/address-api] (http://codeforkc.org/address-api/)!

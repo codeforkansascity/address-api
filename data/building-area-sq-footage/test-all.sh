@@ -1,5 +1,7 @@
-
+#/bin/sh
+echo "Step 1\n"
     sh setup-for-test.sh
+    echo "Step 2 - Install\n"
     sudo -u postgres psql code4kc < install.sql
-    cp Legal-Aid-Data-Request-2-26-19.xlsx /tmp
+    echo "Step 3 - Load\n"
     ./load

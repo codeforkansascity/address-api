@@ -10,6 +10,9 @@ sudo -u postgres dropdb address_api
 sudo -u postgres dropdb code4kc
 
 SQL=$(cat <<EOF
+DROP DATABASE address_api;
+DROP DATABASE code4kc;
+
 CREATE DATABASE address_api  WITH ENCODING 'UTF8' TEMPLATE=template0;
 GRANT ALL PRIVILEGES ON DATABASE address_api TO c4kc;
 
@@ -34,6 +37,7 @@ CREATE EXTENSION postgis_topology;
 CREATE EXTENSION fuzzystrmatch;
 CREATE EXTENSION postgres_fdw;
 CREATE EXTENSION ogr_fdw;
+CREATE EXTENSION text_fdw;
 
 \q
 EOF
@@ -48,7 +52,6 @@ echo "\n\n------ load the backups -----\n\n"
 # Load the backups
 #
 (
-    cd /var/www/dumps
     cd /tmp
 
     echo "\n\n------ load address_api -----\n\n"
@@ -60,14 +63,7 @@ echo "\n\n------ load the backups -----\n\n"
 sudo service postgresql stop
 sudo service postgresql start
 
-#
-# INSTALL THIS RELEASE
-# Fix Permissions
-#
-(
-   cd /var/www/data/scripts
-#   sudo -u postgres psql -f fix_ownerships.psql
-)
+
 
 
 
